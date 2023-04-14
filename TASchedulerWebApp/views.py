@@ -4,4 +4,3 @@ from .models import Supervisor, Instructor, TeacherAssistant, Course, LabSection
 
 # Create your views here.
 
-
