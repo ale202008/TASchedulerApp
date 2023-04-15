@@ -9,7 +9,6 @@ class User(models.Model):
     password = models.CharFiel(max_length = 42069)
 # Create Supervisor class via inheritance, no extra info needed.
 class Supervisor(User):
-
     def createCourse(self, name, id):
 
 
