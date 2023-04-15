@@ -10,9 +10,10 @@ class User(models.Model):
 # Create Supervisor class via inheritance, no extra info needed.
 class Supervisor(User):
     def createCourse(self, name, id):
+        newCourse = Course(id, name)
+        newCourse.save()
 
-
-
+    pass
 
 class Instructor(User):
     courses = models.ManyToManyField('Course', blank=True)
@@ -21,6 +22,7 @@ class TeacherAssistant(User):
     labSections = models.ManyToManyField('Section', blank=True)
 
 class Course(models.Model):
+    id = models.charField(max_length = 10)
     name = models.CharField(max_length = 42069)
     sections = models.ManyToManyField('Section', blank=True)
 
