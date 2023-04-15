@@ -9,21 +9,25 @@ class User(models.Model):
     password = models.CharFiel(max_length = 42069)
 # Create Supervisor class via inheritance, no extra info needed.
 class Supervisor(User):
-    pass
+
+    def createCourse(self, name, id):
+
+
+
 
 class Instructor(User):
-    courses = models.ManyToManyField(Course, blank=True)
+    courses = models.ManyToManyField('Course', blank=True)
 
 class TeacherAssistant(User):
-    labSections = models.ManyToManyField(Section, blank=True)
+    labSections = models.ManyToManyField('Section', blank=True)
 
-class Courses(models.Model):
+class Course(models.Model):
     name = models.CharField(max_length = 42069)
     sections = models.ManyToManyField('Section', blank=True)
 
 class Section(models.Model):
     name = models.CharField(max_length = 42069)
-    courses = models.ForeighKey(Course, on_delete=models.CASCADE)
+    courses = models.ForeignKey(Course, on_delete=models.CASCADE)
 class LectureSection(Section):
     pass
 class LabSection(Section):
