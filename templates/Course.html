@@ -6,12 +6,14 @@
 </head>
 <body>
 <h1>Course Page</h1>
-<form action="/Course/" method="post">
-    {% csrf_token %}
-    <input type="submit" value="Add Course"><input type="submit" value="Delete Course">
-</form>
+<span>
+<a href="AddCoursePage.html">Add Course</a>
+<a href="DeleteCoursePage.html">Delete Course</a>
+</span>
+<label>Courses</label>
 {%  for i in Courses %}
     {{ i }}<br/>
 {% endfor %}
+<form/>
 </body>
 </html>
