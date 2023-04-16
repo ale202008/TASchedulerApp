@@ -5,6 +5,13 @@
     <title>Title</title>
 </head>
 <body>
-
+<h1>Course Page</h1>
+<form action="/Course/" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Add Course"><input type="submit" value="Delete Course">
+</form>
+{%  for i in Courses %}
+    {{ i }}<br/>
+{% endfor %}
 </body>
 </html>
