@@ -16,7 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from TASchedulerWebApp.views import Directory
 
 urlpatterns = [
+    path('', Directory.as_view()),
     path('admin/', admin.site.urls),
 ]

@@ -5,3 +5,8 @@ from .models import Supervisor, Instructor, TeacherAssistant, Course, LabSection
 # Create your views here.
 
 
+class Directory(View):
+    def get(self, request):
+        return render(request, "directory.html",{})
+    def post(self, request):
+        return render(request, "directory.html", {})
