@@ -10,5 +10,9 @@
 
 <body>
 <h1>Directory Page</h1>
+<form action = "/" method = "post">
+    {% csrf_token %}
+    <button name = 'subject' type = 'submit' value ='redirect1_HTML'>CLICK ME DAMMIT!</button>
+</form>
 </body>
 </html>
