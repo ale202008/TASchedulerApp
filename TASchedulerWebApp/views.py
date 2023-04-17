@@ -7,3 +7,4 @@ class Directory(View):
         return render(request, "directory.html",{})
     def post(self, request):
         return render(request, "directory.html", {})
+    #test
