@@ -8,3 +8,5 @@ class CoursePage(View):
     def get(self, request):
         courses = list(Course.objects)
         return render(request, "Course.html", {"Courses": courses})
+    def post(self, request):
+        sess = request.session[""]
