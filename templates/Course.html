@@ -5,14 +5,17 @@
     <title>Title</title>
 </head>
 <body>
-<h1>Course Page</h1>
+<h1>Course Page: {{ name }} </h1>
+<form action="Course.html" method="post">
 <span>
-
+    <input type="submit" value="Add Course">
 </span>
+</form>
 <label>Courses</label>
 {%  for i in Courses %}
     {{ i }}<br/>
 {% endfor %}
 <form/>
+{{ message }}
 </body>
 </html>

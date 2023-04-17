@@ -4,25 +4,25 @@ from django.db import models
 
 # MyUser class that will be the general model for users.
 # Will hold username and password.
-class User(models.Model):
+class MyUser(models.Model):
     name = models.CharField(max_length = 42069)
-    password = models.CharFiel(max_length = 42069)
+    password = models.CharField(max_length = 42069)
 # Create Supervisor class via inheritance, no extra info needed.
-class Supervisor(User):
+class Supervisor(MyUser):
     def createCourse(self, name, id):
-        newCourse = Course(id, name)
+        newCourse = Course.objects.create(name=name, id=id)
         newCourse.save()
 
     pass
 
-class Instructor(User):
+class Instructor(MyUser):
     courses = models.ManyToManyField('Course', blank=True)
 
-class TeacherAssistant(User):
+class TeacherAssistant(MyUser):
     labSections = models.ManyToManyField('Section', blank=True)
 
 class Course(models.Model):
-    id = models.charField(max_length = 10)
+    id = models.CharField(max_length = 20, primary_key=True)
     name = models.CharField(max_length = 42069)
     sections = models.ManyToManyField('Section', blank=True)
 
