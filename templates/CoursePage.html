@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Course Page: </h1>
+<form action="/CoursePage/" method="post">
+    {% csrf_token %}
+<span>
+    <input type="submit" name="Add Course" value="Add Course">
+    <input type="submit" id="Delete Course" value="Delete Course">
+</span>
+</form>
+<label>Courses</label>
+{%  for i in Courses %}
+    <br>{{ i }}<br/>
+{% endfor %}
+{{ message }}
+<form>
+    <input type="submit" id="Back" value="Home">
+</form>
+</body>
+</html>
