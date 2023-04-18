@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login Form</title>
+	<style>
+		form {
+			border: 1px solid #ccc;
+			padding: 20px;
+			width: 300px;
+			margin: 0 auto;
+			text-align: center;
+			border-radius: 5px;
+			background-color: #f2f2f2;
+		}
+
+		label {
+			display: block;
+			margin-bottom: 10px;
+			text-align: left;
+		}
+
+		input[type="text"], input[type="password"] {
+			padding: 10px;
+			border-radius: 5px;
+			border: 1px solid #ccc;
+			width: 100%;
+			box-sizing: border-box;
+		}
+
+		input[type="submit"] {
+			background-color: #4CAF50;
+			color: white;
+			padding: 10px 20px;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+
+		input[type="submit"]:hover {
+			background-color: #45a049;
+		}
+    div {
+      background-color: #ff0000;
+      text-align: center;
+      color: #ffffff;
+      font-size: 1.2em;
+      border: 1px solid #F5C6CB;
+      padding: 20px;
+      margin-bottom: 10px;
+      width: 300px;
+      margin: 0 auto;
+}
+	</style>
+  
+</head>
+<body>
+  {% csrf_token %}
+  <h1>Home page!</h1>
+</body>
+</html>
