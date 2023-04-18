@@ -40,5 +40,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.first_name
 
-class Course(models.model):
-    id =
+
+class Course(models.Model):
+    id = models.CharField(max_length=12, primary_key=True)
+    name = models.CharField(max_length=200)
+    Sections = models.ManyToManyField('Section', blank=True)
+
+class Section(models.Model):
+    name=models.CharField(max_length=150)
