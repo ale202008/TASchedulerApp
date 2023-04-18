@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>$Title$</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
+</head>
+
+<body>
+<h1>Directory Page</h1>
+<div class = "buttons">
+    <form action = "/" method = "post">
+        {% csrf_token %}
+        <div class = "buttoncolumn">
+            <button name = 'subject' type = 'submit' value ='redirect1_HTML' class = "button">Account Info</button>
+            <button name = 'subject' type = 'submit' value ='redirect1_HTML' class = "button">Courses</button>
+            <button name = 'subject' type = 'submit' value ='redirect1_HTML' class = "button">Sections</button>
+        </div>
+        <div class = "buttoncolumn">
+            <button name = 'subject' type = 'submit' value ='redirect1_HTML' class = "button">Create Accounts</button>
+            <button name = 'subject' type = 'submit' value ='redirect1_HTML' class = "button">Notifications</button>
+            <button name = 'subject' type = 'submit' value ='redirect1_HTML' class = "button">Data</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>
