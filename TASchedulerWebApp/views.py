@@ -17,7 +17,7 @@ class Login(View):
     if user is not None:
       login(request, user)
       print("logged in")
-      return redirect('account_creation')
+      return redirect('directory')
     else:
       messages.error(request, 'Invalid username or password')
       return redirect('login')
@@ -33,7 +33,7 @@ def account_creation(request):
     if form.is_valid():
       form.save()
       messages.success(request, 'User account created successfully.')
-      return redirect('account_creation')
+      return redirect('account_cr')
     else:
       messages.error(request, 'An error occurred while creating the user account')
 
@@ -48,12 +48,12 @@ class Directory(View):
             return redirect('/redirect1/')
         return render(request, "directory.html", {})
 
-class Redirect1(View):
-    def get(self, request):
-        return render(request, "redirect1.html",{})
-    def post(self, request):
-        return render(request, "redirect1.html", {})
-  return render(request, 'accountCreation.html', {'form': form})
+# class Redirect1(View):
+#     def get(self, request):
+#         return render(request, "redirect1.html",{})
+#     def post(self, request):
+#         return render(request, "redirect1.html", {})
+#   return render(request, 'accountCreation.html', {'form': form})
 
 class Home(View):
   def get(self, request):
