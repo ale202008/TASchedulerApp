@@ -1,3 +1,4 @@
+
 """
 URL configuration for djangoProject2 project.
 
@@ -16,7 +17,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from TASchedulerWebApp.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', CoursePage.as_view()),
+    path('/AddCoursePage/', AddCoursePage.as_view())
 ]

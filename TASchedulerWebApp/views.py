@@ -7,21 +7,20 @@ from TASchedulerWebApp.models import *
 class CoursePage(View):
     def get(self, request):
         courses = list(Course.objects)
-        return render(request, "CoursePage.html", {"Courses": courses, "message": ""})
+        return render(request, "/CoursePage/", {"Courses": courses, "message": ""})
     def post(self, request):
-        username = request.session["username"]
-        print(username)
-        user = User.objects.get(name=username)
-        if(isinstance(user, Supervisor)):
-            if(request.POST.get('name') == "Add Course"):
-                return redirect("AddCoursePage.html")
-            elif(request.POST.get('name') == "Delete Course"):
-                return redirect("DeleteCoursePage.html")
-        return render(request, "CoursePage.html", {"Couses": list(Course.objects), "message": "You are not a supervisor"})
+
+        if(request.POST.get('name') == "Add Course"):
+            return redirect("AddCoursePage.html")
+        elif(request.POST.get('id') == "Delete Course"):
+            return redirect("DeleteCoursePage.html")
+        if(request.POST.get('id') == "Back"):
+            return redirect("Home.html")
+        return render(request, "/CoursePage/", {"Couses": list(Course.objects), "message": "You are not a supervisor"})
 
 class AddCoursePage(View):
     def get(self, request):
-        return render(request, "AddCoursePage.html",{"message":""})
+        return render(request, "/AddCoursePage/",{"message":""})
 
     def post(self, request):
         name = request.POST.get('CourseName')
@@ -29,4 +28,4 @@ class AddCoursePage(View):
         if(name != '' & number != ''):
            newcourse = Course.objects.create(id=number, name=name)
            newcourse.save()
-        return render("CoursePage.html",{"Course":list(Course.objects), "message":"course created."})
+        return render("/CoursePage/", {"Courses": list(Course.objects), "message": "course created."})
