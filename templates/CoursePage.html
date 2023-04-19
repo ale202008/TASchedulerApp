@@ -19,7 +19,8 @@
     <br>{{ i.name }}</br>
 {% endfor %}
 {{ message }}
-<form>
+<form action="/CoursePage/" method="post">
+    {% csrf_token %}
     <input type="submit" name="chosen" value="Home">
 </form>
 </body>

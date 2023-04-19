@@ -102,7 +102,7 @@ class CoursePage(View):
             elif (request.POST.get('chosen') == "Delete Course"):
                 return redirect("/DeleteCoursePage/")
         if (request.POST.get('chosen') == "Home"):
-            return render(request, 'directory.html')
+            return redirect('directory')
         courselist = list(Course.objects.all())
         return render(request, 'CoursePage.html', {"Courses": courselist, "message": "You are not a supervisor"})
 
@@ -114,10 +114,14 @@ class AddCoursePage(View):
     def post(self, request):
         name = request.POST.get('CourseName','')
         number = request.POST.get('CourseNumber','')
-        if (name != '' and number != ''):
-            newcourse = Course.objects.create(id=number, name=name)
-            newcourse.save()
+        try:
+            Course.objects.get(name=name)
+            return render(request, "AddCoursePage.html", {"message": "course already exists."})
+        except:
+            if (name != '' and number != ''):
+                newcourse = Course.objects.create(id=number, name=name)
+                newcourse.save()
+                courselist = list(Course.objects.all())
+                return render(request, "CoursePage.html", {"Courses": courselist, "message": "course created."})
             courselist = list(Course.objects.all())
-            return render(request, "CoursePage.html", {"Courses": courselist, "message": "course created."})
-        courselist = list(Course.objects.all())
-        return render(request, "AddCoursePage.html", {"message": "course not created."})
+            return render(request, "AddCoursePage.html", {"message": "course not created."})
