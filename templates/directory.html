@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>$Title$</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
+</head>
+
+<body>
+<h1>Directory Page</h1>
+
+
+<div class="row">
+    {% for button in buttons %}
+      <div class="column">
+        <a href="{{ button.1 }}">{{ button.0 }}</a>
+      </div>
+    {% endfor %}
+  </div>
+  
+</body>
+</html>
