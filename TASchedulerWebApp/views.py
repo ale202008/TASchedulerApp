@@ -43,8 +43,8 @@ def account_creation(request):
             messages.error(request, 'An error occurred while creating the user account')
     else:
         form = UserCreationForm()
-  else:
-    form = UserCreationForm()
+
+    return render(request, 'accountCreation.html', {'form': form})
 
 @login_required
 def Directory(request):
