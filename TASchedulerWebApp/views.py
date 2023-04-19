@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .forms import UserCreationForm
+from django.http import HttpResponse
 from .models import *
 
 
@@ -40,27 +41,49 @@ def account_creation(request):
             return redirect('account_cr')
         else:
             messages.error(request, 'An error occurred while creating the user account')
-
     else:
         form = UserCreationForm()
+  else:
+    form = UserCreationForm()
 
-
-class Directory(View):
-    def get(self, request):
-        return render(request, "directory.html", {})
-
-    def post(self, request):
-        if 'Courses' == request.POST.get('subject'):
-            return redirect('CoursePage')
-        return render(request, "directory.html", {})
-
-
-# class Redirect1(View):
-#     def get(self, request):
-#         return render(request, "redirect1.html",{})
-#     def post(self, request):
-#         return render(request, "redirect1.html", {})
-#   return render(request, 'accountCreation.html', {'form': form})
+@login_required
+def Directory(request):
+  user = request.user
+  buttons = []
+  #Admin if statement
+  if user.is_superuser:
+    buttons = [
+      ('Courses', '/courses'),
+      ('Account Info', '/account'),
+      ('Notifications', '/notifications'),
+      ('Sections', '/sections'),
+      ('TAs', '/tas'),
+      ('Instructors', '/instructors'),
+      ('Create Course', '/create_course'),
+      ('Create Section', '/create_section'),
+      ('Create Account', '/create_account'),
+    ]
+    #Instructor view
+  elif user.is_staff:
+    buttons = [
+      ('Courses', '/courses'),
+      ('Account Info', '/account'),
+      ('Notifications', '/notifications'),
+      ('Sections', '/sections'),
+      ('TAs', '/tas'),
+    ]
+  else:
+    buttons = [
+      ('Courses', '/courses'),
+      ('Account Info', '/account'),
+      ('Notifications', '/notifications'),
+      ('Sections', '/sections'),
+      ('TAs', '/tas'),
+    ]
+    
+  options = {'buttons': buttons}
+  return render(request, 'directory.html', options)
+ 
 
 class Home(View):
     def get(self, request):

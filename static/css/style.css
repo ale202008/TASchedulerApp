@@ -31,3 +31,34 @@ form {
     width: 300px;
     height: 75px;
 }
+/* Style for the links */
+a {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 1px;
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    border-radius: 5px;
+  }
+  
+  /* Style for the columns */
+  .column {
+    /* text-align: center; */
+    display: flex;
+    flex-direction: column;
+    /* float: right; */
+    width: 33.33%;
+    padding: 1px;
+    height: 50px; 
+  }
+  
+  /* Clearfix to prevent floats from overlapping */
+  .row::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+  
