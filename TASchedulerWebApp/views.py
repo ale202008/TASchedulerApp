@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .forms import UserCreationForm
+from django.http import HttpResponse
 
 class Login(View):
   def get(self, request):
@@ -39,21 +40,45 @@ def account_creation(request):
 
   else:
     form = UserCreationForm()
+@login_required
+def Directory(request):
+  user = request.user
+  buttons = []
+  #Admin if statement
+  if user.is_superuser:
+    buttons = [
+      ('Courses', '/courses'),
+      ('Account Info', '/account'),
+      ('Notifications', '/notifications'),
+      ('Sections', '/sections'),
+      ('TAs', '/tas'),
+      ('Instructors', '/instructors'),
+      ('Create Course', '/create_course'),
+      ('Create Section', '/create_section'),
+      ('Create Account', '/create_account'),
+    ]
+    #Instructor view
+  elif user.is_staff:
+    buttons = [
+      ('Courses', '/courses'),
+      ('Account Info', '/account'),
+      ('Notifications', '/notifications'),
+      ('Sections', '/sections'),
+      ('TAs', '/tas'),
+    ]
+  else:
+    buttons = [
+      ('Courses', '/courses'),
+      ('Account Info', '/account'),
+      ('Notifications', '/notifications'),
+      ('Sections', '/sections'),
+      ('TAs', '/tas'),
+    ]
+    
+  options = {'buttons': buttons}
+  return render(request, 'directory.html', options)
+ 
 
-class Directory(View):
-    def get(self, request):
-        return render(request, "directory.html",{})
-    def post(self, request):
-        if 'redirect1_HTML' == request.POST.get('subject'):
-            return redirect('/redirect1/')
-        return render(request, "directory.html", {})
-
-# class Redirect1(View):
-#     def get(self, request):
-#         return render(request, "redirect1.html",{})
-#     def post(self, request):
-#         return render(request, "redirect1.html", {})
-#   return render(request, 'accountCreation.html', {'form': form})
 
 class Home(View):
   def get(self, request):
