@@ -43,8 +43,7 @@ def account_creation(request):
             messages.error(request, 'An error occurred while creating the user account')
     else:
         form = UserCreationForm()
-  else:
-    form = UserCreationForm()
+    return render(request, 'accountCreation.html', {'form': form})
 
 @login_required
 def Directory(request):
@@ -53,13 +52,13 @@ def Directory(request):
   #Admin if statement
   if user.is_superuser:
     buttons = [
-      ('Courses', '/courses'),
+      ('Courses', 'CoursePage/'),
       ('Account Info', '/account'),
       ('Notifications', '/notifications'),
       ('Sections', '/sections'),
       ('TAs', '/tas'),
       ('Instructors', '/instructors'),
-      ('Create Course', '/create_course'),
+      ('Create Course', 'AddCoursePage/'),
       ('Create Section', '/create_section'),
       ('Create Account', '/create_account'),
     ]
@@ -102,8 +101,8 @@ class CoursePage(View):
                 return render(request, "AddCoursePage.html", {"message":""})
             elif (request.POST.get('chosen') == "Delete Course"):
                 return redirect("/DeleteCoursePage/")
-        if (request.POST.get('chosen') == "Back"):
-            return redirect("/Directory/")
+        if (request.POST.get('chosen') == "Home"):
+            return render(request, 'directory.html')
         courselist = list(Course.objects.all())
         return render(request, 'CoursePage.html', {"Courses": courselist, "message": "You are not a supervisor"})
 
