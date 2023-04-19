@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from TASchedulerWebApp.views import Directory, Login, account_creation, Home
+from TASchedulerWebApp.views import *
 
 
 urlpatterns = [
@@ -25,4 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('account_creation/', account_creation, name='account_creation'),
     path('home/', Home.as_view(), name='home'),
+    path('CoursePage/', CoursePage.as_view()),
+    path('AddCoursePage/', AddCoursePage.as_view())
+
 ]

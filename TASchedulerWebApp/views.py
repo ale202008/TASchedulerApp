@@ -51,7 +51,7 @@ class Directory(View):
 
     def post(self, request):
         if 'Courses' == request.POST.get('subject'):
-            return redirect('CoursePage')
+            return redirect('CoursePage/')
         return render(request, "directory.html", {})
 
 
