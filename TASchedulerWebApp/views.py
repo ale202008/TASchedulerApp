@@ -53,13 +53,13 @@ def Directory(request):
   #Admin if statement
   if user.is_superuser:
     buttons = [
-      ('Courses', '/courses'),
+      ('Courses', 'CoursePage/'),
       ('Account Info', '/account'),
       ('Notifications', '/notifications'),
       ('Sections', '/sections'),
       ('TAs', '/tas'),
       ('Instructors', '/instructors'),
-      ('Create Course', '/create_course'),
+      ('Create Course', 'AddCoursePage/'),
       ('Create Section', '/create_section'),
       ('Create Account', '/create_account'),
     ]
@@ -102,8 +102,8 @@ class CoursePage(View):
                 return render(request, "AddCoursePage.html", {"message":""})
             elif (request.POST.get('chosen') == "Delete Course"):
                 return redirect("/DeleteCoursePage/")
-        if (request.POST.get('chosen') == "Back"):
-            return redirect("/Directory/")
+        if (request.POST.get('chosen') == "Home"):
+            return redirect('directory')
         courselist = list(Course.objects.all())
         return render(request, 'CoursePage.html', {"Courses": courselist, "message": "You are not a supervisor"})
 
@@ -115,10 +115,14 @@ class AddCoursePage(View):
     def post(self, request):
         name = request.POST.get('CourseName','')
         number = request.POST.get('CourseNumber','')
-        if (name != '' and number != ''):
-            newcourse = Course.objects.create(id=number, name=name)
-            newcourse.save()
+        try:
+            Course.objects.get(name=name)
+            return render(request, "AddCoursePage.html", {"message": "course already exists."})
+        except:
+            if (name != '' and number != ''):
+                newcourse = Course.objects.create(id=number, name=name)
+                newcourse.save()
+                courselist = list(Course.objects.all())
+                return render(request, "CoursePage.html", {"Courses": courselist, "message": "course created."})
             courselist = list(Course.objects.all())
-            return render(request, "CoursePage.html", {"Courses": courselist, "message": "course created."})
-        courselist = list(Course.objects.all())
-        return render(request, "AddCoursePage.html", {"message": "course not created."})
+            return render(request, "AddCoursePage.html", {"message": "course not created."})

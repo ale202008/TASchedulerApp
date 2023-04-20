@@ -4,22 +4,24 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
-<body>
+<br>
 <h1>Course Page: </h1>
 <form action="/CoursePage/" method="post">
     {% csrf_token %}
 <span>
-    <input type="submit" name="Add Course" value="Add Course">
-    <input type="submit" id="Delete Course" value="Delete Course">
+    <input type="submit" name="chosen" value="Add Course">
+    <input type="submit" name="chosen" value="Delete Course">
 </span>
 </form>
 <label>Courses</label>
 {%  for i in Courses %}
-    <br>{{ i }}<br/>
+    <br>{{ i.id }}<br/>
+    <br>{{ i.name }}</br>
 {% endfor %}
 {{ message }}
-<form>
-    <input type="submit" id="Back" value="Home">
+<form action="/CoursePage/" method="post">
+    {% csrf_token %}
+    <input type="submit" name="chosen" value="Home">
 </form>
 </body>
 </html>
