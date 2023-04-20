@@ -26,5 +26,6 @@ urlpatterns = [
     path('account_creation/', account_creation, name='account_creation'),
     path('home/', Home.as_view(), name='home'),
     path('CoursePage/', CoursePage.as_view()),
-    path('AddCoursePage/', AddCoursePage.as_view())
+    path('AddCoursePage/', AddCoursePage.as_view()),
+    path('DeleteCoursePage/', DeleteCoursePage.as_view())
 ]

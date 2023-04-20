@@ -96,14 +96,14 @@ class CoursePage(View):
 
     def post(self, request):
         user = request.user
+        courselist = list(Course.objects.all())
         if (user.is_superuser):
             if (request.POST.get('chosen') == "Add Course"):
                 return render(request, "AddCoursePage.html", {"message":""})
             elif (request.POST.get('chosen') == "Delete Course"):
-                return redirect("/DeleteCoursePage/")
+                return render(request, "/DeleteCoursePage/", {"Courses": courselist})
         if (request.POST.get('chosen') == "Home"):
             return redirect('directory')
-        courselist = list(Course.objects.all())
         return render(request, 'CoursePage.html', {"Courses": courselist, "message": "You are not a supervisor"})
 
 
@@ -125,3 +125,8 @@ class AddCoursePage(View):
                 return render(request, "CoursePage.html", {"Courses": courselist, "message": "course created."})
             courselist = list(Course.objects.all())
             return render(request, "AddCoursePage.html", {"message": "course not created."})
+
+
+class DeleteCoursePage(View):
+    def get(self, request):
+        return render(request, "DeleteCoursePage.html")

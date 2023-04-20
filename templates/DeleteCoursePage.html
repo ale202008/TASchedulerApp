@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Course Deletion Page</h1>
+<form>
+    {% csrf_token %}
+    <span><label>Course Number:</label><input type="text" name="CourseNumber"></span>
+    <span><label>Course Name:</label><input type="text" name="CourseName"></span>
+    <input type="submit" value="Delete Course">
+</form>
+</body>
+</html>

@@ -15,8 +15,8 @@
 </form>
 <label>Courses</label>
 {%  for i in Courses %}
-    <br>{{ i.id }}<br/>
-    <br>{{ i.name }}</br>
+    <br>{{ i.id }}
+    {{ i.name }}</br>
 {% endfor %}
 {{ message }}
 <form action="/CoursePage/" method="post">
