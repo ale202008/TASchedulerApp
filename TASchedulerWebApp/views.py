@@ -101,7 +101,7 @@ class CoursePage(View):
             if (request.POST.get('chosen') == "Add Course"):
                 return render(request, "AddCoursePage.html", {"message":""})
             elif (request.POST.get('chosen') == "Delete Course"):
-                return render(request, "/DeleteCoursePage/", {"Courses": courselist})
+                return render(request, "DeleteCoursePage.html", {"Courses": courselist})
         if (request.POST.get('chosen') == "Home"):
             return redirect('directory')
         return render(request, 'CoursePage.html', {"Courses": courselist, "message": "You are not a supervisor"})
@@ -115,8 +115,8 @@ class AddCoursePage(View):
         name = request.POST.get('CourseName','')
         number = request.POST.get('CourseNumber','')
         try:
-            Course.objects.get(name=name)
-            return render(request, "AddCoursePage.html", {"message": "course already exists."})
+            Course.objects.get(id=number)
+            return render(request, "AddCoursePage.html", {"message": "course number already in use."})
         except:
             if (name != '' and number != ''):
                 newcourse = Course.objects.create(id=number, name=name)
@@ -129,4 +129,27 @@ class AddCoursePage(View):
 
 class DeleteCoursePage(View):
     def get(self, request):
-        return render(request, "DeleteCoursePage.html")
+        courselist = list(Course.objects.all())
+        return render(request, "DeleteCoursePage.html", {'Course':courselist})
+
+    def post(self, request):
+        name = request.POST.get('CourseName', '')
+        number = request.POST.get('CourseNumber', '')
+        if(name != '' and number != ''):
+            try:
+                course = Course.objects.get(id=number)
+                course.delete()
+                courses = list(Course.objects.all())
+                return render(request, "CoursePage.html", {'message': 'Course deleted', 'Courses': courses})
+            except:
+                courses = list(Course.objects.all())
+                return render(request, 'DeleteCoursePage.html',
+                              {'message': "Please enter an existing course" , 'Courses': courses})
+        courses = list(Course.objects.all())
+        return render(request, "DeleteCoursePage.html",
+                      {'message': "Please enter a course name and number", 'Courses': courses})
+
+
+
+
+        
