@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from TASchedulerWebApp.models import *
 
-class LoginTestCases(TestCase):
+class LoginTestCase(TestCase):
     def setUp(self):
         # Setups a Client user to navigate through functions/site.
         self.UserClient = Client()
@@ -18,4 +18,9 @@ class LoginTestCases(TestCase):
     def test_LoginUsernameExists(self):
         # Checks to see after creating an account via POST that the username of the account exists within the database.
         for i in self.UserList:
-            self.AssertTrue(User.objects.filter(username = i).exists(), msg = "Username does not exist in the database despite user creation.")
+            self.assertTrue(User.objects.filter(username = i).exists(), msg = "Username does not exist in the database despite user creation.")
+
+    def test_LoginPasswordExists(self):
+        # Checks to see after creating an account via POST that the password of the account exists within the database.
+        for i in self.UserList:
+            self.assertTrue(User.objects.filter(password = i).exists(), msg = "Password does not exist in the database despite user creation.")

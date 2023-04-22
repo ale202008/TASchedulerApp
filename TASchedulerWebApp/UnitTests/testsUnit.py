@@ -7,7 +7,7 @@ class UserTestCase(TestCase):
     def setUp(self):
         # Creates a Course object for testing, filling only Username and Password field.
         # Other fields such as email can be left blank.
-        self.object1 = User.objects.create_user("Taylor", "Swift")
+        self.object1 = User.objects.create(username = "Taylor", password = "Swift")
         self.object1.save()
     def test_UserCreation(self):
         # Checks to see if the correct number of users were created, in this case only 1 meant to exist
@@ -21,33 +21,26 @@ class UserTestCase(TestCase):
     def test_UserPassword(self):
         # Makes sure that the password is inside the User database after account creation.
         # Note, had to manually save "password" field of User object as Abstract object currently sets password to None.
-        self.object1.password = "Swift"
-        self.object1.save()
         self.assertTrue(User.objects.filter(password = "Swift").exists(), msg = "Password does not exist despite creation of user.")
 
     def test_UserCorrectUsernameField(self):
         # Checks to see if the Username field is correct for user object.
-        self.object1.password = "Swift"
-        self.object1.save()
         self.assertEqual(User.objects.first().username, "Taylor", msg = "The User object that was created does not have the correct username.")
 
     def test_UserCorrectPasswordField(self):
         # Checks to see if the Password field is correct for user object.
-        self.object1.password = "Swift"
-        self.object1.save()
         self.assertEqual(User.objects.first().password, "Swift", msg = "The User object that was created does not have the correct password.")
 
     def test_UserUsernameBlank(self):
         # Asserts that a ValueError is raises when a blank username is attempted in user creation.
         with self.assertRaises(ValueError, msg = "Username is a blank field, but did not fail"):
-            self.object1 = User.objects.create_user("")
+            self.object1 = User.objects.create_user(username = "")
             self.object1.save()
 
     def test_UserPasswordBlank(self):
         # Asserts that an Exception is raised when a blank password is attempted in user creation.
         with self.assertRaises(Exception, msg = "Username is a blank field, but did not fail"):
-            self.object1 = User.objects.create_user("Taylor")
-            self.object1.password("")
+            self.object1 = User.objects.create(username = "Taylor", password = "")
             self.object1.save()
 
 class CourseTestCases(TestCase):
