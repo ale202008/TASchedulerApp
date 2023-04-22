@@ -36,7 +36,6 @@ class NewUserCreationLoginTestCase(TestCase):
         for i in self.UserList:
             self.assertEqual(User.objects.first().password, i, msg = "Password field is incorrect after user creation.")
 
-
 class SuccessfulUserLogin(TestCase):
     def setUp(self):
         # Setups a Client user to navigate through functions/site.
@@ -102,3 +101,27 @@ class SuccessfulUserLogin(TestCase):
         self.assertContains(response, 'Notifications')
         self.assertContains(response, 'Sections')
         self.assertContains(response, 'TAs')
+
+class InvalidLoginTests(TestCase):
+    def setUp(self):
+        # Sets up the client, a user that exists already.
+        self.UserClient = Client()
+        self.User = User.objects.create(username='Taylor', password='Swift')
+        self.User.save()
+
+    def test_Nonexistence(self):
+        # Checks to see that if a non-existing user tries to login that they are not redirected anywhere, but the login screen.
+        resp = self.UserClient.post('/', {'username': 'NotTaylor', 'password': 'NotSwift'}, follow = True)
+        self.assertRedirects(resp, '/', msg_prefix = "Was not redirected back to login screen. User was not created yet.")
+
+    def test_BadUsername(self):
+        # Checks to see that if user attempts to login with a blank or bad username. In our case, we are looking at
+        # simply not redirecting to another webpage. Might change to an exception assertion in Test Revision.
+        resp = self.UserClient.post('/', {'username': '', 'password': 'NotSwift'}, follow = True)
+        self.assertRedirects(resp, '/', msg_prefix = "Was not redirected back to login screen due to bad username.")
+
+    def test_BadPassword(self):
+        # Checks to see that if user attempts to login with a wrong password. In our case, we are looking at
+        # simply not redirecting to another webpage. Might change to an exception assertion in Test Revision.
+        resp = self.UserClient.post('/', {'username': 'Taylor', 'password': 'NotSwift'}, follow = True)
+        self.assertRedirects(resp, '/', msg_prefix = "Was not redirected back to login screen due to bad password.")
