@@ -95,3 +95,37 @@ class CourseTestCases(TestCase):
         self.setup()
         self.assertTrue(Course.objects.first().Sections.contains(self.objectSection), msg = "Sections was not saved to the create course upon creation.")
 
+    def test_CourseNameBlank(self):
+        with self.assertRaises(Exception, msg = "Course name is blank."):
+            self.object1 = Course.objects.create(id= None, name="")
+            self.object1.save()
+
+    def test_CourseIDBlank(self):
+        with self.assertRaises(Exception, msg = "Course id is blank."):
+            self.object1 = Course.objects.create(id= None, name="")
+            self.object1.save()
+
+class SectionTestCases(TestCase):
+    def setup(self):
+        self.object1 = Section.objects.create(name = "DjangoUnchained")
+        self.object1.save()
+
+    def test_SectionCreation(self):
+        # Checks to see if database was updated after creation.
+        self.setup()
+        self.assertEqual(Section.objects.count(), 1, msg = "Incorrect count of sections after creation.")
+
+    def test_SectionName(self):
+        # Checks to see if Section name was input into the database.
+        self.setup()
+        self.assertTrue(Section.objects.filter(name = "DjangoUnchained").exists(), msg = "Section name is not in database after creation.")
+
+    def test_SectionNameField(self):
+        # Checks to see if Section name is correctly associated to object upon creation.
+        self.setup()
+        self.assertEqual(Section.objects.first().name, "DjangoUnchained", msg = "Section name is not associated to correct object.")
+
+    def test_SectionNameBlank(self):
+        with self.assertRaises(Exception, msg = "Section name is blank."):
+            self.object1 = Section.objects.create(name="")
+            self.object1.save()
