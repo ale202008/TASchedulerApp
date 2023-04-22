@@ -5,6 +5,8 @@ from TASchedulerWebApp.models import *
 class UserTestCase(TestCase):
     # Tests will mainly focus on the Username and Password fields.
     def setup(self):
+        # Creates a Course object for testing, filling only Username and Password field.
+        # Other fields such as email can be left blank.
         self.object1 = User.objects.create_user("Taylor", "Swift")
         self.object1.save()
     def test_UserCreation(self):
@@ -27,12 +29,14 @@ class UserTestCase(TestCase):
         self.assertTrue(User.objects.filter(password = "Swift").exists(), msg = "Password does not exist despite creation of user.")
 
     def test_UserCorrectUsernameField(self):
+        # Checks to see if the Username field is correct for user object.
         self.setup()
         self.object1.password = "Swift"
         self.object1.save()
         self.assertEqual(User.objects.first().username, "Taylor", msg = "The User object that was created does not have the correct username.")
 
     def test_UserCorrectPasswordField(self):
+        # Checks to see if the Password field is correct for user object.
         self.setup()
         self.object1.password = "Swift"
         self.object1.save()
@@ -55,6 +59,7 @@ class CourseTestCases(TestCase):
     # Tests will mainly focus on course creation and deletion
 
     def setup(self):
+        # Creates a Course object for testing, filling each field.
         self.objectSection = Section.objects.create(name = "Test")
         self.objectSection.save()
         self.object1 = Course.objects.create(id = 361, name = "COMPSCI")
@@ -96,17 +101,20 @@ class CourseTestCases(TestCase):
         self.assertTrue(Course.objects.first().Sections.contains(self.objectSection), msg = "Sections was not saved to the create course upon creation.")
 
     def test_CourseNameBlank(self):
+        # Checks to see if given a blank field for Section name that it raises some sort of exception.
         with self.assertRaises(Exception, msg = "Course name is blank."):
             self.object1 = Course.objects.create(id= None, name="")
             self.object1.save()
 
     def test_CourseIDBlank(self):
+        # Checks to see if given a blank field for Section name that it raises some sort of exception.
         with self.assertRaises(Exception, msg = "Course id is blank."):
             self.object1 = Course.objects.create(id= None, name="")
             self.object1.save()
 
 class SectionTestCases(TestCase):
     def setup(self):
+        # Setups an object for testing.
         self.object1 = Section.objects.create(name = "DjangoUnchained")
         self.object1.save()
 
@@ -126,6 +134,7 @@ class SectionTestCases(TestCase):
         self.assertEqual(Section.objects.first().name, "DjangoUnchained", msg = "Section name is not associated to correct object.")
 
     def test_SectionNameBlank(self):
+        # Checks to see if given a blank field for Section name that it raises some sort of exception.
         with self.assertRaises(Exception, msg = "Section name is blank."):
             self.object1 = Section.objects.create(name="")
             self.object1.save()
