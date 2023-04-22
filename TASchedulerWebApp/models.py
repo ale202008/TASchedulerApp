@@ -68,3 +68,13 @@ class Course(models.Model):
 class Section(models.Model):
     # Define a field for the Section model
     name=models.CharField(max_length=150)
+
+# Add the Instructor model
+class Instructor(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    # other fields as needed
+
+# Update the Course model to include a ForeignKey to the Instructor model
+class Course(models.Model):
+    # existing fields
+    instructor = models.ForeignKey(Instructor, on_delete=models.SET_NULL, null=True, blank=True)

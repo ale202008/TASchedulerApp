@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from TASchedulerWebApp.views import Directory, Login, account_creation, Home
-
+from TASchedulerWebApp import views
 
 urlpatterns = [
     path('', Login.as_view(), name='login'),
@@ -25,4 +25,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('account_creation/', account_creation, name='account_creation'),
     path('home/', Home.as_view(), name='home'),
+    path('assign_instructor/', views.assign_instructor, name='assign_instructor'),
+
 ]

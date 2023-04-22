@@ -1,6 +1,6 @@
 from django import forms
 from .models import User
-
+from .models import Course, Instructor
 class UserCreationForm(forms.ModelForm):
   password = forms.CharField(widget=forms.PasswordInput)
   password_confirm = forms.CharField(widget=forms.PasswordInput, label="Confirm password")
@@ -23,3 +23,7 @@ class UserCreationForm(forms.ModelForm):
     if commit:
       user.save()
     return user
+
+  class AssignInstructorForm(forms.Form):
+    course = forms.ModelChoiceField(queryset=Course.objects.all(), label='Course')
+    instructor = forms.ModelChoiceField(queryset=Instructor.objects.all(), label='Instructor')
