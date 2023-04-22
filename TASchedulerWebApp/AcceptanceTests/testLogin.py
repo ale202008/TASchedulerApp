@@ -1,7 +1,6 @@
 from django.test import TestCase, Client
 from TASchedulerWebApp.models import *
-from django.shortcuts import reverse
-from TASchedulerWebApp.views import Login
+from django.urls import reverse
 
 class NewUserCreationLoginTestCase(TestCase):
     def setUp(self):
@@ -42,37 +41,29 @@ class SuccessfulSuperUserLogin(TestCase):
     def setUp(self):
         # Setups a Client user to navigate through functions/site.
         self.UserClient = Client()
-        self.UserList = {"one"}
-
-        # Similar to our TestSessionLab2Assignment, makes a username and password bases off the item
-        # in the list, saves it into the database and sends it to the post method of Login to get
-        # back information to validate.
-        for i in self.UserList:
-            tempUser = User.objects.create(username=i, password=i)
-            tempUser.save()
-            self.UserClient.post("/", {"username": i, "password": i}, follow=True)
+        self.directory_url = reverse('directory')
+        self.User = User.objects.create(username = "Taylor", password = "Swift")
 
     def test_SuccesfulLogin(self):
         # Checks that with an existing user account that upon a successful login the login page is
         # redirected to the directory page. Maybe fixed?
-        for i in self.UserList:
-            resp = self.UserClient.post('/', {'username': i, 'password': i})
-            self.assertEqual(resp.status_code, 302)
+        resp = self.UserClient.post('/', {'username': self.User.username, 'password': self.User.password})
+        self.assertEqual(resp.status_code, 302)
+    def test_CorrectSuperUserDisplay(self):
+        # Checks that given the exising user account is of SuperUser status that it properly
+        # displays the form that is built by the function Directory as options is equal to the
+        # buttons displayed. Maybe a unit test rather than an acceptance test.
+        self.User.is_superuser = True
+        self.User.save()
+        self.UserClient.force_login(self.User)
+        response = self.UserClient.get(self.directory_url)
 
-
-
-    # def test_CorrectDisplay(self):
-    #     for i in self.UserList:
-    #         resp = self.UserClient.post("/", {'username': i, 'password': i}, follow=True)
-    #         buttons = [
-    #             ('Courses', 'CoursePage/'),
-    #             ('Account Info', '/account'),
-    #             ('Notifications', '/notifications'),
-    #             ('Sections', '/sections'),
-    #             ('TAs', '/tas'),
-    #             ('Instructors', '/instructors'),
-    #             ('Create Course', 'AddCoursePage/'),
-    #             ('Create Section', '/create_section'),
-    #             ('Create Account', '/create_account'),
-    #         ]
-    #         self.assertEqual(resp['options'], buttons, msg = "no")
+        self.assertContains(response, 'Courses')
+        self.assertContains(response, 'Account Info')
+        self.assertContains(response, 'Notifications')
+        self.assertContains(response, 'Sections')
+        self.assertContains(response, 'TAs')
+        self.assertContains(response, 'Instructors')
+        self.assertContains(response, 'Create Course')
+        self.assertContains(response, 'Create Section')
+        self.assertContains(response, 'Create Account')
