@@ -47,4 +47,4 @@ class Course(models.Model):
     Sections = models.ManyToManyField('Section', blank=True)
 
 class Section(models.Model):
-    name=models.CharField(max_length=150)
+    name = models.CharField(max_length=150)
