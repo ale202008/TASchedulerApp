@@ -9,16 +9,17 @@ class UserTestCase(TestCase):
         # Other fields such as email can be left blank.
         self.object1 = User.objects.create(username = "Taylor", password = "Swift")
         self.object1.save()
+
     def test_UserCreation(self):
         # Checks to see if the correct number of users were created, in this case only 1 meant to exist
         # so if it fails it means Unit Test succeeds as checking for failure.
         self.assertEqual(User.objects.count(), 1, msg = "One user were meant to be created.")
 
-    def test_UserUsername(self):
+    def test_UserUsernameExists(self):
         # Makes sure that the username is inside the User database after account creation.
         self.assertTrue(User.objects.filter(username = "Taylor").exists(), msg = "Username does not exist despite creation of user.")
 
-    def test_UserPassword(self):
+    def test_UserPasswordExists(self):
         # Makes sure that the password is inside the User database after account creation.
         # Note, had to manually save "password" field of User object as Abstract object currently sets password to None.
         self.assertTrue(User.objects.filter(password = "Swift").exists(), msg = "Password does not exist despite creation of user.")
@@ -53,19 +54,20 @@ class CourseTestCases(TestCase):
         self.object1 = Course.objects.create(id = 361, name = "COMPSCI")
         self.object1.Sections.add(self.objectSection)
         self.object1.save()
+
     def test_CourseCreation(self):
         # Checks to see if Course database was updated after course creation.
         self.assertEqual(Course.objects.count(), 1, msg = "Courses database did not increase when course was created.")
 
-    def test_CourseName(self):
+    def test_CourseNameExists(self):
         # Checks to see if Course name was input into the database.
         self.assertTrue(Course.objects.filter(name = "COMPSCI"), msg = "Course name was not saved into database despite course creation.")
 
-    def test_CourseID(self):
+    def test_CourseIDExists(self):
         # Checks to see if Course id was input into the database.
         self.assertTrue(Course.objects.filter(id = 361), msg = "Course name was not saved into database despite course creation.")
 
-    def test_CourseSection(self):
+    def test_CourseSectionExists(self):
         # Checks to see if Sections was input into the database.
         self.assertTrue(Course.objects.filter(Sections = self.objectSection), msg = "Sections was not saved into database despite course creation.")
 
@@ -103,7 +105,7 @@ class SectionTestCases(TestCase):
         # Checks to see if database was updated after creation.
         self.assertEqual(Section.objects.count(), 1, msg = "Incorrect count of sections after creation.")
 
-    def test_SectionName(self):
+    def test_SectionNameExists(self):
         # Checks to see if Section name was input into the database.
         self.assertTrue(Section.objects.filter(name = "DjangoUnchained").exists(), msg = "Section name is not in database after creation.")
 
