@@ -34,17 +34,36 @@ def is_admin(user):
 @user_passes_test(is_admin)
 def account_creation(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'User account created successfully.')
-            return redirect('account_cr')
+        if "Create" in dict(request.POST.items()):
+            print(dict(request.POST.items()))
+            form = UserCreationForm(request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'User account created successfully.')
+                return redirect('account_creation')
+            else:
+                messages.error(request, 'An error occurred while creating the user account')
+        elif "Edit" in dict(request.POST.items()):
+            print("Edit clicked")
+            username = dict(request.POST.items()).get("username")
+            try:
+                a = User.objects.get(username=str(username))
+            except User.DoesNotExist:
+                messages.error(request, "This user does not exist")
+                return redirect('account_creation')
+            form = UserCreationForm(request.POST, instance=a)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'User account edited successfully')
+                return redirect('account_creation')
+            else:
+                messages.error(request, "An error occured while editing the user account")
         else:
-            messages.error(request, 'An error occurred while creating the user account')
+            form = UserCreationForm()
     else:
         form = UserCreationForm()
-
     return render(request, 'accountCreation.html', {'form': form})
+
 
 @login_required
 def Directory(request):
@@ -61,7 +80,7 @@ def Directory(request):
       ('Instructors', '/instructors'),
       ('Create Course', 'AddCoursePage/'),
       ('Create Section', '/create_section'),
-      ('Create Account', '/create_account'),
+      ('Create/Edit Account', 'account_creation/'),
     ]
     #Instructor view
   elif user.is_staff:

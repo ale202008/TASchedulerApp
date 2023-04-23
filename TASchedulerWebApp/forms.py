@@ -1,6 +1,7 @@
 from django import forms
 from .models import User
 
+
 class UserCreationForm(forms.ModelForm):
   password = forms.CharField(widget=forms.PasswordInput)
   password_confirm = forms.CharField(widget=forms.PasswordInput, label="Confirm password")

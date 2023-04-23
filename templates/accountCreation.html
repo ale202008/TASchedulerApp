@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Account Creation</title>
+	<title>Create/Edit Accounts</title>
 	<style>
 		form {
 			border: 1px solid #ccc;
@@ -56,11 +56,12 @@
 </head>
 <body>
   {% block content %}
-  <h2>Create a new user account</h2>
+  <h2>Create or Edit a new user account</h2>
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Create user</button>
+    <button type="submit" name="Create">Create user</button>
+    <button type="submit" name="Edit">Edit User</button>
   </form>
   {% if messages %}
     <ul class="messages">
@@ -69,6 +70,7 @@
         {% endfor %}
     </ul>
   {% endif %}
-{% endblock %}
+
+  {% endblock %}
 </body>
 </html>
