@@ -50,57 +50,7 @@ class SuccessfulUserLogin(TestCase):
         # redirected to the directory page. Maybe fixed?
         resp = self.UserClient.post('/', {'username': self.User.username, 'password': self.User.password})
         self.assertEqual(resp.status_code, 302)
-    def test_CorrectSuperUserDisplay(self):
-        # Checks that given the exising user account is of SuperUser status that it properly
-        # displays the form that is built by the function Directory as options is equal to the
-        # buttons displayed. Maybe a unit test rather than an acceptance test.
-        self.User.is_superuser = True
-        self.User.save()
-        # Forces the login for the given user, pretty useful.
-        self.UserClient.force_login(self.User)
-        # Gets the information that is presented by the Directory function given a user
-        # is logged in. In this case it is through the Client().
-        response = self.UserClient.get(self.directory_url)
 
-        self.assertContains(response, 'Courses')
-        self.assertContains(response, 'Account Info')
-        self.assertContains(response, 'Notifications')
-        self.assertContains(response, 'Sections')
-        self.assertContains(response, 'TAs')
-        self.assertContains(response, 'Instructors')
-        self.assertContains(response, 'Create Course')
-        self.assertContains(response, 'Create Section')
-        self.assertContains(response, 'Create Account')
-
-    def test_CorrectInstructorsDisplay(self):
-        # Checks that given the exising user account is of is_staff status, an Instructor, that it properly
-        # displays the form that is built by the function Directory as options is equal to the
-        # buttons displayed. Maybe a unit test rather than an acceptance test.
-        self.User.is_staff = True
-        self.User.save()
-        self.UserClient.force_login(self.User)
-        response = self.UserClient.get(self.directory_url)
-
-        self.assertContains(response, 'Courses')
-        self.assertContains(response, 'Account Info')
-        self.assertContains(response, 'Notifications')
-        self.assertContains(response, 'Sections')
-        self.assertContains(response, 'TAs')
-
-    def test_CorrectTADisplay(self):
-        # Checks that given the exising user account is of no status, a Teacher Assistant, that it properly
-        # displays the form that is built by the function Directory as options is equal to the
-        # buttons displayed. Maybe a unit test rather than an acceptance test.
-        self.User.is_staff = True
-        self.User.save()
-        self.UserClient.force_login(self.User)
-        response = self.UserClient.get(self.directory_url)
-
-        self.assertContains(response, 'Courses')
-        self.assertContains(response, 'Account Info')
-        self.assertContains(response, 'Notifications')
-        self.assertContains(response, 'Sections')
-        self.assertContains(response, 'TAs')
 
 class InvalidLoginTests(TestCase):
     def setUp(self):

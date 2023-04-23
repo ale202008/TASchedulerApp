@@ -1,8 +1,7 @@
 from django.test import TestCase, Client
 from TASchedulerWebApp.models import *
-from django.urls import reverse
 
-class CourseTestCases(TestCase):
+class AddCourseTestCases(TestCase):
     def setUp(self):
         self.UserClient = Client()
         self.User = User.objects.create(username='Taylor', password='Swift')

@@ -83,7 +83,6 @@ def Directory(request):
     
   options = {'buttons': buttons}
   return render(request, 'directory.html', options)
- 
 
 class Home(View):
     def get(self, request):
