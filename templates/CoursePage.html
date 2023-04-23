@@ -1,8 +1,10 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
 </head>
 <br>
 <h1>Course Page: </h1>
@@ -15,13 +17,13 @@
 </form>
 <label>Courses</label>
 {%  for i in Courses %}
-    <br>{{ i.id }}<br/>
-    <br>{{ i.name }}</br>
+    <br>{{ i.id }}
+    {{ i.name }}
 {% endfor %}
-{{ message }}
+<br>{{ message }}
 <form action="/CoursePage/" method="post">
     {% csrf_token %}
-    <input type="submit" name="chosen" value="Home">
+    <br><input type="submit" name="chosen" value="Home">
 </form>
 </body>
 </html>
