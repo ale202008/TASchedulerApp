@@ -85,7 +85,7 @@ def Directory(request):
     #Instructor view
   elif user.is_staff:
     buttons = [
-      ('Courses', '/courses'),
+      ('Courses', 'CoursePage/'),
       ('Account Info', '/account'),
       ('Notifications', '/notifications'),
       ('Sections', '/sections'),
@@ -93,7 +93,7 @@ def Directory(request):
     ]
   else:
     buttons = [
-      ('Courses', '/courses'),
+      ('Courses', 'CoursePage/'),
       ('Account Info', '/account'),
       ('Notifications', '/notifications'),
       ('Sections', '/sections'),
@@ -102,7 +102,6 @@ def Directory(request):
     
   options = {'buttons': buttons}
   return render(request, 'directory.html', options)
- 
 
 class Home(View):
     def get(self, request):
