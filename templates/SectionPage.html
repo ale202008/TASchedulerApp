@@ -9,11 +9,12 @@
 <body>
     <h1>Section Page</h1>
     <form action="/SectionPage/" method="post">
+        {% csrf_token %}
         <span>
-            <label>Course Number</label><input type="text" name="CourseNumber">
+            <label>Course Number:</label><input type="text" name="CourseNumber">
             <label>Course Name:</label><input type="text" name="CourseName">
         </span>
-        <span><input type="submit" value="Show Sections"></span>
+        <span><input type="submit" name="chosen" value="Show Sections"></span>
     </form>
     <br>{{ message }}
     <label>Sections</label>
@@ -21,13 +22,14 @@
         <br>{{ i.name }}
     {% endfor %}
     <form action="/SectionPage/" method="post">
+        {% csrf_token %}
         <span>
-            <label>Course Number</label><input type="text" name="CourseNumber">
+            <label>Course Number:</label><input type="text" name="CourseNumber">
             <label>Course Name:</label><input type="text" name="CourseName">
-            <label>Section Number</label><input type="text" name="SectionNumber">
+            <br><label>Section Number:</label><input type="text" name="SectionNumber">
         </span>
-        <span><input type="submit" value="Create Sections"></span>
+        <input type="submit" name="chosen" value="Create Sections">
     </form>
-    <br>{{ message }}
+    <br>{{ message1 }}
 </body>
 </html>
