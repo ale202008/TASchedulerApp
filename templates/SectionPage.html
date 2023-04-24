@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
+</head>
+<body>
+    <h1>Section Page</h1>
+    <form action="/SectionPage/" method="post">
+        <span>
+            <label>Course Number</label><input type="text" name="CourseNumber">
+            <label>Course Name:</label><input type="text" name="CourseName">
+        </span>
+        <span><input type="submit" value="Show Sections"></span>
+    </form>
+    <br>{{ message }}
+    <label>Sections</label>
+    {%  for i in Sections %}
+        <br>{{ i.name }}
+    {% endfor %}
+    <form action="/SectionPage/" method="post">
+        <span>
+            <label>Course Number</label><input type="text" name="CourseNumber">
+            <label>Course Name:</label><input type="text" name="CourseName">
+            <label>Section Number</label><input type="text" name="SectionNumber">
+        </span>
+        <span><input type="submit" value="Create Sections"></span>
+    </form>
+    <br>{{ message }}
+</body>
+</html>
