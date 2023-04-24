@@ -6,24 +6,24 @@
     <title>Title</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
 </head>
-<br>
-<h1>Course Page: </h1>
-<form action="/CoursePage/" method="post">
-    {% csrf_token %}
-<span>
-    <input type="submit" name="chosen" value="Add Course">
-    <input type="submit" name="chosen" value="Delete Course">
-</span>
-</form>
-<label>Courses</label>
-{%  for i in Courses %}
-    <br>{{ i.id }}
-    {{ i.name }}
-{% endfor %}
-<br>{{ message }}
-<form action="/CoursePage/" method="post">
-    {% csrf_token %}
-    <br><input type="submit" name="chosen" value="Home">
-</form>
+<body>
+    <h1>Course Page: </h1>
+    <form action="/CoursePage/" method="post">
+        {% csrf_token %}
+    <span>
+        <input type="submit" name="chosen" value="Add Course">
+        <input type="submit" name="chosen" value="Delete Course">
+    </span>
+    </form>
+    <label>Courses</label>
+    {%  for i in Courses %}
+        <br>{{ i.id }}
+        {{ i.name }}
+    {% endfor %}
+    <br>{{ message }}
+    <form action="/CoursePage/" method="post">
+        {% csrf_token %}
+        <br><input type="submit" name="chosen" value="Home">
+    </form>
 </body>
 </html>
