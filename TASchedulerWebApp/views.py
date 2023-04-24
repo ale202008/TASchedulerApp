@@ -169,6 +169,8 @@ class DeleteCoursePage(View):
                       {'message': "Please enter a course name and number", 'Courses': courses})
 
 
+class Sections(View):
+    def get(self,request):
+        return render(request, "SectionPage.html")
 
-
-        
+    def post(self,request):
