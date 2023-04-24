@@ -75,7 +75,7 @@ def Directory(request):
       ('Courses', 'CoursePage/'),
       ('Account Info', '/account'),
       ('Notifications', '/notifications'),
-      ('Sections', '/sections'),
+      ('Sections', 'SectionPage/'),
       ('TAs', '/tas'),
       ('Instructors', '/instructors'),
       ('Create Course', 'AddCoursePage/'),
@@ -88,7 +88,7 @@ def Directory(request):
       ('Courses', 'CoursePage/'),
       ('Account Info', '/account'),
       ('Notifications', '/notifications'),
-      ('Sections', '/sections'),
+      ('Sections', 'SectionPage/'),
       ('TAs', '/tas'),
     ]
   else:
@@ -96,7 +96,7 @@ def Directory(request):
       ('Courses', 'CoursePage/'),
       ('Account Info', '/account'),
       ('Notifications', '/notifications'),
-      ('Sections', '/sections'),
+      ('Sections', 'SectionPage/'),
       ('TAs', '/tas'),
     ]
     
@@ -169,6 +169,34 @@ class DeleteCoursePage(View):
                       {'message': "Please enter a course name and number", 'Courses': courses})
 
 
+class Sections(View):
+    def get(self,request):
+        return render(request, "SectionPage.html")
 
-
-        
+    def post(self,request):
+        todo = request.POST.get('chosen')
+        if(todo == "Show Sections"):
+            name = request.POST.get('CourseName')
+            number = request.POST.get('CourseNumber')
+            try:
+                course = Course.objects.get(id=number, name=name)
+                sections = list(course.Sections.all())
+                return render(request, "SectionPage.html", {"Sections":sections})
+            except:
+                return render(request, "SectionPage.html", {"message":"Course doesn't exist or has no sections"})
+        else:
+            name = request.POST.get('CourseName')
+            number = request.POST.get('CourseNumber')
+            sectionnumber = request.POST.get('SectionNumber')
+            try:
+                course = Course.objects.get(id=number, name=name)
+                try:
+                    course.Sections.get(name=sectionnumber)
+                    sections = list(course.Sections.all())
+                    return render(request, "SectionPage.html",{"message1":"Section exists", "Sections":sections})
+                except:
+                    course.Sections.create(name=sectionnumber)
+                    sections = list(course.Sections.all())
+                    return render(request, "SectionPage.html", {"message1":"Section Added", "Sections":sections})
+            except:
+                return render(request, "SectionPage.html", {"message1":"Course doesn't exist or has no sections"})
