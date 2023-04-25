@@ -12,7 +12,7 @@ class AddSectionTestCase(TestCase):
 
     def test_SectionCreation(self):
         # Hasn't been implemented yet.
-        resp = self.UserClient.post("/AddSection/", {'name': self.SectionName, 'Course': self.Course, 'TA': self.User})
+        resp = self.UserClient.post("/SectionPage/", {'name': self.SectionName, 'Course': self.Course, 'TA': self.User})
         list_Sections = list(Section.objects.all())
         self.assertEqual(resp.context['Sections'], list_Sections, msg = "Section doesn't exist within the database despite being added.")
 

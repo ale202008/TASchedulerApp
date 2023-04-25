@@ -32,7 +32,7 @@ class DirectorySuperUserRedirectTestCases(TestCase):
     def test_SuperUserCreateSectionRedirect(self):
         self.assertContains(self.resp, 'Create Section', msg_prefix="Create Section is not displayed")
     def test_SuperUserCreateAccountRedirect(self):
-        self.assertContains(self.resp, 'Create Account', msg_prefix="Create Account not displayed")
+        self.assertContains(self.resp, 'Create/Edit Account', msg_prefix="Create Account not displayed")
 
 class DirectoryInstructorRedirectsTestCases(TestCase):
     def setUp(self):

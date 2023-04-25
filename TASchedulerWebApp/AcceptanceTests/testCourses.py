@@ -46,3 +46,13 @@ class DeleteCourseTestCases(TestCase):
         resp = self.UserClient.post('/DeleteCoursePage/', {'CourseNumber': 361})
         list_Courses = list(Course.objects.all())
         self.assertEqual(resp.context['Courses'], list_Courses, msg="Course doesn't exist within the database despite being added.")
+
+    def test_InvalidCourseField(self):
+        # Checks to see if an error/exception is given when a Course is attempted to be deleted, but does not exist.
+        resp = self.UserClient.post('/DeleteCoursePage/', {'CourseNumber': 11111111111})
+        self.assertEqual(resp.context['message'], "Course doesn't exist", msg = "Course was not in the database, but was deleted. How?")
+
+    def test_BlankCourseField(self):
+        # Checks to see if an error/exception is given when a Course field is blank.
+        resp = self.UserClient.post('/DeleteCoursePage/', {'CourseNumber': ""})
+        self.assertEqual(resp.context['message'], "Course doesn't exist", msg = "Course was not in the database, but was deleted. How?")
