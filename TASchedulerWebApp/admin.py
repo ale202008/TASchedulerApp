@@ -7,19 +7,19 @@ from .forms import UserCreationForm, UserEditForm
 class CustomUserAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name', 'email')}),
+        ('Personal info', {'fields': ('first_name', 'last_name')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         ('Important dates', {'fields': ('last_login',)}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'password', 'password_confirm', 'first_name', 'last_name', 'email')}
+            'fields': ('username', 'password', 'password_confirm', 'first_name', 'last_name')}
         ),
     )
     add_form = UserCreationForm, UserEditForm
-    list_display = ('username', 'first_name', 'last_name', 'email', 'is_staff')
-    search_fields = ('username', 'first_name', 'last_name', 'email')
+    list_display = ('username', 'first_name', 'last_name', 'is_staff')
+    search_fields = ('username', 'first_name', 'last_name')
     ordering = ('username',)
 
 

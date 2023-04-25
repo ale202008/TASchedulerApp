@@ -8,7 +8,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'is_staff')
+        fields = ('username', 'first_name', 'last_name', 'is_staff')
 
     def clean(self):
         cleaned_data = super().clean()
@@ -27,11 +27,11 @@ class UserCreationForm(forms.ModelForm):
 
 class UserEditForm(forms.ModelForm):
     usernameSelect = forms.ModelChoiceField(queryset=User.objects.all())
-    username = forms.CharField(required=False, widget=forms.TextInput)
+    username = forms.EmailField(required=False, widget=forms.TextInput)
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'is_staff', 'is_active']
+        fields = ['username', 'first_name', 'last_name', 'is_staff', 'is_active']
 
     def clean(self):
         cleaned_data = super().clean()
