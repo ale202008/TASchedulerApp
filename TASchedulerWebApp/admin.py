@@ -1,25 +1,27 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import *
-from .forms import UserCreationForm
+from .forms import UserCreationForm, UserEditForm
+
 
 class CustomUserAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name', 'email')}),
+        ('Personal info', {'fields': ('first_name', 'last_name')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         ('Important dates', {'fields': ('last_login',)}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'password', 'password_confirm', 'first_name', 'last_name', 'email')}
+            'fields': ('username', 'password', 'password_confirm', 'first_name', 'last_name')}
         ),
     )
-    add_form = UserCreationForm
-    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff')
-    search_fields = ('username', 'first_name', 'last_name', 'email')
+    add_form = UserCreationForm, UserEditForm
+    list_display = ('username', 'first_name', 'last_name', 'is_staff')
+    search_fields = ('username', 'first_name', 'last_name')
     ordering = ('username',)
+
 
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(Course)

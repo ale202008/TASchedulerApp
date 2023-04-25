@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .forms import UserCreationForm
+from .forms import UserCreationForm, UserEditForm
 from django.http import HttpResponse
 from .models import *
 from django.contrib.auth.decorators import login_required
@@ -47,35 +47,51 @@ def user_list(request):
 @user_passes_test(is_admin)
 def account_creation(request):
     if request.method == 'POST':
-        if "Create" in dict(request.POST.items()):
-            print(dict(request.POST.items()))
+        # Check if what type a form to create again on submit
+        if "password" in dict(request.POST.items()):
+            title = "Create a new user account"
             form = UserCreationForm(request.POST)
             if form.is_valid():
                 form.save()
                 messages.success(request, 'User account created successfully.')
-                return redirect('account_creation')
             else:
                 messages.error(request, 'An error occurred while creating the user account')
-        elif "Edit" in dict(request.POST.items()):
-            print("Edit clicked")
-            username = dict(request.POST.items()).get("username")
+            form = UserCreationForm()
+            return render(request, 'accountCreation.html', {'form': form, 'title': title})
+        else:
+            title = "Edit a user account"
+            username = dict(request.POST.items()).get("usernameSelect")
+            count = 1
+            limit = int(username)
+            # Iterate to get to selected Username to edit
+            for user in User.objects.all():
+                username = user.username
+                count += 1
+                if count > limit:
+                    break
             try:
-                a = User.objects.get(username=str(username))
+                a = User.objects.get(username=username)
             except User.DoesNotExist:
                 messages.error(request, "This user does not exist")
-                return redirect('account_creation')
-            form = UserCreationForm(request.POST, instance=a)
+                form = UserEditForm()
+                return render(request, 'accountCreation.html', {'form': form, 'title': title})
+            form = UserEditForm(request.POST, instance=a)
             if form.is_valid():
                 form.save()
                 messages.success(request, 'User account edited successfully')
-                return redirect('account_creation')
             else:
-                messages.error(request, "An error occured while editing the user account")
-        else:
-            form = UserCreationForm()
+                messages.error(request, "An error occurred while editing the user account")
+            form = UserEditForm()
+            return render(request, 'accountCreation.html', {'form': form, 'title': title})
     else:
-        form = UserCreationForm()
-    return render(request, 'accountCreation.html', {'form': form})
+        # Load create by default and edit when selected
+        if "edit" in dict(request.GET.items()):
+            title = "Edit a user account"
+            form = UserEditForm()
+        else:
+            title = "Create a new user account"
+            form = UserCreationForm()
+    return render(request, 'accountCreation.html', {'form': form, 'title': title})
 
 
 @login_required
@@ -128,15 +144,15 @@ class CoursePage(View):
 
     def post(self, request):
         user = request.user
-        courselist = list(Course.objects.all())
+        courses = list(Course.objects.all())
         if (user.is_superuser):
             if (request.POST.get('chosen') == "Add Course"):
                 return render(request, "AddCoursePage.html", {"message":""})
             elif (request.POST.get('chosen') == "Delete Course"):
-                return render(request, "DeleteCoursePage.html", {"Courses": courselist})
+                return render(request, "DeleteCoursePage.html", {'Courseoptions':courses,"Courses": courses})
         if (request.POST.get('chosen') == "Home"):
             return redirect('directory')
-        return render(request, 'CoursePage.html', {"Courses": courselist, "message": "You are not a supervisor"})
+        return render(request, 'CoursePage.html', {"Courses": courses, "message": "You are not a supervisor"})
 
 
 class AddCoursePage(View):
@@ -148,7 +164,7 @@ class AddCoursePage(View):
         number = request.POST.get('CourseNumber','')
         try:
             Course.objects.get(id=number)
-            return render(request, "AddCoursePage.html", {"message": "course number already in use."})
+            return render(request, "AddCoursePage.html", {"message": "course already exists."})
         except:
             if (name != '' and number != ''):
                 newcourse = Course.objects.create(id=number, name=name)
@@ -161,25 +177,20 @@ class AddCoursePage(View):
 
 class DeleteCoursePage(View):
     def get(self, request):
-        courselist = list(Course.objects.all())
-        return render(request, "DeleteCoursePage.html", {'Course':courselist})
+        courses = list(Course.objects.all())
+        return render(request, "DeleteCoursePage.html", {'Courseoptions':courses,'Course':courses})
 
     def post(self, request):
-        name = request.POST.get('CourseName', '')
-        number = request.POST.get('CourseNumber', '')
-        if(name != '' and number != ''):
-            try:
+        number = request.POST.get('chosen', '')
+        if(number != ''):
                 course = Course.objects.get(id=number)
                 course.delete()
                 courses = list(Course.objects.all())
                 return render(request, "CoursePage.html", {'message': 'Course deleted', 'Courses': courses})
-            except:
-                courses = list(Course.objects.all())
-                return render(request, 'DeleteCoursePage.html',
-                              {'message': "Please enter an existing course" , 'Courses': courses})
-        courses = list(Course.objects.all())
-        return render(request, "DeleteCoursePage.html",
-                      {'message': "Please enter a course name and number", 'Courses': courses})
+        else:
+            courses = list(Course.objects.all())
+            return render(request, "DeleteCoursePage.html",
+                        {'message': "Please choose a course", 'Courseoptions':courses, 'Courses': courses})
 
 
 class Sections(View):
@@ -205,7 +216,7 @@ class Sections(View):
             try:
                 course = Course.objects.get(id=number, name=name)
                 try:
-                    course.Sections.get(name=sectionnumber)
+                    course.Sections.get(number=sectionnumber)
                     sections = list(course.Sections.all())
                     return render(request, "SectionPage.html",{"message1":"Section exists", "Sections":sections})
                 except:

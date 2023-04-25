@@ -48,23 +48,27 @@
       border: 1px solid #F5C6CB;
       padding: 20px;
       margin-bottom: 10px;
-      width: 300px;
+      width: 400px;
       margin: 0 auto;
 }
 	</style>
   
 </head>
 <body>
-  {% block content %}
-  <h2>Create or Edit a new user account</h2>
-  <form method="post">
+    <h2>{{ title }}</h2>
+    <form method="get">{% csrf_token %}
+        <button type="submit" name="create">Create Accounts</button>
+      <button type="submit" name="edit">Edit Accounts</button>
+
+    </form>
+    {% block content %}
+    <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" name="Create">Create user</button>
-    <button type="submit" name="Edit">Edit User</button>
-  </form>
-  {% if messages %}
-    <ul class="messages">
+    <button type="submit" name="submit">Submit</button>
+    </form>
+    {% if messages %}
+        <ul class="messages">
         {% for message in messages %}
             <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
         {% endfor %}

@@ -17,16 +17,14 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(max_length=150, unique=True)
+    username = models.EmailField(unique=True)
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
-    email = models.EmailField(blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
     groups = models.ManyToManyField(Group, related_name='myapp_user_groups', blank=True)
     user_permissions = models.ManyToManyField(Permission, related_name='myapp_user_permissions', blank=True)
-#    Courses = models.ManyToManyField('Course', blank=True)
 
     objects = UserManager()
 
@@ -46,8 +44,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Course(models.Model):
     id = models.CharField(max_length=12, primary_key=True)
     name = models.CharField(max_length=200)
-    Instructor = models.ManyToManyField(User, blank=True)
-    Sections = models.ForeignKey('Section', blank=True, null=True, on_delete=models.CASCADE)
+    Instructor = User
 
 class Section(models.Model):
     id = models.CharField(max_length=150, unique=True, primary_key=True)
+    TeacherAssistant = User
+    Course = models.ForeignKey('Course', blank=True, null=True, on_delete=models.CASCADE)
+
