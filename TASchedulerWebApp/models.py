@@ -46,7 +46,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Course(models.Model):
     id = models.CharField(max_length=12, primary_key=True)
     name = models.CharField(max_length=200)
-    Instructor = models.ManyToManyField(User, blank=True)
+    #Instructor = models.ManyToManyField(User, blank=True)
     Sections = models.ForeignKey('Section', blank=True, null=True, on_delete=models.CASCADE)
 
 class Section(models.Model):
