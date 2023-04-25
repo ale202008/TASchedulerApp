@@ -27,7 +27,8 @@ class UserCreationForm(forms.ModelForm):
       user.save()
     return user
 
-  class InstructorForm(forms.ModelForm):
+
+class InstructorForm(forms.ModelForm):
     class Meta:
       model = User
       fields = ('username', 'first_name', 'last_name', 'email')
@@ -35,7 +36,14 @@ class UserCreationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
       super(InstructorForm, self).__init__(*args, **kwargs)
-      self.initial['role'] = 'INSTRUCTOR'
+      self.fields['role'] = forms.CharField(initial='INSTRUCTOR', widget=forms.HiddenInput())
+
+    def save(self, commit=True):
+      user = super(InstructorForm, self).save(commit=False)
+      user.role = 'INSTRUCTOR'
+      if commit:
+        user.save()
+      return user
 
 
 class TeachingAssistantForm(forms.ModelForm):
