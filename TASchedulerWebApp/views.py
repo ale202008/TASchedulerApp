@@ -128,15 +128,15 @@ class CoursePage(View):
 
     def post(self, request):
         user = request.user
-        courselist = list(Course.objects.all())
+        courses = list(Course.objects.all())
         if (user.is_superuser):
             if (request.POST.get('chosen') == "Add Course"):
                 return render(request, "AddCoursePage.html", {"message":""})
             elif (request.POST.get('chosen') == "Delete Course"):
-                return render(request, "DeleteCoursePage.html", {"Courses": courselist})
+                return render(request, "DeleteCoursePage.html", {'Courseoptions':courses,"Courses": courses})
         if (request.POST.get('chosen') == "Home"):
             return redirect('directory')
-        return render(request, 'CoursePage.html', {"Courses": courselist, "message": "You are not a supervisor"})
+        return render(request, 'CoursePage.html', {"Courses": courses, "message": "You are not a supervisor"})
 
 
 class AddCoursePage(View):
@@ -148,7 +148,7 @@ class AddCoursePage(View):
         number = request.POST.get('CourseNumber','')
         try:
             Course.objects.get(id=number)
-            return render(request, "AddCoursePage.html", {"message": "course number already in use."})
+            return render(request, "AddCoursePage.html", {"message": "course already exists."})
         except:
             if (name != '' and number != ''):
                 newcourse = Course.objects.create(id=number, name=name)
@@ -161,25 +161,20 @@ class AddCoursePage(View):
 
 class DeleteCoursePage(View):
     def get(self, request):
-        courselist = list(Course.objects.all())
-        return render(request, "DeleteCoursePage.html", {'Course':courselist})
+        courses = list(Course.objects.all())
+        return render(request, "DeleteCoursePage.html", {'Courseoptions':courses,'Course':courses})
 
     def post(self, request):
-        name = request.POST.get('CourseName', '')
-        number = request.POST.get('CourseNumber', '')
-        if(name != '' and number != ''):
-            try:
+        number = request.POST.get('chosen', '')
+        if(number != ''):
                 course = Course.objects.get(id=number)
                 course.delete()
                 courses = list(Course.objects.all())
                 return render(request, "CoursePage.html", {'message': 'Course deleted', 'Courses': courses})
-            except:
-                courses = list(Course.objects.all())
-                return render(request, 'DeleteCoursePage.html',
-                              {'message': "Please enter an existing course" , 'Courses': courses})
-        courses = list(Course.objects.all())
-        return render(request, "DeleteCoursePage.html",
-                      {'message': "Please enter a course name and number", 'Courses': courses})
+        else:
+            courses = list(Course.objects.all())
+            return render(request, "DeleteCoursePage.html",
+                        {'message': "Please choose a course", 'Courseoptions':courses, 'Courses': courses})
 
 
 class Sections(View):
@@ -205,7 +200,7 @@ class Sections(View):
             try:
                 course = Course.objects.get(id=number, name=name)
                 try:
-                    course.Sections.get(name=sectionnumber)
+                    course.Sections.get(number=sectionnumber)
                     sections = list(course.Sections.all())
                     return render(request, "SectionPage.html",{"message1":"Section exists", "Sections":sections})
                 except:
