@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Account Information</h1>
+  <p>Username: {{ user.username }}</p>
+  <p>Email: {{ user.email }}</p>
+
+  <form action="{% url 'home' %}" method="get">
+  </form>
+
+  <form action="{% url 'directory' %}" method="get">
+    <button type="submit">Directory</button>
+  </form>
+
+  {% if user.is_superuser %}
+    <button type="button" onclick="window.location.href='{% url 'user_list' %}'">View All Users</button>
+  {% endif %}
+{% endblock %}
