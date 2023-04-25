@@ -19,22 +19,35 @@
     {%  for i in Courses %}
         <br>{{ i.id }}
         {{ i.name }}
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="course_id" value="{{ i.id }}">
+            {{ instructor_form.as_p }}
+            <button type="submit" name="submit" value="Add Instructor">Add Instructor</button>
+        </form>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="course_id" value="{{ i.id }}">
+            {{ teaching_assistant_form.as_p }}
+            <button type="submit" name="submit" value="Add TA">Add TA</button>
+        </form>
     {% endfor %}
     <br>{{ message }}
 
-    <h2>Add Instructor:</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ instructor_form.as_p }}
-        <button type="submit" name="submit" value="Add Instructor">Add Instructor</button>
-    </form>
+   <h2>Add Instructor:</h2>
+<form method="post" action="/CoursePage/">
+    {% csrf_token %}
+    {{ instructor_form.as_p }}
+    <button type="submit" name="submit" value="Add Instructor">Add Instructor</button>
+</form>
 
-    <h2>Add TA:</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ teaching_assistant_form.as_p }}
-        <button type="submit" name="submit" value="Add TA">Add TA</button>
-    </form>
+<h2>Add TA:</h2>
+<form method="post" action="/CoursePage/">
+    {% csrf_token %}
+    {{ teaching_assistant_form.as_p }}
+    <button type="submit" name="submit" value="Add TA">Add TA</button>
+</form>
+
 
 
     <form action="/CoursePage/" method="post">

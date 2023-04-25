@@ -129,6 +129,10 @@ class CoursePage(View):
                 instructor_form = InstructorForm(request.POST)
                 if instructor_form.is_valid():
                     instructor_form.save()
+                    course_id = request.POST.get("course_id")
+                    course = Course.objects.get(id=course_id)
+                    course.instructors.add(instructor)
+                    course.save()
                     messages.success(request, "Instructor added successfully.")
                 else:
                     messages.error(request, "An error occurred while adding the Instructor.")
@@ -136,6 +140,10 @@ class CoursePage(View):
                 teaching_assistant_form = TeachingAssistantForm(request.POST)
                 if teaching_assistant_form.is_valid():
                     teaching_assistant_form.save()
+                    course_id = request.POST.get("course_id")
+                    course = Course.objects.get(id=course_id)
+                    course.teaching_assistants.add(teaching_assistant)
+                    course.save()
                     messages.success(request, "Teaching Assistant added successfully.")
                 else:
                     messages.error(request, "An error occurred while adding the Teaching Assistant.")
