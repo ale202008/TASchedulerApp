@@ -42,12 +42,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.first_name
 
-
 class Course(models.Model):
     id = models.CharField(max_length=12, primary_key=True)
     name = models.CharField(max_length=200)
     Instructor = models.ManyToManyField(User, blank=True)
-    Sections = models.ForeignKey('Section', blank=True, null=True, on_delete=models.CASCADE)
-
 class Section(models.Model):
     id = models.CharField(max_length=150, unique=True, primary_key=True)
+    Course = models.ForeignKey(Course, null=True, on_delete=models.CASCADE)

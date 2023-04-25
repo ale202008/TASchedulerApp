@@ -11,10 +11,11 @@
 {{ message }}
 <form action="/DeleteCoursePage/" method="post">
     {% csrf_token %}
-    <label>Course:</label><select>
-        <option name="chosen" value=""></option>
+    <label>Course:</label>
+    <select name="chosen">
+        <option value="">Please choose a course</option>
         {% for course in Courseoptions %}
-        <option name="chosen" value="{{ course.id }}">{{ course.id }}</option>
+        <option value="{{ course.id }}">{{ course.id }}</option>
         {% endfor %}
     </select>
     <input type="submit" value="Delete Course">
@@ -24,5 +25,8 @@
     <br>{{ i.id }}
     {{ i.name }}
 {% endfor %}
+<form action="/DeleteCoursePage/" method="post">
+    <span><input type="submit" name="chosen" value="Back"></span>
+</form>
 </body>
 </html>
