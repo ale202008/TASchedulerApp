@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Add Courses</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
 </head>
 <body>
@@ -15,5 +15,8 @@
         <input type="submit" value="Add Course">
     </form>
     {{ message }}
+        <form action="{% url 'directory' %}" method="get">
+    <button type="submit">Directory</button>
+  </form>
 </body>
 </html>

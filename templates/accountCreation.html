@@ -72,8 +72,13 @@
         {% for message in messages %}
             <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
         {% endfor %}
-        </ul>
-    {% endif %}
-    {% endblock %}
+    </ul>
+  {% endif %}
+
+    <form action="{% url 'directory' %}" method="get">
+    <button type="submit">Directory</button>
+  </form>
+
+  {% endblock %}
 </body>
 </html>
