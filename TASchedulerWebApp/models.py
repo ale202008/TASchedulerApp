@@ -53,7 +53,7 @@ class Course(models.Model):
     name = models.CharField(max_length=200)
     instructors = models.ManyToManyField(User, related_name='courses_taught', blank=True, limit_choices_to={'role': 'INSTRUCTOR'})
     teaching_assistants = models.ManyToManyField(User, related_name='courses_assisted', blank=True, limit_choices_to={'role': 'TA'})
-    Sections = models.ManyToManyField('Section', blank=True)
+    sections = models.ManyToManyField('Section', blank=True, related_name='courses')
 
 class Section(models.Model):
     name = models.CharField(max_length=150)
