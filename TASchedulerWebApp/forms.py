@@ -27,7 +27,7 @@ class UserCreationForm(forms.ModelForm):
       user.save()
     return user
 
-
+#Defining form to add an instructor
 class InstructorForm(forms.ModelForm):
     class Meta:
       model = User
