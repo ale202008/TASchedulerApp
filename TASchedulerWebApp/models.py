@@ -16,6 +16,11 @@ class UserManager(BaseUserManager):
         return self.create_user(username, password, **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
+    ROLE_CHOICES = (
+        ('INSTRUCTOR', 'Instructor'),
+        ('TA', 'Teaching Assistant'),
+        ('STUDENT', 'Student'),
+    )
     username = models.CharField(max_length=150, unique=True)
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
@@ -25,6 +30,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(auto_now_add=True)
     groups = models.ManyToManyField(Group, related_name='myapp_user_groups', blank=True)
     user_permissions = models.ManyToManyField(Permission, related_name='myapp_user_permissions', blank=True)
+    role = models.CharField(max_length=12, choices=ROLE_CHOICES, default='STUDENT')
     Courses = models.ManyToManyField('Course', blank=True)
 
     objects = UserManager()
@@ -45,7 +51,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Course(models.Model):
     id = models.CharField(max_length=12, primary_key=True)
     name = models.CharField(max_length=200)
-    Instructor = models.ManyToManyField('User', blank=True)
+    instructors = models.ManyToManyField(User, related_name='courses_taught', blank=True, limit_choices_to={'role': 'INSTRUCTOR'})
+    teaching_assistants = models.ManyToManyField(User, related_name='courses_assisted', blank=True, limit_choices_to={'role': 'TA'})
     Sections = models.ManyToManyField('Section', blank=True)
 
 class Section(models.Model):

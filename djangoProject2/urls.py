@@ -28,5 +28,7 @@ urlpatterns = [
     path('CoursePage/', CoursePage.as_view()),
     path('AddCoursePage/', AddCoursePage.as_view()),
     path('DeleteCoursePage/', DeleteCoursePage.as_view()),
-    path('SectionPage/', Sections.as_view())
+    path('SectionPage/', Sections.as_view()),
+    path('create_instructor/', views.InstructorCreationView.as_view(), name='instructor_creation'),
+    path('create_teaching_assistant/', views.TeachingAssistantCreationView.as_view(), name='teaching_assistant_creation')
 ]

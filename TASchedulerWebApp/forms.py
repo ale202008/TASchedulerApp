@@ -8,7 +8,7 @@ class UserCreationForm(forms.ModelForm):
 
   class Meta:
     model = User
-    fields = ('username', 'first_name', 'last_name', 'email', 'is_staff')
+    fields = ('username', 'first_name', 'last_name', 'email', 'is_staff', 'role')
 
   def clean(self):
     cleaned_data = super().clean()
@@ -24,3 +24,30 @@ class UserCreationForm(forms.ModelForm):
     if commit:
       user.save()
     return user
+
+  class InstructorForm(forms.ModelForm):
+    class Meta:
+      model = User
+      fields = ('username', 'first_name', 'last_name', 'email')
+      widgets = {'role': forms.HiddenInput()}
+
+    def __init__(self, *args, **kwargs):
+      super(InstructorForm, self).__init__(*args, **kwargs)
+      self.initial['role'] = 'INSTRUCTOR'
+
+
+class TeachingAssistantForm(forms.ModelForm):
+  class Meta:
+    model = User
+    fields = ('username', 'first_name', 'last_name', 'email')
+    widgets = {'role': forms.HiddenInput()}
+
+  def __init__(self, *args, **kwargs):
+    super(TeachingAssistantForm, self).__init__(*args, **kwargs)
+    self.initial['role'] = 'TA'
+
+
+class CourseForm(forms.ModelForm):
+  class Meta:
+    model = Course
+    fields = ('id', 'name', 'instructors', 'teaching_assistants', 'sections')

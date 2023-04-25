@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .forms import UserCreationForm
+from .forms import UserCreationForm, InstructorForm, TeachingAssistantForm, CourseForm
 from django.http import HttpResponse
 from .models import *
 
@@ -111,12 +111,34 @@ class Home(View):
 class CoursePage(View):
     def get(self, request):
         courses = list(Course.objects.all())
+        instructor_form = InstructorForm()
+        teaching_assistant_form = TeachingAssistantForm()
+        context = {
+            "Courses": courses,
+            "message": "",
+            "instructor_form": instructor_form,
+            "teaching_assistant_form": teaching_assistant_form,
+        }
         return render(request, "CoursePage.html", {"Courses": courses, "message": ""})
 
     def post(self, request):
         user = request.user
         courselist = list(Course.objects.all())
         if (user.is_superuser):
+            if request.POST.get("submit") == "Add Instructor":
+                instructor_form = InstructorForm(request.POST)
+                if instructor_form.is_valid():
+                    instructor_form.save()
+                    messages.success(request, "Instructor added successfully.")
+                else:
+                    messages.error(request, "An error occurred while adding the Instructor.")
+            elif request.POST.get("submit") == "Add TA":
+                teaching_assistant_form = TeachingAssistantForm(request.POST)
+                if teaching_assistant_form.is_valid():
+                    teaching_assistant_form.save()
+                    messages.success(request, "Teaching Assistant added successfully.")
+                else:
+                    messages.error(request, "An error occurred while adding the Teaching Assistant.")
             if (request.POST.get('chosen') == "Add Course"):
                 return render(request, "AddCoursePage.html", {"message":""})
             elif (request.POST.get('chosen') == "Delete Course"):
@@ -200,3 +222,35 @@ class Sections(View):
                     return render(request, "SectionPage.html", {"message1":"Section Added", "Sections":sections})
             except:
                 return render(request, "SectionPage.html", {"message1":"Course doesn't exist or has no sections"})
+
+class InstructorCreationView(View):
+    def get(self, request):
+        form = InstructorForm()
+        return render(request, 'instructor_creation.html', {'form': form})
+
+    def post(self, request):
+        form = InstructorForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Instructor account created successfully.')
+            return redirect('instructor_creation')
+        else:
+            messages.error(request, 'An error occurred while creating the instructor account')
+        return render(request, 'instructor_creation.html', {'form': form})
+
+
+class TeachingAssistantCreationView(View):
+    def get(self, request):
+        form = TeachingAssistantForm()
+        return render(request, 'teaching_assistant_creation.html', {'form': form})
+
+    def post(self, request):
+        form = TeachingAssistantForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Teaching Assistant account created successfully.')
+            return redirect('teaching_assistant_creation')
+        else:
+            messages.error(request, 'An error occurred while creating the teaching assistant account')
+        return render(request, 'teaching_assistant_creation.html', {'form': form})
+

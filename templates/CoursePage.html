@@ -21,6 +21,22 @@
         {{ i.name }}
     {% endfor %}
     <br>{{ message }}
+
+    <h2>Add Instructor:</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ instructor_form.as_p }}
+        <button type="submit" name="submit" value="Add Instructor">Add Instructor</button>
+    </form>
+
+    <h2>Add TA:</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ teaching_assistant_form.as_p }}
+        <button type="submit" name="submit" value="Add TA">Add TA</button>
+    </form>
+
+
     <form action="/CoursePage/" method="post">
         {% csrf_token %}
         <br><input type="submit" name="chosen" value="Home">
