@@ -51,8 +51,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Course(models.Model):
     id = models.CharField(max_length=12, primary_key=True)
     name = models.CharField(max_length=200)
+    # Define a ManyToManyField for instructors, related name is courses_taught
+    # and limit_choices_to is set to only show users with role = 'INSTRUCTOR'
     instructors = models.ManyToManyField(User, related_name='courses_taught', blank=True, limit_choices_to={'role': 'INSTRUCTOR'})
+    # Define a ManyToManyField for teaching assistants, related name is courses_assisted
+    # and limit_choices_to is set to only show users with role = 'TA'
     teaching_assistants = models.ManyToManyField(User, related_name='courses_assisted', blank=True, limit_choices_to={'role': 'TA'})
+    # Define a ManyToManyField for sections, related name is courses
     sections = models.ManyToManyField('Section', blank=True, related_name='courses')
 
 class Section(models.Model):

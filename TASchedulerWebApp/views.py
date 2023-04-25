@@ -225,32 +225,32 @@ class Sections(View):
 
 class InstructorCreationView(View):
     def get(self, request):
-        form = InstructorForm()
+        form = InstructorForm()  # creating an instance of InstructorForm
         return render(request, 'instructor_creation.html', {'form': form})
 
     def post(self, request):
-        form = InstructorForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Instructor account created successfully.')
-            return redirect('instructor_creation')
+        form = InstructorForm(request.POST) # creating an instance of InstructorForm with POST data
+        if form.is_valid(): # checking if the form is valid
+            form.save() # saving the form data
+            messages.success(request, 'Instructor account created successfully.')  # displaying success message
+            return redirect('instructor_creation')  # redirecting to the same page
         else:
-            messages.error(request, 'An error occurred while creating the instructor account')
-        return render(request, 'instructor_creation.html', {'form': form})
+            messages.error(request, 'An error occurred while creating the instructor account') # displaying error message
+        return render(request, 'instructor_creation.html', {'form': form})  # rendering the page with the form
 
 
 class TeachingAssistantCreationView(View):
     def get(self, request):
-        form = TeachingAssistantForm()
+        form = TeachingAssistantForm() # creating an instance of TeachingAssistantForm
         return render(request, 'teaching_assistant_creation.html', {'form': form})
 
     def post(self, request):
-        form = TeachingAssistantForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Teaching Assistant account created successfully.')
-            return redirect('teaching_assistant_creation')
+        form = TeachingAssistantForm(request.POST) # creating an instance of TeachingAssistantForm with POST data
+        if form.is_valid(): # checking if the form is valid
+            form.save() # saving the form data
+            messages.success(request, 'Teaching Assistant account created successfully.') # displaying success message
+            return redirect('teaching_assistant_creation') # redirecting to the same page
         else:
-            messages.error(request, 'An error occurred while creating the teaching assistant account')
-        return render(request, 'teaching_assistant_creation.html', {'form': form})
+            messages.error(request, 'An error occurred while creating the teaching assistant account') # displaying error message
+        return render(request, 'teaching_assistant_creation.html', {'form': form}) # rendering the page with the form
 
