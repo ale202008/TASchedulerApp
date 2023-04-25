@@ -28,5 +28,10 @@ urlpatterns = [
     path('CoursePage/', CoursePage.as_view()),
     path('AddCoursePage/', AddCoursePage.as_view()),
     path('DeleteCoursePage/', DeleteCoursePage.as_view()),
-    path('SectionPage/', Sections.as_view())
+    path('SectionPage/', Sections.as_view()),
+
+# New URL for account information page for the account info
+    path('account/', account_info, name='account_info'),
+    path('user_list/', user_list, name='user_list'),
+
 ]
