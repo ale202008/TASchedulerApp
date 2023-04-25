@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .forms import UserCreationForm
+from .forms import UserCreationForm, UserEditForm
 from django.http import HttpResponse
 from .models import *
 
@@ -34,35 +34,51 @@ def is_admin(user):
 @user_passes_test(is_admin)
 def account_creation(request):
     if request.method == 'POST':
-        if "Create" in dict(request.POST.items()):
-            print(dict(request.POST.items()))
+        # Check if what type a form to create again on submit
+        if "password" in dict(request.POST.items()):
+            title = "Create a new user account"
             form = UserCreationForm(request.POST)
             if form.is_valid():
                 form.save()
                 messages.success(request, 'User account created successfully.')
-                return redirect('account_creation')
             else:
                 messages.error(request, 'An error occurred while creating the user account')
-        elif "Edit" in dict(request.POST.items()):
-            print("Edit clicked")
-            username = dict(request.POST.items()).get("username")
+            form = UserCreationForm()
+            return render(request, 'accountCreation.html', {'form': form, 'title': title})
+        else:
+            title = "Edit a user account"
+            username = dict(request.POST.items()).get("usernameSelect")
+            count = 1
+            limit = int(username)
+            # Iterate to get to selected Username to edit
+            for user in User.objects.all():
+                username = user.username
+                count += 1
+                if count > limit:
+                    break
             try:
-                a = User.objects.get(username=str(username))
+                a = User.objects.get(username=username)
             except User.DoesNotExist:
                 messages.error(request, "This user does not exist")
-                return redirect('account_creation')
-            form = UserCreationForm(request.POST, instance=a)
+                form = UserEditForm()
+                return render(request, 'accountCreation.html', {'form': form, 'title': title})
+            form = UserEditForm(request.POST, instance=a)
             if form.is_valid():
                 form.save()
                 messages.success(request, 'User account edited successfully')
-                return redirect('account_creation')
             else:
-                messages.error(request, "An error occured while editing the user account")
-        else:
-            form = UserCreationForm()
+                messages.error(request, "An error occurred while editing the user account")
+            form = UserEditForm()
+            return render(request, 'accountCreation.html', {'form': form, 'title': title})
     else:
-        form = UserCreationForm()
-    return render(request, 'accountCreation.html', {'form': form})
+        # Load create by default and edit when selected
+        if "edit" in dict(request.GET.items()):
+            title = "Edit a user account"
+            form = UserEditForm()
+        else:
+            title = "Create a new user account"
+            form = UserCreationForm()
+    return render(request, 'accountCreation.html', {'form': form, 'title': title})
 
 
 @login_required

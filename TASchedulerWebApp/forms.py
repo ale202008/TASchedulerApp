@@ -24,3 +24,28 @@ class UserCreationForm(forms.ModelForm):
     if commit:
       user.save()
     return user
+
+
+class UserEditForm(forms.ModelForm):
+    usernameSelect = forms.ModelChoiceField(queryset=User.objects.all())
+    username = forms.CharField(required=False, widget=forms.TextInput)
+
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email', 'is_staff', 'is_active']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        user = cleaned_data.get("usernameSelect")
+        if user == User.objects.get(username=user).username:
+            raise forms.ValidationError("Username already exists")
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        updatefields = []
+        for field in self.cleaned_data.keys():
+            if self.cleaned_data.get(field) != "" and field != "usernameSelect":
+                updatefields.append(field)
+        if commit:
+            user.save(update_fields=updatefields)
+        return user
