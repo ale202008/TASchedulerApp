@@ -3,7 +3,11 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .forms import UserCreationForm, InstructorForm, TeachingAssistantForm, CourseForm
+from TASchedulerWebApp.forms import UserCreationForm
+from TASchedulerWebApp.forms import InstructorForm
+from TASchedulerWebApp.forms import TeachingAssistantForm
+from TASchedulerWebApp.forms import CourseForm
+
 from django.http import HttpResponse
 from .models import *
 

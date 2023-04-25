@@ -1,8 +1,8 @@
 from django import forms
 from .models import User
 
-from .models import Course, Instructor, TeachingAssistant
-
+from .models import User, Course
+from .models import Instructor
 
 class UserCreationForm(forms.ModelForm):
   password = forms.CharField(widget=forms.PasswordInput)
@@ -28,7 +28,7 @@ class UserCreationForm(forms.ModelForm):
     return user
 
 # Define a form to add an instructor to a course
-class CourseInstructorForm(InstructorForm):
+class CourseInstructorForm(UserCreationForm):
   course = forms.ModelChoiceField(queryset=Course.objects.all())
 
   def save(self, commit=True):
