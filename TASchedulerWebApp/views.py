@@ -177,37 +177,51 @@ class DeleteCoursePage(View):
                         {'message': "Please choose a course", 'Courseoptions':courses, 'Courses': courses})
 
 
-class Sections(View):
-    def get(self,request):
-        return render(request, "SectionPage.html")
-
-    def post(self,request):
-        todo = request.POST.get('chosen')
-        if(todo == "Show Sections"):
-            name = request.POST.get('CourseName')
-            number = request.POST.get('CourseNumber')
-            try:
-                course = Course.objects.get(id=number, name=name)
-                sections = list(course.Sections.all())
-                return render(request, "SectionPage.html", {"Sections":sections})
-            except:
-                return render(request, "SectionPage.html", {"message":"Course doesn't exist or has no sections"})
-        else:
-            name = request.POST.get('CourseName')
-            number = request.POST.get('CourseNumber')
-            sectionnumber = request.POST.get('SectionNumber')
-            if(sectionnumber == ""): return render(request, "SectionPage.html", {"message1":"Section Name blank"})
-            try:
-                course = Course.objects.get(id=number, name=name)
-                try:
-                    course.Sections.get(number=sectionnumber)
-                    sections = list(course.Sections.all())
-                    return render(request, "SectionPage.html",{"message1":"Section exists", "Sections":sections})
-                except:
-                    course.Sections.create(name=sectionnumber)
-                    sections = list(course.Sections.all())
-                    return render(request, "SectionPage.html", {"message1":"Section Added", "Sections":sections})
-            except:
-                return render(request, "SectionPage.html", {"message1":"Course doesn't exist or has no sections"})
+# class Sections(View):
+#     def get(self,request):
+#         return render(request, "SectionPage.html")
+#
+#     def post(self,request):
+#          = request.POST.get('chosen')
+#         if( == "Show Sections"):
+#             number = request.POST.get('CourseNumber')
+#             try:
+#                 course = Course.objects.get(id=number)
+#                 sections = list(course.Sections.all())
+#                 return render(request, "SectionPage.html", {"Sections":sections})
+#             except:
+#                 return render(request, "SectionPage.html", {"message":"Course doesn't exist or has no sections"})
+#         else:
+#             number = request.POST.get('CourseNumber')
+#             sectionnumber = request.POST.get('SectionNumber')
+#             if(sectionnumber == ""): return render(request, "SectionPage.html", {"message1":"Section Name blank"})
+#             try:
+#                 course = Course.objects.get(id=number)
+#                 try:
+#                     course.Sections.get(number=sectionnumber)
+#                     sections = list(course.Sections.all())
+#                     return render(request, "SectionPage.html",{"message1":"Section exists", "Sections":sections})
+#                 except:
+#                     course.Sections.create(name=sectionnumber)
+#                     sections = list(course.Sections.all())
+#                     return render(request, "SectionPage.html", {"message1":"Section Added", "Sections":sections})
+#             except:
+#                 return render(request, "SectionPage.html", {"message1":"Course doesn't exist or has no sections"})
 
 
+class SectionPage(View):
+    def get(self, request):
+        course_List = list(Course.objects.all())
+        return render(request, "SectionPage.html", {'Courses': course_List})
+
+    def post(self, request):
+        user = request.user
+        section_List = list(Section.objects.all())
+        if (user.is_superuser):
+            if (request.POST.get('chosen') == "Add Course"):
+                return render(request, "AddCoursePage.html", {"message":""})
+            elif (request.POST.get('chosen') == "Delete Course"):
+                return render(request, "DeleteCoursePage.html", {'Courseoptions':section_List,"Courses": section_List})
+        if (request.POST.get('chosen') == "Home"):
+            return redirect('directory')
+        return render(request, 'CoursePage.html', {"Courses": section_List, "message": "You are not a supervisor"})

@@ -9,6 +9,9 @@ class AddCourseTestCases(TestCase):
         self.Course1_id = 1
         self.User.save()
 
+        self.SectionTest = Section.objects.create(id = 310)
+        self.CourseTest = Course.objects.create(name = "PSY", id = 300, Sections=self.SectionTest)
+        self.CourseTest.Sections.add(self.SectionTest)
     def test_CourseCreation(self):
         # Will check if user has the courses added to themselves
         # Also inherently checks if everything is same, fields, elements, all that stuff

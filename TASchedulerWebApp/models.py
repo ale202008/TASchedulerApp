@@ -47,8 +47,8 @@ class Course(models.Model):
     id = models.CharField(max_length=12, primary_key=True)
     name = models.CharField(max_length=200)
     Instructor = User
-    Sections = models.ForeignKey('Section', blank=True, null=True, on_delete= models.CASCADE)
 
 class Section(models.Model):
     id = models.CharField(max_length=150, unique=True, primary_key=True)
+    Course = models.ForeignKey('Course', blank=True, null=True, on_delete= models.CASCADE)
     TeacherAssistant = User
