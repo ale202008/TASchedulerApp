@@ -9,7 +9,9 @@ class UserCreationForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'is_staff')
-
+        labels = {
+            'username': 'Email', 'first_name': "First Name", 'last_name' : "Last Name", 'is_staff': "Instructor"
+        }
     def clean(self):
         cleaned_data = super().clean()
         password = cleaned_data.get("password")
@@ -32,7 +34,9 @@ class UserEditForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'is_staff', 'is_active']
-
+        labels = {
+            'username': 'Email', 'first_name': "First Name", 'last_name' : "Last Name", 'is_staff': "Instructor", 'is_active' : "Administrator"
+        }
     def clean(self):
         cleaned_data = super().clean()
         user = cleaned_data.get("usernameSelect")

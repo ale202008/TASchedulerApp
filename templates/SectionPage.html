@@ -1,38 +1,34 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Sections</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
-</head>
-<body>
     <h1>Section Page</h1>
     <form action="/SectionPage/" method="post">
         {% csrf_token %}
-        <span>
-            <label>Course Number:</label><input type="text" name="CourseNumber">
-        </span>
+        <label>Courses:</label><select name="show section">
+        <option value="">Please choose a course</option>
+        {% for course in Courseoptions %}
+        <option value="{{ course.id }}">{{ course.id }}</option>
+        {% endfor %}
+        </select>
         <span><input type="submit" name="chosen" value="Show Sections"></span>
     </form>
     <br>{{ message }}
-    <label>Sections</label>
+    <br><label>Sections</label>
     {%  for i in Sections %}
-        <br>{{ i.name }}
+        <br>{{ i.id }}
     {% endfor %}
     <form action="/SectionPage/" method="post">
         {% csrf_token %}
         <span>
-            <label>Course Number:</label><input type="text" name="CourseNumber">
+            <label>Course:</label>
+            <select name="create section">
+                <option value="">Please choose a course</option>
+                {% for course in Courseoptions %}
+                <option value="{{ course.id }}">{{ course.id }}</option>
+                {% endfor %}
+            </select>
             <br><label>Section Number:</label><input type="text" name="SectionNumber">
         </span>
         <input type="submit" name="chosen" value="Create Sections">
+        <br><input type="submit" name="chosen" value="Back">
     </form>
     <br>{{ message1 }}
-
-    <form action="{% url 'directory' %}" method="get">
-    <button type="submit">Directory</button>
-  </form>
-
 </body>
 </html>
