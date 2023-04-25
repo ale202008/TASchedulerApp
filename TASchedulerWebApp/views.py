@@ -188,6 +188,7 @@ class Sections(View):
             name = request.POST.get('CourseName')
             number = request.POST.get('CourseNumber')
             sectionnumber = request.POST.get('SectionNumber')
+            if(sectionnumber == ""): return render(request, "SectionPage.html", {"message1":"Section Name blank"})
             try:
                 course = Course.objects.get(id=number, name=name)
                 try:
