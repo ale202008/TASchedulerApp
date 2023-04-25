@@ -152,7 +152,7 @@ class DeleteCoursePage(View):
         return render(request, "DeleteCoursePage.html", {'Courseoptions':courses,'Course':courses})
 
     def post(self, request):
-        number = request.POST.get('chosen', '')
+        number = request.POST.get('chosen','')
         if(number != ''):
                 course = Course.objects.get(id=number)
                 course.delete()
