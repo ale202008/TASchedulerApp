@@ -6,7 +6,9 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from .forms import UserCreationForm
 from django.http import HttpResponse
 from .models import *
-
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from TASchedulerWebApp.models import User
 
 class Login(View):
     def get(self, request):
@@ -28,6 +30,17 @@ class Login(View):
 
 def is_admin(user):
     return user.is_staff
+
+@login_required
+def account_info(request):
+    user = request.user
+    context = {'user': user}
+    return render(request, 'account_info.html', context)
+
+
+def user_list(request):
+    users = User.objects.all()
+    return render(request, 'user_list.html', {'users': users})
 
 
 @login_required
@@ -196,3 +209,5 @@ class Sections(View):
                     return render(request, "SectionPage.html", {"message1":"Section Added", "Sections":sections})
             except:
                 return render(request, "SectionPage.html", {"message1":"Course doesn't exist or has no sections"})
+
+
