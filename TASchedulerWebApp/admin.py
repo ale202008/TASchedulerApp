@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import User
-from .forms import UserCreationForm
+from .forms import UserCreationForm, UserEditForm
+
 
 class CustomUserAdmin(UserAdmin):
     fieldsets = (
@@ -16,9 +17,10 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('username', 'password', 'password_confirm', 'first_name', 'last_name', 'email')}
         ),
     )
-    add_form = UserCreationForm
-    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff')
+    add_form = UserCreationForm, UserEditForm
+    list_display = ('username', 'first_name', 'last_name', 'email', 'is_staff')
     search_fields = ('username', 'first_name', 'last_name', 'email')
     ordering = ('username',)
+
 
 admin.site.register(User, CustomUserAdmin)

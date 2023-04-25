@@ -25,7 +25,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(auto_now_add=True)
     groups = models.ManyToManyField(Group, related_name='myapp_user_groups', blank=True)
     user_permissions = models.ManyToManyField(Permission, related_name='myapp_user_permissions', blank=True)
-    Courses = models.ManyToManyField('Course', blank=True)
+    # Courses = models.ManyToManyField('Course', blank=True)
 
     objects = UserManager()
 
@@ -45,9 +45,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Course(models.Model):
     id = models.CharField(max_length=12, primary_key=True)
     name = models.CharField(max_length=200)
-    Instructor = models.ManyToManyField('User', blank=True)
-    Sections = models.ManyToManyField('Section', blank=True)
+    Instructor = models.ManyToManyField(User, blank=True)
+    Sections = models.ForeignKey('Section', blank=True, null=True, on_delete=models.CASCADE)
 
 class Section(models.Model):
-    name = models.CharField(max_length=150)
-    Course = models.ManyToManyField('Course', blank = False)
+    id = models.CharField(max_length=150, unique=True, primary_key=True)
