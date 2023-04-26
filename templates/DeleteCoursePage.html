@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>DeleteCourse</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
 </head>
 <body>
@@ -11,12 +11,13 @@
 {{ message }}
 <form action="/DeleteCoursePage/" method="post">
     {% csrf_token %}
-    <span><label>Course:</label><select>
-        <option value=""></option>
+    <label>Course:</label>
+    <select name="chosen">
+        <option value="">Please choose a course</option>
         {% for course in Courseoptions %}
-        <option name="chosen" value={{ course.id }}>{{ course.id }}</option>
+        <option value="{{ course.id }}">{{ course.id }}</option>
         {% endfor %}
-    </select></span>
+    </select>
     <input type="submit" value="Delete Course">
 </form>
 <label>Courses</label>
@@ -24,5 +25,8 @@
     <br>{{ i.id }}
     {{ i.name }}
 {% endfor %}
+<form action="/DeleteCoursePage/" method="post">
+    <span><input type="submit" name="chosen" value="Back"></span>
+</form>
 </body>
 </html>

@@ -4,7 +4,7 @@ from TASchedulerWebApp.models import *
 class AddCourseTestCases(TestCase):
     def setUp(self):
         self.UserClient = Client()
-        self.User = User.objects.create(username='Taylor', password='Swift')
+        self.User = User.objects.create(username='Taylor@gmail.com', password='Swift')
         self.Course1_name = "one"
         self.Course1_id = 1
         self.User.save()
@@ -33,3 +33,26 @@ class AddCourseTestCases(TestCase):
 
     # Need test to make sure that when SuperUser adds a course, course shows up for course page.
     # Need tests to reflect Instructor field, ManyToManyField for courses for users.
+class DeleteCourseTestCases(TestCase):
+    def setUp(self):
+        self.UserClient = Client()
+        self.User = User.objects.create(username='Taylor@gmail.com', password='Swift')
+        self.User.save()
+        self.Course = Course.objects.create(id = 361, name = "Course")
+        self.Course.save()
+
+    def test_CheckDeletion(self):
+        # Checks to see if course is deleted through post method given a Course Number
+        resp = self.UserClient.post('/DeleteCoursePage/', {'CourseNumber': 361})
+        list_Courses = list(Course.objects.all())
+        self.assertEqual(resp.context['Courses'], list_Courses, msg="Course doesn't exist within the database despite being added.")
+
+    def test_InvalidCourseField(self):
+        # Checks to see if an error/exception is given when a Course is attempted to be deleted, but does not exist.
+        resp = self.UserClient.post('/DeleteCoursePage/', {'CourseNumber': 11111111111})
+        self.assertEqual(resp.context['message'], "Course doesn't exist", msg = "Course was not in the database, but was deleted. How?")
+
+    def test_BlankCourseField(self):
+        # Checks to see if an error/exception is given when a Course field is blank.
+        resp = self.UserClient.post('/DeleteCoursePage/', {'CourseNumber': ""})
+        self.assertEqual(resp.context['message'], "Course doesn't exist", msg = "Course was not in the database, but was deleted. How?")
