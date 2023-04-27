@@ -8,9 +8,9 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'is_staff')
+        fields = ('email', 'first_name', 'last_name', 'is_staff')
         labels = {
-            'username': 'Email', 'first_name': "First Name", 'last_name' : "Last Name", 'is_staff': "Instructor"
+            'email': 'Email', 'first_name': "First Name", 'last_name' : "Last Name", 'is_staff': "Instructor"
         }
     def clean(self):
         cleaned_data = super().clean()
@@ -28,26 +28,26 @@ class UserCreationForm(forms.ModelForm):
 
 
 class UserEditForm(forms.ModelForm):
-    usernameSelect = forms.ModelChoiceField(queryset=User.objects.all())
-    username = forms.EmailField(required=False, widget=forms.TextInput)
+    emailSelect = forms.ModelChoiceField(queryset=User.objects.all())
+    email = forms.EmailField(required=False, widget=forms.TextInput)
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'is_staff', 'is_active']
+        fields = ['email', 'first_name', 'last_name', 'is_staff', 'is_active']
         labels = {
-            'username': 'Email', 'first_name': "First Name", 'last_name' : "Last Name", 'is_staff': "Instructor", 'is_active' : "Administrator"
+            'email': 'Email', 'first_name': "First Name", 'last_name' : "Last Name", 'is_staff': "Instructor", 'is_active' : "Administrator"
         }
     def clean(self):
         cleaned_data = super().clean()
-        user = cleaned_data.get("usernameSelect")
-        if user == User.objects.get(username=user).username:
-            raise forms.ValidationError("Username already exists")
+        user = cleaned_data.get("emailSelect")
+        if user == User.objects.get(email=user).email:
+            raise forms.ValidationError("Email already exists")
 
     def save(self, commit=True):
         user = super().save(commit=False)
         updatefields = []
         for field in self.cleaned_data.keys():
-            if self.cleaned_data.get(field) != "" and field != "usernameSelect":
+            if self.cleaned_data.get(field) != "" and field != "emailSelect":
                 updatefields.append(field)
         if commit:
             user.save(update_fields=updatefields)
