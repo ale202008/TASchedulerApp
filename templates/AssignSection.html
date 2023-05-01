@@ -25,13 +25,31 @@
     </form>
     <br> {{ message }}
     <br>
-    <br> <label>Sections</label>
+    <br> <label>Sections || Instructor || Teacher Assistant</label>
     <form action = '/AssignSection/' method = 'post'>
+        {% csrf_token %}
+
         <select name = select_section>
-            {% for section in course_sections %}
+            {% for section in course_sections %}z
                 <option value = "{{ section.id }}">{{ section.id }}</option>
             {% endfor %}
         </select>
+
+        <select name = select_instructor>
+            {% for user in instructor_list %}
+                <option value = "{{ user.first_name }}">{{ user.first_name }}</option>
+            {% endfor %}
+        </select>
+
+         <select name = select_teacher_assistant>
+            {% for user in teacher_assistant_list %}
+                <option value = "{{ user.first_name }}">{{ user.first_name }}</option>
+            {% endfor %}
+        </select>
+
+        <span>
+            <input type = "submit" name ="chosen" value = "Assign">
+        </span>
     </form>
 </body>
 </html>

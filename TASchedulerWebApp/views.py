@@ -261,13 +261,28 @@ class AssignSection(View):
         elif todo == "Show Sections":
             course_num = request.POST.get('select_course')
             course_list = list(Course.objects.all())
-            try:
-                course = Course.objects.get(id = course_num)
-                course_sections = list(Section.objects.filter(Course = course))
-                if course_sections.__len__() == 0:
-                    return render(request, "AssignSection.html", {'message': 'No sections exist for this course.', 'Sections': course_sections, 'course_list': course_list})
-            except:
-                return render(request, "AssignSection.html", {'message': 'Course does not exist.', 'Sections': course_sections, 'course_list': course_list})
+            # Got rid of the try/catch block as it seems there might be too many exceptions to cover in one
+            # to simplify until necessary, code will run without try block.
+            course = Course.objects.get(id = course_num)
+            course_sections = list(Section.objects.filter(Course = course))
+            if course_sections.__len__() == 0:
+                return render(request, "AssignSection.html", {'message': 'No sections exist for this course.', 'Sections': course_sections, 'course_list': course_list})
+            else:
+                # If course sections list is not 0, meaning that we do have a section that exists we shall send back
+                # the list of Instructor and Teacher Assistant users to be listed and chosen to assign.
+                teacher_assistant_list = list(User.objects.filter(is_superuser = False, is_staff = False))
+                instructors_list = list(User.objects.filter(is_superuser = False, is_staff = True))
+                if teacher_assistant_list.__len__() == 0:
+                    return render(request, "AssignSection.html", {'message': 'There exists no Teacher Assistants'})
+                elif instructors_list.__len__() == 0:
+                    return render(request, "AssignSection.html", {'message': 'There exists no Instructors'})
+                else:
+                    return render(request, 'AssignSection.html', {'course_sections': course_sections, 'teacher_assistant_list': teacher_assistant_list, 'instructor_list': instructors_list})
+        elif todo == 'Assign':
+            section = request.POST.get('select_section')
+            instructor = request.POST.get('select_instructor')
+            teacher_assistant = request.POST.get('select_teacher_assistant')
+
 
 
         return render(request, "AssignSection.html")
