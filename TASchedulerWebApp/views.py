@@ -254,13 +254,13 @@ class AssignSection(View):
 
     def post(self, request):
         todo = request.POST.get('chosen')
+        course_list = list(Course.objects.all())
         # Will go through different if conditionals to decide which operation to do.
         # Copied from SectionPage code in presenting the information to the user.
         if todo == "Back":
             return redirect('directory')
         elif todo == "Show Sections":
             course_num = request.POST.get('select_course')
-            course_list = list(Course.objects.all())
             # Got rid of the try/catch block as it seems there might be too many exceptions to cover in one
             # to simplify until necessary, code will run without try block.
             course = Course.objects.get(id = course_num)
@@ -279,10 +279,20 @@ class AssignSection(View):
                 else:
                     return render(request, 'AssignSection.html', {'course_sections': course_sections, 'teacher_assistant_list': teacher_assistant_list, 'instructor_list': instructors_list})
         elif todo == 'Assign':
-            section = request.POST.get('select_section')
-            instructor = request.POST.get('select_instructor')
-            teacher_assistant = request.POST.get('select_teacher_assistant')
+            section = Section.objects.get(id = request.POST.get('select_section'))
+            instructor = User.objects.get(first_name= request.POST.get('select_instructor'))
+            teacher_assistant = User.objects.get(first_name = request.POST.get('select_teacher_assistant'))
 
 
+
+            if section.Course.Instructor != instructor:
+                return render(request, "AssignSection.html", {'message2': 'Instructor does not teach this sections course', 'course_list': course_list})
+            elif Section.objects.filter(TeacherAssistant = teacher_assistant).exists():
+                return render(request, "AssignSection.html",{'message2': 'Teacher Assistant is already assigned to a section','course_list': course_list})
+            else:
+                section.Instructor = instructor
+                section.TeacherAssistant = teacher_assistant
+                section.save()
+                return render(request, "AssignSection.html",{'message2': 'Assign successful for section: ' + section.id, 'course_list': course_list})
 
         return render(request, "AssignSection.html")

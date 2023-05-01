@@ -44,11 +44,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Course(models.Model):
     id = models.CharField(max_length=12, primary_key=True)
     name = models.CharField(max_length=200)
-    Instructor = User
+    Instructor = models.ForeignKey('User', blank = True, null = True, on_delete = models.DO_NOTHING)
 
 class Section(models.Model):
     id = models.CharField(max_length=150, unique=True, primary_key=True)
-    TeacherAssistant = User
-    Instructor = User
+    TeacherAssistant = models.ForeignKey('User', blank = True, null = True, on_delete = models.DO_NOTHING, related_name = 'TeacherAssistant', unique = False)
+    Instructor = models.ForeignKey('User', blank = True, null = True, on_delete = models.DO_NOTHING, related_name = 'Instructor', unique = False)
     Course = models.ForeignKey('Course', blank=True, null=True, on_delete=models.CASCADE)
 
