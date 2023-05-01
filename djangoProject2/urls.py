@@ -34,4 +34,5 @@ urlpatterns = [
     path('account/', account_info, name='account_info'),
     path('user_list/', user_list, name='user_list'),
 
+    path('AssignSection/', AssignSection.as_view(), name = "assign_section")
 ]

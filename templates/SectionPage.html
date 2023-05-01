@@ -10,7 +10,8 @@
     <h1>Section Page</h1>
     <form action="/SectionPage/" method="post">
         {% csrf_token %}
-        <label>Courses:</label><select name="show section">
+        <label>Courses:</label>
+        <select name="show section">
         <option value="">Please choose a course</option>
         {% for course in Courseoptions %}
         <option value="{{ course.id }}">{{ course.id }}</option>

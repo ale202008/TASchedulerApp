@@ -246,3 +246,28 @@ class Sections(View):
                 return render(request, "SectionPage.html", {"message1":"Course doesn't exist", "Courseoptions": courses})
 
 
+class AssignSection(View):
+    def get(self, request):
+        # Similar to what Benji did for creating sections. Will need to select a course to get sections.
+        course_list = list(Course.objects.all())
+        return render(request, "AssignSection.html", {"course_list": course_list})
+
+    def post(self, request):
+        todo = request.POST.get('chosen')
+        # Will go through different if conditionals to decide which operation to do.
+        # Copied from SectionPage code in presenting the information to the user.
+        if todo == "Back":
+            return redirect('directory')
+        elif todo == "Show Sections":
+            course_num = request.POST.get('select_course')
+            course_list = list(Course.objects.all())
+            try:
+                course = Course.objects.get(id = course_num)
+                course_sections = list(Section.objects.filter(Course = course))
+                if course_sections.__len__() == 0:
+                    return render(request, "AssignSection.html", {'message': 'No sections exist for this course.', 'Sections': course_sections, 'course_list': course_list})
+            except:
+                return render(request, "AssignSection.html", {'message': 'Course does not exist.', 'Sections': course_sections, 'course_list': course_list})
+
+
+        return render(request, "AssignSection.html")
