@@ -26,5 +26,29 @@
         <br><input type="submit" name="chosen" value="Home">
     </form>
 
+    <h2>Add Instructor and TA to Course</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label for="course">Course:</label>
+        <select id="course" name="course">
+            {% for course in courses %}
+            <option value="{{ course.id }}">{{ course.name }}</option>
+            {% endfor %}
+        </select><br><br>
+        <label for="instructor">Instructor:</label>
+        <select id="instructor" name="instructor">
+            {% for instructor in instructors %}
+            <option value="{{ instructor.id }}">{{ instructor.name }}</option>
+            {% endfor %}
+        </select><br><br>
+        <label for="ta">TA:</label>
+        <select id="ta" name="ta">
+            {% for ta in tas %}
+            <option value="{{ ta.id }}">{{ ta.name }}</option>
+            {% endfor %}
+        </select><br><br>
+        <input type="submit" value="Submit">
+    </form>
+
 </body>
 </html>
