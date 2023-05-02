@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group, Permission
-
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -45,10 +44,11 @@ class Course(models.Model):
     id = models.CharField(max_length=12, primary_key=True)
     name = models.CharField(max_length=200)
     Instructor = models.ForeignKey('User', blank = True, null = True, on_delete = models.DO_NOTHING)
+    TeacherAssistant = models.ForeignKey('User', blank=True, null=True, on_delete=models.DO_NOTHING, related_name='course_teacher_assistant', unique=False)
 
 class Section(models.Model):
     id = models.CharField(max_length=150, unique=True, primary_key=True)
-    TeacherAssistant = models.ForeignKey('User', blank = True, null = True, on_delete = models.DO_NOTHING, related_name = 'TeacherAssistant', unique = False)
-    Instructor = models.ForeignKey('User', blank = True, null = True, on_delete = models.DO_NOTHING, related_name = 'Instructor', unique = False)
+    TeacherAssistant = models.ForeignKey('User', blank = True, null = True, on_delete = models.DO_NOTHING, related_name = 'section_teacher_assistant', unique = False)
+    Instructor = models.ForeignKey('User', blank = True, null = True, on_delete = models.DO_NOTHING, related_name = 'section_instructor', unique = False)
     Course = models.ForeignKey('Course', blank=True, null=True, on_delete=models.CASCADE)
 

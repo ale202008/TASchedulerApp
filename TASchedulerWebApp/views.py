@@ -9,7 +9,11 @@ from .models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from TASchedulerWebApp.models import User
+from TASchedulerWebApp.models import *
+from TASchedulerWebApp.forms import *
 
+from django.contrib.auth import get_user_model
+User = get_user_model()
 class Login(View):
     def get(self, request):
         return render(request, 'login.html')
