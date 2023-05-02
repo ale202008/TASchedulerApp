@@ -29,6 +29,7 @@ urlpatterns = [
     path('AddCoursePage/', AddCoursePage.as_view()),
     path('DeleteCoursePage/', DeleteCoursePage.as_view()),
     path('SectionPage/', Sections.as_view()),
+    path('account_edit/', account_editor, name='account_edit'),
 
 # New URL for account information page for the account info
     path('account/', account_info, name='account_info'),

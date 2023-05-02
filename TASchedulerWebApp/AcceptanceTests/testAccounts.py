@@ -10,6 +10,7 @@ class CreateAccountTestCases(TestCase):
         self.last_name = "testlast"
         self.password = "test"
         self.password_confirm = "test"
+
     def test_AccountCreationStaff(self):
         # Test Instructor Account Creation
         form = {'username': self.username, 'first_name': self.first_name, 'last_name': self.last_name,

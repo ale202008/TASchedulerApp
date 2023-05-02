@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .forms import UserCreationForm, UserEditForm
+from .forms import UserCreationForm, UserEditForm, NonAdminEditForm
 from django.http import HttpResponse
 from .models import *
 from django.contrib.auth.decorators import login_required
@@ -93,6 +93,33 @@ def account_creation(request):
             form = UserCreationForm()
     return render(request, 'accountCreation.html', {'form': form, 'title': title})
 
+@login_required
+def account_editor(request):
+    if request.method == 'POST':
+        user = request.user
+        email = user.email
+        try:
+            a = User.objects.get(email=email)
+        except User.DoesNotExist:
+            messages.error(request, "This user does not exist")
+            form = NonAdminEditForm()
+            return render(request, 'accountEdit.html', {'form': form})
+        form = NonAdminEditForm(request.POST, instance=a)
+        users = User.objects.filter(email__exact=form.fields["email"])
+        if users:
+            if users["email"] != email:
+                messages.error(request, "Email already exists")
+                return render(request, 'accountEdit.html', {'form': form})
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'User account edited successfully. Please log on again.')
+            return redirect("login")
+        else:
+            messages.error(request, "An error occurred while editing the user account")
+            return render(request, 'accountEdit.html', {'form': form})
+    else:
+        form = NonAdminEditForm(instance=request.user)
+        return render(request, 'accountEdit.html', {'form': form})
 
 @login_required
 def Directory(request):
@@ -119,6 +146,7 @@ def Directory(request):
       ('Notifications', '/notifications'),
       ('Sections', 'SectionPage/'),
       ('TAs', '/tas'),
+      ('Edit Account', 'account_edit/'),
     ]
   else:
     buttons = [
@@ -127,6 +155,7 @@ def Directory(request):
       ('Notifications', '/notifications'),
       ('Sections', 'SectionPage/'),
       ('TAs', '/tas'),
+      ('Edit Account', 'account_edit/'),
     ]
     
   options = {'buttons': buttons}
