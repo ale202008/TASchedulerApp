@@ -43,12 +43,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Course(models.Model):
     id = models.CharField(max_length=12, primary_key=True)
     name = models.CharField(max_length=200)
-    Instructor = models.ForeignKey('User', blank = True, null = True, on_delete = models.DO_NOTHING)
-    TeacherAssistant = models.ForeignKey('User', blank=True, null=True, on_delete=models.DO_NOTHING, related_name='course_teacher_assistant', unique=False)
+    instructor = models.ForeignKey(User, blank=True, null=True, on_delete=models.DO_NOTHING, related_name='course_instructor', unique=False)
+    teacher_assistant = models.ForeignKey(User, blank=True, null=True, on_delete=models.DO_NOTHING, related_name='course_teacher_assistant', unique=False)
+
 
 class Section(models.Model):
     id = models.CharField(max_length=150, unique=True, primary_key=True)
     TeacherAssistant = models.ForeignKey('User', blank = True, null = True, on_delete = models.DO_NOTHING, related_name = 'section_teacher_assistant', unique = False)
-    Instructor = models.ForeignKey('User', blank = True, null = True, on_delete = models.DO_NOTHING, related_name = 'section_instructor', unique = False)
-    Course = models.ForeignKey('Course', blank=True, null=True, on_delete=models.CASCADE)
-
+    instructor = models.ForeignKey(User, blank=True, null=True, on_delete=models.DO_NOTHING,related_name='section_instructor', unique=False)
+    course = models.ForeignKey(Course, blank=True, null=True, on_delete=models.CASCADE)

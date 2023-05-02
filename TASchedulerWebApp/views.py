@@ -11,9 +11,10 @@ from django.contrib.auth.models import User
 from TASchedulerWebApp.models import User
 from TASchedulerWebApp.models import *
 from TASchedulerWebApp.forms import *
-
+from .models import Course
 from django.contrib.auth import get_user_model
 User = get_user_model()
+
 class Login(View):
     def get(self, request):
         return render(request, 'login.html')
@@ -154,10 +155,40 @@ class CoursePage(View):
                 return render(request, "AddCoursePage.html", {"message":""})
             elif (request.POST.get('chosen') == "Delete Course"):
                 return render(request, "DeleteCoursePage.html", {'Courseoptions':courses,"Courses": courses})
+
+        if (request.POST.get('chosen') == "Assign Staff"):
+            course_id = request.POST.get('select_course')
+            course = Course.objects.get(id=course_id)
+
+            instructor_list = list(User.objects.filter(is_staff=True))
+            ta_list = list(User.objects.filter(is_staff=False, is_superuser=False))
+
+            return render(request, "AssignCourseStaffPage.html", {
+                "course": course,
+                "instructor_list": instructor_list,
+                "ta_list": ta_list,
+            })
+
         if (request.POST.get('chosen') == "Home"):
             return redirect('directory')
         return render(request, 'CoursePage.html', {"Courses": courses, "message": "You are not a supervisor"})
 
+    def assign_course_staff(request):
+        if request.method == "POST":
+            course_id = request.POST.get('course_id')
+            course = Course.objects.get(id=course_id)
+
+            instructor_id = request.POST.get('select_instructor')
+            instructor = User.objects.get(id=instructor_id)
+
+            ta_id = request.POST.get('select_ta')
+            ta = User.objects.get(id=ta_id)
+
+            course.Instructor = instructor
+            course.TeacherAssistant = ta
+            course.save()
+
+            return render(request, "CoursePage.html", {"Courses": courses, "message": "Staff assigned successfully."})
 
 class AddCoursePage(View):
     def get(self, request):

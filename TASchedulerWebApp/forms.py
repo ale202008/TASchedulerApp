@@ -1,5 +1,5 @@
 from django import forms
-from .models import User
+from .models import User, Course
 
 
 class UserCreationForm(forms.ModelForm):
@@ -52,3 +52,14 @@ class UserEditForm(forms.ModelForm):
         if commit:
             user.save(update_fields=updatefields)
         return user
+
+class CourseForm(forms.ModelForm):
+    instructor = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True))
+    teacher_assistant = forms.ModelChoiceField(queryset=User.objects.all())
+
+    class Meta:
+        model = Course
+        fields = ['id', 'name', 'instructor', 'teacher_assistant']
+        labels = {
+            'id': 'Course ID', 'name': 'Course Name', 'instructor': 'Instructor', 'teacher_assistant': 'TA'
+        }
