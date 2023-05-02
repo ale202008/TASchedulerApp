@@ -15,16 +15,16 @@ class Login(View):
         return render(request, 'login.html')
 
     def post(self, request):
-        username = request.POST['username']
+        email = request.POST['email']
         password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, email=email, password=password)
 
         if user is not None:
             login(request, user)
             print("logged in")
             return redirect('directory')
         else:
-            messages.error(request, 'Invalid username or password')
+            messages.error(request, 'Invalid email or password')
             return redirect('login')
 
 
@@ -60,17 +60,17 @@ def account_creation(request):
             return render(request, 'accountCreation.html', {'form': form, 'title': title})
         else:
             title = "Edit a user account"
-            username = dict(request.POST.items()).get("usernameSelect")
+            email = dict(request.POST.items()).get("emailSelect")
             count = 1
-            limit = int(username)
-            # Iterate to get to selected Username to edit
+            limit = int(email)
+            # Iterate to get to selected email to edit
             for user in User.objects.all():
-                username = user.username
+                email = user.email
                 count += 1
                 if count > limit:
                     break
             try:
-                a = User.objects.get(username=username)
+                a = User.objects.get(email=email)
             except User.DoesNotExist:
                 messages.error(request, "This user does not exist")
                 form = UserEditForm()
