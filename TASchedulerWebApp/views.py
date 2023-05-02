@@ -145,6 +145,8 @@ class Home(View):
 class CoursePage(View):
     def get(self, request):
         courses = list(Course.objects.all())
+        instructors = list(User.objects.filter(is_staff=True))
+        tas = list(User.objects.all())
         return render(request, "CoursePage.html", {"Courses": courses, "message": ""})
 
     def post(self, request):
@@ -153,25 +155,22 @@ class CoursePage(View):
         if (user.is_superuser):
             if (request.POST.get('chosen') == "Add Course"):
                 return render(request, "AddCoursePage.html", {"message":""})
+
             elif (request.POST.get('chosen') == "Delete Course"):
                 return render(request, "DeleteCoursePage.html", {'Courseoptions':courses,"Courses": courses})
 
-        if (request.POST.get('chosen') == "Assign Staff"):
-            course_id = request.POST.get('select_course')
-            course = Course.objects.get(id=course_id)
-
-            instructor_list = list(User.objects.filter(is_staff=True))
-            ta_list = list(User.objects.filter(is_staff=False, is_superuser=False))
-
-            return render(request, "AssignCourseStaffPage.html", {
-                "course": course,
-                "instructor_list": instructor_list,
-                "ta_list": ta_list,
-            })
-
         if (request.POST.get('chosen') == "Home"):
             return redirect('directory')
-        return render(request, 'CoursePage.html', {"Courses": courses, "message": "You are not a supervisor"})
+
+        if (request.POST.get('course')):
+            course = Course.objects.get(id=request.POST.get('course'))
+            instructor = User.objects.get(id=request.POST.get('instructor'))
+            ta = User.objects.get(id=request.POST.get('ta'))
+            course.instructor = instructor
+            course.teacher_assistant = ta
+            course.save()
+            return redirect('coursepage')
+        return render(request, 'CoursePage.html', {"Courses": courses, "message": "You are not a supervisor", "instructors": [], "tas": []})
 
     def assign_course_staff(request):
         if request.method == "POST":

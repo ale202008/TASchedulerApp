@@ -54,8 +54,8 @@ class UserEditForm(forms.ModelForm):
         return user
 
 class CourseForm(forms.ModelForm):
-    instructor = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True))
-    teacher_assistant = forms.ModelChoiceField(queryset=User.objects.all())
+    instructor = forms.ModelChoiceField(queryset=User.objects.filter(groups__name='Instructor'))
+    teacher_assistant = forms.ModelChoiceField(queryset=User.objects.filter(groups__name='Teacher Assistant'))
 
     class Meta:
         model = Course
@@ -63,3 +63,7 @@ class CourseForm(forms.ModelForm):
         labels = {
             'id': 'Course ID', 'name': 'Course Name', 'instructor': 'Instructor', 'teacher_assistant': 'TA'
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['course'] = forms.ModelChoiceField(queryset=Course.objects.all())
