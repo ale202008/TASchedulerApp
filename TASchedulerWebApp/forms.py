@@ -30,6 +30,7 @@ class UserCreationForm(forms.ModelForm):
 class UserEditForm(forms.ModelForm):
     emailSelect = forms.ModelChoiceField(queryset=User.objects.all())
     email = forms.EmailField(required=False, widget=forms.TextInput)
+    delete_account = forms.BooleanField(required=False)
 
     class Meta:
         model = User
@@ -45,6 +46,9 @@ class UserEditForm(forms.ModelForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
+        if self.cleaned_data['delete_account']:
+            user.delete()
+            return None
         updatefields = []
         for field in self.cleaned_data.keys():
             if self.cleaned_data.get(field) != "" and field != "emailSelect":
