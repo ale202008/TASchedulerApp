@@ -12,16 +12,25 @@ class AssignSection(TestCase):
 
     def test_AssignTA(self):
         resp = self.UserClient.post('/AssignSection/', {'chosen': 'Assign','select_section': self.Section.id, 'select_teacher_assistant': self.User.first_name, 'select_instructor': ''})
-        context = self.Section.TeacherAssistant
-        print("IN TEST: " + context)
-        self.assertTrue(self.Section.TeacherAssistant == self.User, msg = "Teacher Assistant is not correct. ")
+        section = resp.context['section_saved']
+        self.assertTrue(section.TeacherAssistant == self.User, msg = "Teacher Assistant is not correct. ")
 
-    # def test_AssignInstructor(self):
-    #     resp = self.UserClient.post('/AssignSection/', {'instructor': self.User})
-    #     self.assertEqual(resp.context['message2'], "Instructor was assigned!", msg = "no msg was given.")
-    #     self.assertContains(Section, self.User, msg_prefix = "Section does not contain Instructor")
-    #
-    # def test_Blank(self):
-    #     resp = self.UserClient.post('/AssignSection/', {'instructor': ""})
-    #     self.assertEqual(resp.context['message'], "Please enter an Instructor or Teacher Assistant", msg = "no msg was given.")
-    #
+    def test_AssignInstructor(self):
+        resp = self.UserClient.post('/AssignSection/', {'chosen': 'Assign','select_section': self.Section.id, 'select_teacher_assistant': '', 'select_instructor': self.User.first_name})
+        section = resp.context['section_saved']
+        self.assertTrue(section.Instructor == self.User, msg = "Instructor is not correct. ")
+
+    def test_TABlank(self):
+        resp = self.UserClient.post('/AssignSection/', {'chosen': 'Assign','select_section': self.Section.id, 'select_teacher_assistant': '', 'select_instructor': self.User.first_name})
+        context = 'Assign successful for section: 100'
+        self.assertEqual(resp.context['message2'], context, msg = "no msg was given.")
+
+    def test_InstructorBlank(self):
+        resp = self.UserClient.post('/AssignSection/', {'chosen': 'Assign','select_section': self.Section.id, 'select_teacher_assistant': self.User.first_name, 'select_instructor': ''})
+        context = 'Assign successful for section: 100'
+        self.assertEqual(resp.context['message2'], context, msg = "no msg was given.")
+
+    def test_AllBlank(self):
+        resp = self.UserClient.post('/AssignSection/', {'chosen': 'Assign','select_section': self.Section.id, 'select_teacher_assistant': '', 'select_instructor': ''})
+        context = 'Assign successful for section: 100'
+        self.assertEqual(resp.context['message2'], context, msg = "no msg was given.")

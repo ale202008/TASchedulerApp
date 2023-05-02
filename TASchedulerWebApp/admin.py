@@ -26,3 +26,5 @@ class CustomUserAdmin(UserAdmin):
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(Course)
 admin.site.register(Section)
+admin.site.register(Skill)
+admin.site.register(Notification)

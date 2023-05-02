@@ -279,7 +279,6 @@ class AssignSection(View):
                 else:
                     return render(request, 'AssignSection.html', {'course_sections': course_sections, 'teacher_assistant_list': teacher_assistant_list, 'instructor_list': instructors_list})
         if todo == 'Assign':
-            print(request, request.POST.get('select_teacher_assistant'))
             # Getting the model objects so that I can change section fields for Instructors and Teacher Assistants
             # if necessary
             section = Section.objects.get(id = request.POST.get('select_section'))
@@ -293,7 +292,6 @@ class AssignSection(View):
             else:
                 teacher_assistant = User.objects.get(first_name=request.POST.get('select_teacher_assistant'))
 
-            print(teacher_assistant)
             # Checks to see if that section's Instructor field contains the instructor selected, will probably
             # change it so that only this course's instructor shows up
             if instructor != None and section.Course.Instructor != instructor:
@@ -302,11 +300,9 @@ class AssignSection(View):
             elif teacher_assistant != None and Section.objects.filter(TeacherAssistant = teacher_assistant).exists():
                 return render(request, "AssignSection.html",{'message2': 'Teacher Assistant is already assigned to a section','course_list': course_list})
             else:
-                print("WORKS HERE")
                 section.Instructor = instructor
                 section.TeacherAssistant = teacher_assistant
                 section.save()
-                print(section.TeacherAssistant)
-                return render(request, "AssignSection.html",{'message2': 'Assign successful for section: ' + section.id, 'course_list': course_list})
+                return render(request, "AssignSection.html",{'message2': 'Assign successful for section: ' + section.id, 'course_list': course_list, 'section_saved': section})
 
         return render(request, "AssignSection.html")
