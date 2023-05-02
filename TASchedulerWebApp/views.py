@@ -145,9 +145,11 @@ class Home(View):
 class CoursePage(View):
     def get(self, request):
         courses = list(Course.objects.all())
-        instructors = list(User.objects.filter(is_staff=True))
-        tas = list(User.objects.all())
-        return render(request, "CoursePage.html", {"Courses": courses, "message": ""})
+        instructors = User.objects.filter(is_staff=True, is_superuser=False)
+        tas = User.objects.filter(is_staff=False, is_superuser=False)
+        print("Instructors:", instructors)
+        print("TAs:", tas)
+        return render(request, "CoursePage.html", {"Courses": courses, "message": "", "instructors": instructors, "tas": tas})
 
     def post(self, request):
         user = request.user
@@ -186,7 +188,6 @@ class CoursePage(View):
             course.Instructor = instructor
             course.TeacherAssistant = ta
             course.save()
-
             return render(request, "CoursePage.html", {"Courses": courses, "message": "Staff assigned successfully."})
 
 class AddCoursePage(View):
