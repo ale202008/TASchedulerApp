@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assign Section</title>
+</head>
+<body>
+    <h1>Assign Sections</h1>
+    <form action="/AssignSection/" method="post">
+        {% csrf_token %}
+        <label>Courses:</label>
+
+        <!-- Took this code from SectionPage made by Benji as it allows
+         for an easy way to find the Courses-->
+        <select name = select_course>
+        <option value="">Please choose a course</option>
+        {% for course in course_list %}
+        <option value="{{ course.id }}">{{ course.id }}</option>
+        {% endfor %}
+        </select>
+
+        <span><input type="submit" name="chosen" value="Show Sections"></span>
+
+        <br><input type="submit" name="chosen" value="Back">
+    </form>
+    <br> {{ message }}
+    <br>
+    <br> <label>Sections || Instructor || Teacher Assistant</label>
+    <form action = '/AssignSection/' method = 'post'>
+        {% csrf_token %}
+
+        <select name = select_section>
+            {% for section in course_sections %}z
+                <option value = "{{ section.id }}">{{ section.id }}</option>
+            {% endfor %}
+        </select>
+
+        <select name = select_instructor>
+            <option value = "">None</option>
+            {% for user in instructor_list %}
+                <option value = "{{ user.first_name }}">{{ user.first_name }}</option>
+            {% endfor %}
+        </select>
+
+         <select name = select_teacher_assistant>
+            <option value = "">None</option>
+            {% for user in teacher_assistant_list %}
+                <option value = "{{ user.first_name }}">{{ user.first_name }}</option>
+            {% endfor %}
+        </select>
+
+        <span>
+            <input type = "submit" name ="chosen" value = "Assign">
+        </span>
+    </form>
+    <br> {{ message2 }}
+</body>
+</html>
