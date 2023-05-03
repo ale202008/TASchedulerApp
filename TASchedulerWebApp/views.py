@@ -114,9 +114,8 @@ def account_editor(request):
             form.save()
             messages.success(request, 'User account edited successfully. Please log on again.')
             return redirect("login")
-        else:
-            messages.error(request, "An error occurred while editing the user account")
-            return render(request, 'accountEdit.html', {'form': form})
+        messages.error(request, "An error occurred while editing the user account")
+        return render(request, 'accountEdit.html', {'form': form})
     else:
         form = NonAdminEditForm(instance=request.user)
         return render(request, 'accountEdit.html', {'form': form})
