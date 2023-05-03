@@ -12,6 +12,7 @@ class UserCreationForm(forms.ModelForm):
         labels = {
             'email': 'Email', 'first_name': "First Name", 'last_name' : "Last Name", 'is_staff': "Instructor"
         }
+
     def clean(self):
         cleaned_data = super().clean()
         password = cleaned_data.get("password")
@@ -38,6 +39,7 @@ class UserEditForm(forms.ModelForm):
         labels = {
             'email': 'Email', 'first_name': "First Name", 'last_name' : "Last Name", 'is_staff': "Instructor", 'is_active' : "Administrator"
         }
+
     def clean(self):
         cleaned_data = super().clean()
         user = cleaned_data.get("emailSelect")
@@ -55,4 +57,31 @@ class UserEditForm(forms.ModelForm):
                 updatefields.append(field)
         if commit:
             user.save(update_fields=updatefields)
+        return user
+
+
+class NonAdminEditForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+    password_confirm = forms.CharField(widget=forms.PasswordInput, label="Confirm password")
+
+    class Meta:
+        model = User
+        fields = ('email', 'first_name', 'last_name')
+        labels = {
+            'email': 'Email', 'first_name': "First Name", 'last_name' : "Last Name"
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = self.cleaned_data["password"]
+        password_confirm = self.cleaned_data["password_confirm"]
+        if password != password_confirm:
+            raise forms.ValidationError("Passwords do not match.")
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        print(self.cleaned_data["password"])
+        user.set_password(self.cleaned_data["password"])
+        if commit:
+            user.save()
         return user
