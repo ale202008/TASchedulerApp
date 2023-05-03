@@ -122,43 +122,44 @@ def account_editor(request):
 
 @login_required
 def Directory(request):
-  user = request.user
-  buttons = []
-  #Admin if statement
-  if user.is_superuser:
-    buttons = [
-      ('Courses', 'CoursePage/'),
-      ('Account Info', '/account'),
-      ('Notifications', '/notifications'),
-      ('Sections', 'SectionPage/'),
-      ('TAs', '/tas'),
-      ('Instructors', '/instructors'),
-      ('Create Course', 'AddCoursePage/'),
-      ('Create Section', '/create_section'),
-      ('Create/Edit Account', 'account_creation/'),
-    ]
-    #Instructor view
-  elif user.is_staff:
-    buttons = [
-      ('Courses', 'CoursePage/'),
-      ('Account Info', '/account'),
-      ('Notifications', '/notifications'),
-      ('Sections', 'SectionPage/'),
-      ('TAs', '/tas'),
-      ('Edit Account', 'account_edit/'),
-    ]
-  else:
-    buttons = [
-      ('Courses', 'CoursePage/'),
-      ('Account Info', '/account'),
-      ('Notifications', '/notifications'),
-      ('Sections', 'SectionPage/'),
-      ('TAs', '/tas'),
-      ('Edit Account', 'account_edit/'),
-    ]
+    user = request.user
+    buttons = []
+    # Admin if statement
+    if user.is_superuser:
+        buttons = [
+        ('Courses', 'CoursePage/'),
+        ('Account Info', '/account'),
+        ('Notifications', '/notifications'),
+        ('Sections', 'SectionPage/'),
+        ('TAs', '/tas'),
+        ('Instructors', '/instructors'),
+        ('Create Course', 'AddCoursePage/'),
+        ('Create Section', '/create_section'),
+        ('Create/Edit Account', 'account_creation/'),
+        ]
+        #Instructor view
+    elif user.is_staff:
+        buttons = [
+        ('Courses', 'CoursePage/'),
+        ('Account Info', '/account'),
+        ('Notifications', '/notifications'),
+        ('Sections', 'SectionPage/'),
+        ('TAs', '/tas'),
+        ('Edit Account', 'account_edit/'),
+        ]
+    else:
+        buttons = [
+        ('Courses', 'CoursePage/'),
+        ('Account Info', '/account'),
+        ('Notifications', '/notifications'),
+        ('Sections', 'SectionPage/'),
+        ('TAs', '/tas'),
+        ('Edit Account', 'account_edit/'),
+        ]
     
-  options = {'buttons': buttons}
-  return render(request, 'directory.html', options)
+    options = {'buttons': buttons}
+    return render(request, 'directory.html', options)
+
 
 class Home(View):
     def get(self, request):
