@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DeleteSection</title>
+</head>
+<body>
+    <h1>Section Deletion Page</h1>
+    <form action="/DeleteSectionPage/" method="post">
+        {% csrf_token %}
+    <label>Section:</label>
+    <select name="chosen">
+        <option value="">Please choose a course</option>
+        {% for section in Sectionoptions %}
+        <option value="{{ section.id }}">{{ section.Course.id }}-{{ section.id }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit" value="Delete Course">
+    </form>
+    {{ message }}
+    <form action="/DeleteSectionPage/" method="post">
+        <input type="submit" name="chosen" value="Back">
+    </form>
+</body>
+</html>

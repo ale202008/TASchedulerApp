@@ -21,24 +21,21 @@
     </form>
     <br>{{ message }}
     <br><label>Sections</label>
-    {%  for i in Sections %}
-        <br>{{ i.id }}
+    <table>
+    {%  for section in Sections %}
+        <tr>
+        <td>
+            {{ section.Course.id }}-{{ section.id }}
+        </td>
+        </tr>
     {% endfor %}
+    </table>
     <form action="/SectionPage/" method="post">
         {% csrf_token %}
-        <span>
-            <label>Course:</label>
-            <select name="create section">
-                <option value="">Please choose a course</option>
-                {% for course in Courseoptions %}
-                <option value="{{ course.id }}">{{ course.id }}</option>
-                {% endfor %}
-            </select>
-            <br><label>Section Number:</label><input type="text" name="SectionNumber">
-        </span>
-        <input type="submit" name="chosen" value="Create Sections">
+        <br>
+        <input type="submit" name="chosen" value="Add Section">
+        <input type="submit" name="chosen" value="Delete Section">
         <br><input type="submit" name="chosen" value="Back">
     </form>
-    <br>{{ message1 }}
 </body>
 </html>

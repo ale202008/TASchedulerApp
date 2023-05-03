@@ -13,7 +13,7 @@ class UserTestCase(TestCase):
     def test_UserCreation(self):
         # Checks to see if the correct number of users were created, in this case only 1 meant to exist
         # so if it fails it means Unit Test succeeds as checking for failure.
-        self.assertEqual(User.objects.count(), 1, msg = "One user were meant to be created.")
+        self.assertEqual(User.objects.count(), 1, msg = "One user was meant to be created.")
 
     def test_UserUsernameExists(self):
         # Makes sure that the username is inside the User database after account creation.
@@ -79,7 +79,7 @@ class CourseTestCases(TestCase):
         # Checks to see if id was correctly saved with the course upon creation.
         self.assertEqual(Course.objects.first().id, '361', msg = "ID was not saved to the create course upon creation.")
 
-    def test_CourseNameField(self):
+    def test_CourseSectionNameField(self):
         # Checks to see if Sections was correctly saved with the course upon creation.
         self.assertTrue(Course.objects.first().Sections.contains(self.objectSection), msg = "Sections was not saved to the create course upon creation.")
 
