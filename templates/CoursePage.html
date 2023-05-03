@@ -16,10 +16,14 @@
     </span>
     </form>
     <label>Courses</label>
+    <table>
     {%  for i in Courses %}
-        <br>{{ i.id }}
-        {{ i.name }}
+        <tr>
+            <td>{{ i.id }}</td>
+        <td>{{ i.name }}</td>
+        </tr>
     {% endfor %}
+    </table>
     <br>{{ message }}
     <form action="/CoursePage/" method="post">
         {% csrf_token %}

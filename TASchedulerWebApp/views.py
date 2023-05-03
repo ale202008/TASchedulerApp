@@ -210,8 +210,12 @@ class DeleteCoursePage(View):
         return render(request, "DeleteCoursePage.html", {'Courseoptions':courses,'Course':courses})
 
     def post(self, request):
+
         number = request.POST.get('chosen', '')
-        if(number != ''):
+        if number == 'Back':
+            courses = list(Course.objects.all())
+            return render(request, "CoursePage.html", {'Courses':courses})
+        if number != '':
                 course = Course.objects.get(id=number)
                 course.delete()
                 courses = list(Course.objects.all())
@@ -229,109 +233,74 @@ class Sections(View):
 
     def post(self,request):
         todo = request.POST.get('chosen')
+        courses = list(Course.objects.all())
+
         #goes back directory page
         if todo == "Back":
             return redirect('directory')
+        if todo == "Add Section":
+            return render(request, "AddSectionPage.html", {"Courseoptions":courses})
+        if todo == "Delete Section":
+            sections = list(Section.objects.all())
+            return render(request, "DeleteSectionPage.html", {"Sectionoptions":sections})
         #displays sections for a course
-        if todo == "Show Sections":
-            number = request.POST.get('show section')
-            try:
-                course = Course.objects.get(id=number)
-                sections = list(Section.objects.filter(Course=course))
-                courses = list(Course.objects.all())
+        number = request.POST.get('show section')
+        course = Course.objects.get(id=number)
+        sections = list(Section.objects.filter(Course=course))
 
-                #checks if course has any sections
-                if sections.__len__() == 0:
-                    return render(request, "SectionPage.html", {"message":"No section for this course", "Sections": sections, "Courseoptions": courses})
-
-                return render(request, "SectionPage.html", {"Sections":sections, "Courseoptions": courses})
-            except:
-                courses = list(Course.objects.all())
-                return render(request, "SectionPage.html", {"message":"Course doesn't exist or has no sections", "Courseoptions": courses})
-        #creates a section
-        else:
-            number = request.POST.get('create section', '')
-            sectionnumber = request.POST.get('SectionNumber', '')
-
-            courses = list(Course.objects.all())
-            if sectionnumber == "": return render(request, "SectionPage.html", {"message1": "Section Number blank", "Courseoptions": courses})
-
-            try:
-                course = Course.objects.get(id=number)
-
-                try:
-                    Section.objects.get(id=sectionnumber, Course=course)
-                    sections = list(Section.objects.filter(Course=course))
-                    return render(request, "SectionPage.html",{"message1":"Section exists", "Sections":sections, "Courseoptions": courses})
-                except:
-                    newsection = Section.objects.create(id=sectionnumber, Course=course)
-                    newsection.save()
-
-                    sections = list(Section.objects.filter(Course=course))
-                    courses = list(Course.objects.all())
-                    return render(request, "SectionPage.html", {"message1":"Section Added", "Sections":sections, "Courseoptions": courses})
-            except:
-                courses = list(Course.objects.all())
-                return render(request, "SectionPage.html", {"message1":"Course doesn't exist", "Courseoptions": courses})
+        #checks if course has any sections
+        if sections.__len__() == 0:
+            return render(request, "SectionPage.html", {"message":"No section for this course", "Sections": sections, "Courseoptions": courses})
+        return render(request, "SectionPage.html", {"Sections":sections, "Courseoptions": courses})
 
 
-class AssignSection(View):
+
+class AddSectionPage(View):
     def get(self, request):
-        # Similar to what Benji did for creating sections. Will need to select a course to get sections.
-        course_list = list(Course.objects.all())
-        return render(request, "AssignSection.html", {"course_list": course_list})
+        courses = list(Course.objects.all())
+        return render(request, "AddSectionPage.html", {"Courseoptions":courses})
 
     def post(self, request):
+        number = request.POST.get('create section', '')
+        sectionnumber = request.POST.get('SectionNumber', '')
+        courses = list(Course.objects.all())
+
+        if (request.POST.get('chosen') == "Back"):
+            return render(request, "SectionPage.html", {'Courseoptions':courses})
+
+        if sectionnumber == "": return render(request, "AddSectionPage.html",
+                                              {"message1": "Section Number blank", "Courseoptions": courses})
+
+        course = Course.objects.get(id=number)
+
+        try:
+            Section.objects.get(id=sectionnumber)
+            sections = list(Section.objects.filter(Course=course))
+            return render(request, "AddSectionPage.html",
+                          {"message1": "Section exists", "Sections": sections, "Courseoptions": courses})
+        except:
+            newsection = Section.objects.create(id=sectionnumber, Course=course)
+            newsection.save()
+
+            sections = list(Section.objects.filter(Course=course))
+            courses = list(Course.objects.all())
+            return render(request, "SectionPage.html",
+                          {"message1": "Section Added", "Sections": sections, "Courseoptions": courses})
+
+
+
+class DeleteSectionPage(View):
+    def get(self, request):
+        sections = list(Section.objects.all())
+        return render(request, "DeleteSectionPage.html", {"Sectionoptions":sections})
+    def post(self, request):
+        courses = list(Course.objects.all())
         todo = request.POST.get('chosen')
-        course_list = list(Course.objects.all())
-        # Will go through different if conditionals to decide which operation to do.
-        # Copied from SectionPage code in presenting the information to the user.
-        if todo == "Back":
-            return redirect('directory')
-        elif todo == "Show Sections":
-            course_num = request.POST.get('select_course')
-            # Got rid of the try/catch block as it seems there might be too many exceptions to cover in one
-            # to simplify until necessary, code will run without try block.
-            course = Course.objects.get(id = course_num)
-            course_sections = list(Section.objects.filter(Course = course))
-            if course_sections.__len__() == 0:
-                return render(request, "AssignSection.html", {'message': 'No sections exist for this course.', 'Sections': course_sections, 'course_list': course_list})
-            else:
-                # If course sections list is not 0, meaning that we do have a section that exists we shall send back
-                # the list of Instructor and Teacher Assistant users to be listed and chosen to assign.
-                teacher_assistant_list = list(User.objects.filter(is_superuser = False, is_staff = False))
-                instructors_list = list(User.objects.filter(is_superuser = False, is_staff = True))
-                if teacher_assistant_list.__len__() == 0:
-                    return render(request, "AssignSection.html", {'message': 'There exists no Teacher Assistants'})
-                elif instructors_list.__len__() == 0:
-                    return render(request, "AssignSection.html", {'message': 'There exists no Instructors'})
-                else:
-                    return render(request, 'AssignSection.html', {'course_sections': course_sections, 'teacher_assistant_list': teacher_assistant_list, 'instructor_list': instructors_list})
-        if todo == 'Assign':
-            # Getting the model objects so that I can change section fields for Instructors and Teacher Assistants
-            # if necessary
-            section = Section.objects.get(id = request.POST.get('select_section'))
-            if request.POST.get('select_instructor') == "":
-                instructor = None
-            else:
-                instructor = User.objects.get(first_name=request.POST.get('select_instructor'))
+        if(todo == "Back"):
+            return render(request, "SectionPage.html", {'Courseoptions':courses})
 
-            if request.POST.get('select_teacher_assistant') == "":
-                teacher_assistant = None
-            else:
-                teacher_assistant = User.objects.get(first_name=request.POST.get('select_teacher_assistant'))
-
-            # Checks to see if that section's Instructor field contains the instructor selected, will probably
-            # change it so that only this course's instructor shows up
-            if instructor != None and section.Course.Instructor != instructor:
-                return render(request, "AssignSection.html", {'message2': 'Instructor does not teach this sections course', 'course_list': course_list})
-            # Checks to see if the selected TA existed for a section already
-            elif teacher_assistant != None and Section.objects.filter(TeacherAssistant = teacher_assistant).exists():
-                return render(request, "AssignSection.html",{'message2': 'Teacher Assistant is already assigned to a section','course_list': course_list})
-            else:
-                section.Instructor = instructor
-                section.TeacherAssistant = teacher_assistant
-                section.save()
-                return render(request, "AssignSection.html",{'message2': 'Assign successful for section: ' + section.id, 'course_list': course_list, 'section_saved': section})
-
-        return render(request, "AssignSection.html")
+        section = Section.objects.get(id=todo)
+        course = section.Course
+        sections = Section.objects.filter(Course=course)
+        section.delete()
+        return render(request, "SectionPage.html", {"Courseoptions":courses, 'Sections':sections, })
