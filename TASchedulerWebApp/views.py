@@ -107,8 +107,6 @@ def Directory(request):
       ('Sections', 'SectionPage/'),
       ('TAs', '/tas'),
       ('Instructors', '/instructors'),
-      ('Create Course', 'AddCoursePage/'),
-      ('Create Section', '/create_section'),
       ('Create/Edit Account', 'account_creation/'),
     ]
     #Instructor view
