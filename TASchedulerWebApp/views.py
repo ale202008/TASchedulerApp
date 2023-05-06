@@ -34,7 +34,8 @@ def is_admin(user):
 @login_required
 def account_info(request):
     user = request.user
-    context = {'user': user}
+    skills = Skill.objects.filter(TeacherAssistant=user)
+    context = {'user': user, 'skills' : skills}
     return render(request, 'account_info.html', context)
 
 
@@ -304,3 +305,13 @@ class AssignSection(View):
                 return render(request, "AssignSection.html",{'message2': 'Assign successful for section: ' + section.id, 'course_list': course_list, 'section_saved': section})
 
         return render(request, "AssignSection.html")
+    
+def add_skill(request):
+    if request.method == 'POST':
+        skill_name = request.POST['skill_name']
+        user = request.user
+        new_skill = Skill(name=skill_name, TeacherAssistant=user)
+        new_skill.save()
+        return redirect('account_info')
+    else:
+        return redirect('account_info')

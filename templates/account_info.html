@@ -4,6 +4,23 @@
   <h1>Account Information</h1>
   <p>Email: {{ user.email }}</p>
 
+  {% if skills %}
+    <h2>Skills:</h2>
+    <ul>
+      {% for skill in skills %}
+        <li> {{skill.name}}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <h2>Add a Skill</h2>
+  <form action="{% url 'add_skill' %}" method="post">
+    {% csrf_token %}
+    <label for="skill_name">Skill:</label>
+    <input type="text" id="skill_name" name="skill_name" required>
+    <button type="submit">Add Skill</button>
+  </form>
+
   <form action="{% url 'home' %}" method="get">
   </form>
 
