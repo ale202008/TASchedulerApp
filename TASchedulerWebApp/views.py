@@ -362,18 +362,52 @@ class AssignSection(View):
 
 class Notifications(View):
     def get(self, request):
-        User = request.user
-        notification_list  = list(Notification.objects.filter(UserAllowed = User))
-        if User.is_superuser or User.is_staff:
-            self.notification_send(self)
-        return render(request, 'notifications.html', {'notifications': notification_list})
+        self.User = request.user
+        if self.permitted_user(User):
+            return render(request, 'notifications.html',
+                          {'notifications': self.getNotifications(self.User), 'permission': self.permitted_user(self.User),
+                           'instructors': self.getInstructors(), 'teacherassistants': self.getTeacherAssistants()})
+        return render(request, 'notifications.html', {'notifications': self.getNotifications(self.User), 'permission': self.permitted_user(self.User)})
     def post(self, request):
+        self.User = request.user
         todo = request.POST.get('chosen')
         if todo == "Back":
-            print('hi')
             return redirect('directory')
-        print('hi2')
-        return render(request, 'notifications.html')
+        else:
+            Users = request.POST.get('select_user')
+            notification = request.POST.get('new_notification')
+            Recipients = None
+            if Users == 'All Instructors':
+                Recipients = self.getInstructors()
+            elif Users == 'All Teacher Assistants':
+                Recipients = self.getTeacherAssistants()
+            else:
+                Recipients = User.objects.get(email = Users)
 
-    def notification_send(self):
-        pass
+            self.notification = Notification.objects.create(notification = notification, UserAllowed = Recipients)
+            self.notification.save()
+
+        if self.permitted_user(self.User):
+            return render(request, 'notifications.html',
+                          {'notifications': self.getNotifications(self.User), 'permission': self.permitted_user(self.User),
+                           'instructors': self.getInstructors(), 'teacherassistants': self.getTeacherAssistants()})
+        return render(request, 'notifications.html',
+                      {'notifications': self.getNotifications(self.User), 'permission': self.permitted_user(self.User)})
+
+    def permitted_user(self, User):
+        if User.is_superuser or User.is_staff:
+            return True
+        else:
+            return False
+
+    def getInstructors(self):
+        instructor_list = list(User.objects.filter(is_staff=True))
+        return instructor_list
+
+    def getTeacherAssistants(self):
+        teacher_assistant_list = list(User.objects.filter(is_staff=False, is_superuser=False))
+        return teacher_assistant_list
+
+    def getNotifications(self, User):
+        notification_list  = list(Notification.objects.filter(UserAllowed = User))
+        return notification_list

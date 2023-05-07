@@ -10,6 +10,34 @@
          {{ notification.notification }}<br>
     {% endfor %}
 
+    <br>
+    <br>
+
+    {% if permission == True %}
+        <form action = '/Notification/' method = 'post'>
+            {% csrf_token %}
+
+            <label>Recipients:</label>
+            <select name = "select_user">
+                <option value = ''>Please choose an option</option>
+                <option value = 'All Instructors'>All Instructors</option>
+                <option value = 'All Teacher Assistants'>All Teacher Assistants</option>
+                {% for instructor in instructors %}
+                    <option value = '{{ instructor.email }}'>{{ instructor.email }}</option>
+                {% endfor %}
+                {% for teacherassistant in teacherassistants %}
+                    <option value = '{{ teacherassistant.email }}'>{{ teacherassistant.email }}</option>
+                {% endfor %}
+            </select>
+
+            <br>
+
+            <label for = 'new_notification'>Message:</label>
+            <input type = 'text' id = 'new_notification' name ='new_notification'>
+            <input type="submit" name="chosen" value="Send Notification">
+        </form>
+    {% endif %}
+
     <form action = '/Notification/' method = 'post'>
         {% csrf_token %}
         <input type="submit" name="chosen" value="Back">
