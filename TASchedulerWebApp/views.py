@@ -129,7 +129,7 @@ def Directory(request):
     buttons = [
       ('Courses', 'CoursePage/'),
       ('Account Info', '/account'),
-      ('Notifications', 'notifications/'),
+      ('Notifications', 'Notification/'),
       ('Sections', 'SectionPage/'),
       ('TAs', '/tas'),
       ('Instructors', '/instructors'),
@@ -140,7 +140,7 @@ def Directory(request):
     buttons = [
       ('Courses', 'CoursePage/'),
       ('Account Info', '/account'),
-      ('Notifications', 'notifications/'),
+      ('Notifications', 'Notification/'),
       ('Sections', 'SectionPage/'),
       ('TAs', '/tas'),
     ]
@@ -148,7 +148,7 @@ def Directory(request):
     buttons = [
       ('Courses', 'CoursePage/'),
       ('Account Info', '/account'),
-      ('Notifications', 'notifications/'),
+      ('Notifications', 'Notification/'),
       ('Sections', 'SectionPage/'),
       ('TAs', '/tas'),
     ]
@@ -234,6 +234,8 @@ class Sections(View):
         if todo == "Delete Section":
             sections = list(Section.objects.all())
             return render(request, "DeleteSectionPage.html", {"Sectionoptions":sections})
+        if todo == "Assign Section":
+            return redirect('assign_section')
         #displays sections for a course
         number = request.POST.get('show section')
         course = Course.objects.get(id=number)
@@ -358,8 +360,20 @@ class AssignSection(View):
 
         return render(request, "AssignSection.html")
 
-class notification(View):
-    def get(self):
-        pass
-    def post(self):
+class Notifications(View):
+    def get(self, request):
+        User = request.user
+        notification_list  = list(Notification.objects.filter(UserAllowed = User))
+        if User.is_superuser or User.is_staff:
+            self.notification_send(self)
+        return render(request, 'notifications.html', {'notifications': notification_list})
+    def post(self, request):
+        todo = request.POST.get('chosen')
+        if todo == "Back":
+            print('hi')
+            return redirect('directory')
+        print('hi2')
+        return render(request, 'notifications.html')
+
+    def notification_send(self):
         pass

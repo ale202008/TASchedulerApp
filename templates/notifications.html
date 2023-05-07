@@ -2,9 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Notifications</title>
 </head>
 <body>
+    <h1>Notifications</h1>
+    {% for notification in notifications %}
+         {{ notification.notification }}<br>
+    {% endfor %}
 
+    <form action = '/Notification/' method = 'post'>
+        {% csrf_token %}
+        <input type="submit" name="chosen" value="Back">
+    </form>
 </body>
 </html>
