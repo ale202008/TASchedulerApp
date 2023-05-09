@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Sections</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/SectionPage.css' %}"/>
 </head>
 <body>
     <h1>Section Page</h1>
@@ -17,7 +17,7 @@
         <option value="{{ course.id }}">{{ course.id }}</option>
         {% endfor %}
         </select>
-        <span><input type="submit" name="chosen" value="Show Sections"></span>
+        <span><button type="submit" name="chosen" value="Show Sections">Show Sections</button></span>
     </form>
     <br>{{ message }}
     <br><label>Sections</label>
@@ -33,9 +33,12 @@
     <form action="/SectionPage/" method="post">
         {% csrf_token %}
         <br>
-        <input type="submit" name="chosen" value="Add Section">
-        <input type="submit" name="chosen" value="Delete Section">
-        <br><input type="submit" name="chosen" value="Back">
+        <button type="submit" name="chosen" value="Add Section">Add Section</button>
+        <button type="submit" name="chosen" value="Delete Section">Delete Section</button>
+    </form>
+    <form action="{% url 'directory' %}" method="get">
+        {% csrf_token %}
+        <br><button type="submit" name="chosen" value="Back">Back</button>
     </form>
 </body>
 </html>
