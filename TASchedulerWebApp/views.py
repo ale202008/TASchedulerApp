@@ -245,4 +245,12 @@ class Sections(View):
                 courses = list(Course.objects.all())
                 return render(request, "SectionPage.html", {"message1":"Course doesn't exist", "Courseoptions": courses})
 
-
+def add_skill(request):
+    if request.method == 'POST':
+        skill_name = request.POST['skill_name']
+        user = request.user
+        new_skill = Skill(name=skill_name, TeacherAssistant=user)
+        new_skill.save()
+        return redirect('account_info')
+    else:
+        return redirect('account_info')

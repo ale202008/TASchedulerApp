@@ -51,3 +51,10 @@ class Section(models.Model):
     TeacherAssistant = User
     Course = models.ForeignKey('Course', blank=True, null=True, on_delete=models.CASCADE)
 
+class Skill(models.Model):
+    name = models.CharField(max_length = 69, blank = True)
+    TeacherAssistant = models.ForeignKey('User', blank=True, null=True, on_delete=models.CASCADE, related_name='Skill_TeacherAssistant', unique=False)
+
+class Notification(models.Model):
+    notification = models.CharField(max_length = 1000)
+    UserAllowed = models.ForeignKey('User', blank=True, null=True, on_delete=models.CASCADE, related_name='Notification_UserAllowed', unique=False)
