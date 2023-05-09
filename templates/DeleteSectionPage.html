@@ -1,11 +1,13 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>DeleteSection</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/DeleteSection.css' %}"/>
 </head>
 <body>
-    <h1>Section Deletion Page</h1>
+    <h1>Section Deletion</h1>
     <form action="/DeleteSectionPage/" method="post">
         {% csrf_token %}
     <label>Section:</label>

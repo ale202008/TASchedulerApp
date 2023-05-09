@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/AddCourse.css' %}"/>
 </head>
 <body>
-    <h1>Course Creation Page</h1>
+    <h1>Course Creation</h1>
     <form action="/AddCoursePage/" method="post">
         {% csrf_token %}
         <span><label>Course Number:</label><input type="text" name="CourseNumber"></span>
