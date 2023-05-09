@@ -12,6 +12,7 @@ class UserCreationForm(forms.ModelForm):
         labels = {
             'email': 'Email', 'first_name': "First Name", 'last_name' : "Last Name", 'is_staff': "Instructor"
         }
+
     def clean(self):
         cleaned_data = super().clean()
         password = cleaned_data.get("password")
@@ -30,6 +31,7 @@ class UserCreationForm(forms.ModelForm):
 class UserEditForm(forms.ModelForm):
     emailSelect = forms.ModelChoiceField(queryset=User.objects.all())
     email = forms.EmailField(required=False, widget=forms.TextInput)
+    delete_account = forms.BooleanField(required=False)
 
     class Meta:
         model = User
@@ -37,6 +39,7 @@ class UserEditForm(forms.ModelForm):
         labels = {
             'email': 'Email', 'first_name': "First Name", 'last_name' : "Last Name", 'is_staff': "Instructor", 'is_active' : "Administrator"
         }
+
     def clean(self):
         cleaned_data = super().clean()
         user = cleaned_data.get("emailSelect")
@@ -45,10 +48,40 @@ class UserEditForm(forms.ModelForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
+        if self.cleaned_data['delete_account']:
+            user.delete()
+            return None
         updatefields = []
         for field in self.cleaned_data.keys():
             if self.cleaned_data.get(field) != "" and field != "emailSelect":
                 updatefields.append(field)
         if commit:
             user.save(update_fields=updatefields)
+        return user
+
+
+class NonAdminEditForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+    password_confirm = forms.CharField(widget=forms.PasswordInput, label="Confirm password")
+
+    class Meta:
+        model = User
+        fields = ('email', 'first_name', 'last_name')
+        labels = {
+            'email': 'Email', 'first_name': "First Name", 'last_name' : "Last Name"
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = self.cleaned_data["password"]
+        password_confirm = self.cleaned_data["password_confirm"]
+        if password != password_confirm:
+            raise forms.ValidationError("Passwords do not match.")
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        print(self.cleaned_data["password"])
+        user.set_password(self.cleaned_data["password"])
+        if commit:
+            user.save()
         return user

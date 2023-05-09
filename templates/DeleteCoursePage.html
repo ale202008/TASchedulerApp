@@ -21,12 +21,17 @@
     <input type="submit" value="Delete Course">
 </form>
 <label>Courses</label>
+<table>
 {%  for i in Courses %}
-    <br>{{ i.id }}
-    {{ i.name }}
+    <tr>
+        <td>{{ i.id }}</td>
+        <td>{{ i.name }}</td>
+    </tr>
 {% endfor %}
+</table>
 <form action="/DeleteCoursePage/" method="post">
-    <span><input type="submit" name="chosen" value="Back"></span>
+    {% csrf_token %}
+    <br><span><input type="submit" name="chosen" value="Back"></span>
 </form>
 </body>
 </html>

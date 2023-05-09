@@ -44,11 +44,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Course(models.Model):
     id = models.CharField(max_length=12, primary_key=True)
     name = models.CharField(max_length=200)
-    Instructor = User
+    Instructor = models.ForeignKey('User', blank = True, null = True, on_delete = models.DO_NOTHING, related_name='Course_Instructor', unique = False)
+    TeacherAssistant = models.ForeignKey('User', blank=True, null=True, on_delete=models.DO_NOTHING, related_name='Course_TeacherAssistant', unique=False)
 
 class Section(models.Model):
     id = models.CharField(max_length=150, unique=True, primary_key=True)
-    TeacherAssistant = User
+    TeacherAssistant = models.ForeignKey('User', blank = True, null = True, on_delete = models.DO_NOTHING, related_name = 'Section_TeacherAssistant', unique = False)
+    Instructor = models.ForeignKey('User', blank = True, null = True, on_delete = models.DO_NOTHING, related_name = 'Section_Instructor', unique = False)
     Course = models.ForeignKey('Course', blank=True, null=True, on_delete=models.CASCADE)
 
 class Skill(models.Model):
@@ -58,3 +60,4 @@ class Skill(models.Model):
 class Notification(models.Model):
     notification = models.CharField(max_length = 1000)
     UserAllowed = models.ForeignKey('User', blank=True, null=True, on_delete=models.CASCADE, related_name='Notification_UserAllowed', unique=False)
+
