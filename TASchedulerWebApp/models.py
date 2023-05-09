@@ -60,4 +60,5 @@ class Skill(models.Model):
 class Notification(models.Model):
     notification = models.CharField(max_length = 1000)
     UserAllowed = models.ForeignKey('User', blank=True, null=True, on_delete=models.CASCADE, related_name='Notification_UserAllowed', unique=False)
+    Sender = models.ForeignKey('User', blank=True, null=True, on_delete=models.CASCADE, related_name='Notification_Sender', unique=False)
 

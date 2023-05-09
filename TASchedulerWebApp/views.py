@@ -129,7 +129,7 @@ def Directory(request):
     buttons = [
       ('Courses', 'CoursePage/'),
       ('Account Info', '/account'),
-      ('Notifications', 'notifications/'),
+      ('Notifications', 'Notification/'),
       ('Sections', 'SectionPage/'),
       ('TAs', '/tas'),
       ('Instructors', '/instructors'),
@@ -140,7 +140,7 @@ def Directory(request):
     buttons = [
       ('Courses', 'CoursePage/'),
       ('Account Info', '/account'),
-      ('Notifications', 'notifications/'),
+      ('Notifications', 'Notification/'),
       ('Sections', 'SectionPage/'),
       ('TAs', '/tas'),
     ]
@@ -148,7 +148,7 @@ def Directory(request):
     buttons = [
       ('Courses', 'CoursePage/'),
       ('Account Info', '/account'),
-      ('Notifications', 'notifications/'),
+      ('Notifications', 'Notification/'),
       ('Sections', 'SectionPage/'),
       ('TAs', '/tas'),
     ]
@@ -234,6 +234,8 @@ class Sections(View):
         if todo == "Delete Section":
             sections = list(Section.objects.all())
             return render(request, "DeleteSectionPage.html", {"Sectionoptions":sections})
+        if todo == "Assign Section":
+            return redirect('assign_section')
         #displays sections for a course
         number = request.POST.get('show section')
         course = Course.objects.get(id=number)
@@ -358,8 +360,60 @@ class AssignSection(View):
 
         return render(request, "AssignSection.html")
 
-class notification(View):
-    def get(self):
-        pass
-    def post(self):
-        pass
+class Notifications(View):
+    def get(self, request):
+        self.User = request.user
+        if self.permitted_user(User):
+            return render(request, 'notifications.html',
+                          {'notifications': self.getNotifications(self.User), 'permission': self.permitted_user(self.User),
+                           'instructors': self.getInstructors(), 'teacherassistants': self.getTeacherAssistants()})
+        return render(request, 'notifications.html', {'notifications': self.getNotifications(self.User), 'permission': self.permitted_user(self.User)})
+    def post(self, request):
+        self.User = request.user
+        todo = request.POST.get('chosen')
+        if todo == "Back":
+            return redirect('directory')
+        else:
+            Users = request.POST.getlist('select_user')
+            notification = request.POST.get('new_notification')
+            self.makeNotification(Users, notification)
+
+        if self.permitted_user(self.User):
+            return render(request, 'notifications.html',
+                          {'notifications': self.getNotifications(self.User), 'permission': self.permitted_user(self.User),
+                           'instructors': self.getInstructors(), 'teacherassistants': self.getTeacherAssistants()})
+        return render(request, 'notifications.html',
+                      {'notifications': self.getNotifications(self.User), 'permission': self.permitted_user(self.User)})
+
+    def permitted_user(self, User):
+        if User.is_superuser or User.is_staff:
+            return True
+        else:
+            return False
+
+    def getInstructors(self):
+        instructor_list = list(User.objects.filter(is_staff=True))
+        return instructor_list
+
+    def getTeacherAssistants(self):
+        teacher_assistant_list = list(User.objects.filter(is_staff=False, is_superuser=False))
+        return teacher_assistant_list
+
+    def getNotifications(self, User):
+        notification_list  = list(Notification.objects.filter(UserAllowed = User))
+        return notification_list
+
+    def makeNotification(self, list, notification):
+        for i in list:
+            if i == 'All Instructors':
+                Recipients = self.getInstructors()
+                for i in Recipients:
+                    self.notification = Notification.objects.create(notification=notification, UserAllowed=i, Sender = self.User)
+            elif i == 'All Teacher Assistants':
+                Recipients = self.getTeacherAssistants()
+                for i in Recipients:
+                    self.notification = Notification.objects.create(notification=notification, UserAllowed=i, Sender = self.User)
+            else:
+                Recipients = User.objects.get(email = i)
+                self.notification = Notification.objects.create(notification=notification, UserAllowed=Recipients, Sender = self.User)
+            self.notification.save()
