@@ -374,18 +374,9 @@ class Notifications(View):
         if todo == "Back":
             return redirect('directory')
         else:
-            Users = request.POST.get('select_user')
+            Users = request.POST.getlist('select_user')
             notification = request.POST.get('new_notification')
-            Recipients = None
-            if Users == 'All Instructors':
-                Recipients = self.getInstructors()
-            elif Users == 'All Teacher Assistants':
-                Recipients = self.getTeacherAssistants()
-            else:
-                Recipients = User.objects.get(email = Users)
-
-            self.notification = Notification.objects.create(notification = notification, UserAllowed = Recipients)
-            self.notification.save()
+            self.makeNotification(Users, notification)
 
         if self.permitted_user(self.User):
             return render(request, 'notifications.html',
@@ -411,3 +402,18 @@ class Notifications(View):
     def getNotifications(self, User):
         notification_list  = list(Notification.objects.filter(UserAllowed = User))
         return notification_list
+
+    def makeNotification(self, list, notification):
+        for i in list:
+            if i == 'All Instructors':
+                Recipients = self.getInstructors()
+                for i in Recipients:
+                    self.notification = Notification.objects.create(notification=notification, UserAllowed=i, Sender = self.User)
+            elif i == 'All Teacher Assistants':
+                Recipients = self.getTeacherAssistants()
+                for i in Recipients:
+                    self.notification = Notification.objects.create(notification=notification, UserAllowed=i, Sender = self.User)
+            else:
+                Recipients = User.objects.get(email = i)
+                self.notification = Notification.objects.create(notification=notification, UserAllowed=Recipients, Sender = self.User)
+            self.notification.save()
