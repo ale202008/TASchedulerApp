@@ -236,6 +236,9 @@ class Sections(View):
             return render(request, "DeleteSectionPage.html", {"Sectionoptions":sections})
         #displays sections for a course
         number = request.POST.get('show section')
+        if number == "":
+            courses = list(Course.objects.all())
+            return render(request, "SectionPage.html", {"Courseoptions": courses, "message":"Please choose a course"})
         course = Course.objects.get(id=number)
         sections = list(Section.objects.filter(Course=course))
 
@@ -255,7 +258,9 @@ class AddSectionPage(View):
         number = request.POST.get('create section', '')
         sectionnumber = request.POST.get('SectionNumber', '')
         courses = list(Course.objects.all())
-
+        if number == "":
+            return render(request, "AddSectionPage.html",
+                          {"message1": "Please choose a course", "Courseoptions": courses})
         if sectionnumber == "": return render(request, "AddSectionPage.html",
                                               {"message1": "Section Number blank", "Courseoptions": courses})
 
