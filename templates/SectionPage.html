@@ -36,6 +36,9 @@
         <button type="submit" name="chosen" value="Add Section">Add Section</button>
         <button type="submit" name="chosen" value="Delete Section">Delete Section</button>
     </form>
+    <form action="/AssignSection/" method="get">
+        <button>Assign TA/Instructor</button>
+    </form>
     <form action="{% url 'directory' %}" method="get">
         {% csrf_token %}
         <br><button type="submit" name="chosen" value="Back">Back</button>
