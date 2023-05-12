@@ -17,7 +17,7 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('email', 'password', 'password_confirm', 'first_name', 'last_name')}
         ),
     )
-    add_form = UserCreationForm, UserEditForm
+    add_form = UserCreationForm
     list_display = ('email', 'first_name', 'last_name', 'is_staff')
     search_fields = ('email', 'first_name', 'last_name')
     ordering = ('email',)

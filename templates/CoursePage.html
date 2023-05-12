@@ -32,23 +32,22 @@
         <label for="course">Course:</label>
         <select id="course" name="course">
             {% for course in Courses %}
-            <option value="{{ course.id }}">{{ course.name }}</option>
+            <option value="{{ course.name }}">{{ course.name }}</option>
             {% endfor %}
         </select><br><br>
         <label for="instructor">Instructor:</label>
-<select id="instructor" name="instructor">
-    {% for instructor in instructors %}
-        <option value="{{ instructor.id }}">{{ instructor.username }}</option>
+<select id="instructor" name="select_instructor">
+    {% for instructor in Instructors  %}
+        <option value="{{ instructor.id }}">{{ instructor.email }}</option>
     {% endfor %}
 </select><br><br>
+
 <label for="ta">TA:</label>
-<select id="ta" name="ta">
-    {% for ta in tas %}
-        <option value="{{ ta.id }}">{{ ta.username }}</option>
+<select id="ta" name="select_teacher_assistant">
+    {% for ta in TAs %}
+        <option value="{{ ta.id }}">{{ ta.email }}</option>
     {% endfor %}
 </select><br><br>
-
-
         <input type="submit" value="Submit">
     </form>
 

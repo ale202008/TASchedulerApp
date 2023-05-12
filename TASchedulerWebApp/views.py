@@ -147,9 +147,10 @@ class CoursePage(View):
         courses = list(Course.objects.all())
         instructors = User.objects.filter(is_staff=True, is_superuser=False)
         tas = User.objects.filter(is_staff=False, is_superuser=False)
+        print("Courses:", courses)
         print("Instructors:", instructors)
         print("TAs:", tas)
-        return render(request, "CoursePage.html", {"Courses": courses, "message": "", "instructors": instructors, "tas": tas})
+        return render(request, "CoursePage.html", {"Courses": courses, "message": "", "Instructors": instructors, "TAs": tas})
 
     def post(self, request):
         user = request.user
@@ -163,26 +164,31 @@ class CoursePage(View):
 
         if (request.POST.get('chosen') == "Home"):
             return redirect('directory')
-
-        if (request.POST.get('course')):
+        form = CourseAssignForm(request.POST)
+        if form.is_valid():
             course = Course.objects.get(id=request.POST.get('course'))
-            instructor = User.objects.get(id=request.POST.get('instructor'))
-            ta = User.objects.get(id=request.POST.get('ta'))
+            instructor = form.cleaned_data['instructor'] if form.cleaned_data['assign_instructor'] else None
+            ta = form.cleaned_data['ta'] if form.cleaned_data['assign_ta'] else None
             course.instructor = instructor
             course.teacher_assistant = ta
             course.save()
             return redirect('coursepage')
-        return render(request, 'CoursePage.html', {"Courses": courses, "message": "You are not a supervisor", "instructors": [], "tas": []})
+
+        instructors = User.objects.filter(is_staff=True, is_superuser=False)
+        tas = User.objects.filter(is_staff=False, is_superuser=False)
+        return render(request, 'CoursePage.html',
+                      {"Courses": courses, "message": "You are not a supervisor", "instructors": instructors,
+                       "tas": tas})
 
     def assign_course_staff(request):
         if request.method == "POST":
             course_id = request.POST.get('course_id')
             course = Course.objects.get(id=course_id)
 
-            instructor_id = request.POST.get('select_instructor')
+            instructor_id = request.POST.get('instructor_id')
             instructor = User.objects.get(id=instructor_id)
 
-            ta_id = request.POST.get('select_ta')
+            ta_id = request.POST.get('ta_id')
             ta = User.objects.get(id=ta_id)
 
             course.Instructor = instructor

@@ -1,5 +1,6 @@
 from django import forms
 from .models import User, Course
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
 
 class UserCreationForm(forms.ModelForm):
@@ -54,15 +55,14 @@ class UserEditForm(forms.ModelForm):
         return user
 
 class CourseForm(forms.ModelForm):
-    instructor = forms.ModelChoiceField(queryset=User.objects.filter(groups__name='Instructor'))
-    teacher_assistant = forms.ModelChoiceField(queryset=User.objects.filter(groups__name='Teacher Assistant'))
+    instructor = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True, is_superuser=False), required=False)
+    ta = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=False, is_superuser=False), required=False)
+    assign_instructor = forms.BooleanField(required=False)
+    assign_ta = forms.BooleanField(required=False)
 
     class Meta:
         model = Course
-        fields = ['id', 'name', 'instructor', 'teacher_assistant']
-        labels = {
-            'id': 'Course ID', 'name': 'Course Name', 'instructor': 'Instructor', 'teacher_assistant': 'TA'
-        }
+        fields = ['instructor', 'ta', 'assign_instructor', 'assign_ta']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
