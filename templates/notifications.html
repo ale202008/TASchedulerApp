@@ -17,24 +17,26 @@
         <form action = '/Notification/' method = 'post'>
             {% csrf_token %}
 
-            <label>Recipients:</label>
-            <select name = "select_user" multiple>
-                <option value = ''>Please choose an option</option>
-                <option value = 'All Instructors'>All Instructors</option>
-                <option value = 'All Teacher Assistants'>All Teacher Assistants</option>
-                {% for instructor in instructors %}
-                    <option value = '{{ instructor.email }}'>{{ instructor.email }}</option>
-                {% endfor %}
-                {% for teacherassistant in teacherassistants %}
-                    <option value = '{{ teacherassistant.email }}'>{{ teacherassistant.email }}</option>
-                {% endfor %}
-            </select>
-
-            <br>
-
             <label for = 'new_notification'>Message:</label>
             <input type = 'text' id = 'new_notification' name ='new_notification'>
             <input type="submit" name="chosen" value="Send Notification">
+            <br>
+            <label>Recipients:</label>
+            <select name = "select_user" multiple>
+                {% if super_user == True %}
+                    <option value = 'All Instructors'>All Instructors</option>
+                {% endif %}
+                <option value = 'All Teacher Assistants'>All Teacher Assistants</option>
+                {% for instructor in instructors %}
+                    <option value = '{{ instructor.email }}'>Instructor: {{ instructor.email }}</option>
+                {% endfor %}
+                {% for teacherassistant in teacherassistants %}
+                    <option value = '{{ teacherassistant.email }}'>Teacher Assistant: {{ teacherassistant.email }}</option>
+                {% endfor %}
+            </select>
+
+            {{ message }}
+
         </form>
     {% endif %}
 
