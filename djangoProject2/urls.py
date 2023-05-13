@@ -29,9 +29,9 @@ urlpatterns = [
     path('AddCoursePage/', AddCoursePage.as_view()),
     path('DeleteCoursePage/', DeleteCoursePage.as_view()),
     path('SectionPage/', Sections.as_view()),
-    path('account_edit/', account_editor, name='account_edit'),
-    path('AddSectionPage/', AddSectionPage.as_view()),
-    path('DeleteSectionPage/', DeleteSectionPage.as_view()),
+    # path('account_edit/', account_editor, name='account_edit'),
+    # path('AddSectionPage/', AddSectionPage.as_view()),
+    # path('DeleteSectionPage/', DeleteSectionPage.as_view()),
 
 # New URL for account information page for the account info
     path('account/', account_info, name='account_info'),
@@ -39,5 +39,6 @@ urlpatterns = [
 
     path('AssignSection/', AssignSection.as_view(), name = "assign_section"),
     path('Notification/', Notifications.as_view(), name= "notification"),
+    path('account_info/add_skill/', add_skill, name='add_skill'),
 
 ]
