@@ -21,8 +21,8 @@
     {% for course in Courses %}
         <div class="course">
             <h3>{{ course.name }}</h3>
-            <p>Instructor: {{ course.instructors }}</p>
-            <p>TA: {{ course.teacher_assistants }}</p>
+            <p>Instructor: {% if course.instructor %}{{ course.instructor.email }}{% else %}None{% endif %}</p>
+            <p>TA: {% if course.teacher_assistant %}{{ course.teacher_assistant.email }}{% else %}None{% endif %}</p>
         </div>
     {% endfor %}
 

@@ -10,8 +10,11 @@ from TASchedulerWebApp.forms import *
 from .models import Course
 from django.contrib.auth import get_user_model
 from TASchedulerWebApp.models import Section
-from .forms import CourseAssignForm
 
+from django.views import View
+from django.shortcuts import render, redirect
+from .forms import CourseAssignForm
+from .models import Course, User
 User = get_user_model()
 
 
@@ -381,3 +384,6 @@ def assign_course(request):
         return redirect('CoursePage')  # Replace 'course_page' with the name of your course page URL pattern
 
     return redirect('CoursePage')  # Redirect to course page if form submission method is not POST
+
+
+
