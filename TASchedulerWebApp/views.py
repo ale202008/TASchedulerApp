@@ -167,8 +167,9 @@ class CoursePage(View):
         form = CourseAssignForm(request.POST)
         if form.is_valid():
             course = Course.objects.get(id=request.POST.get('course'))
-            instructor = form.cleaned_data['instructor'] if form.cleaned_data['assign_instructor'] else None
-            ta = form.cleaned_data['ta'] if form.cleaned_data['assign_ta'] else None
+            instructor = form.cleaned_data.get('instructor') if form.cleaned_data.get('assign_instructor') else None
+            ta = form.cleaned_data.get('ta') if form.cleaned_data.get('assign_ta') else None
+
             course.instructor = instructor
             course.teacher_assistant = ta
             course.save()

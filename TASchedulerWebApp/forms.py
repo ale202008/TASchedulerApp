@@ -74,3 +74,31 @@ class InstructorTAModelForm(forms.ModelForm):
     class Meta:
         model = InstructorTA
         fields = [ 'email', 'course']
+
+
+class CourseAssignForm(forms.Form):
+    course = forms.ModelChoiceField(queryset=Course.objects.all())
+    instructor = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True, is_superuser=False))
+    ta = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=False, is_superuser=False))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        course = cleaned_data.get('course')
+        instructor = cleaned_data.get('instructor')
+        ta = cleaned_data.get('ta')
+
+        if course and instructor and ta:
+            if instructor in course.instructors.all():
+                raise forms.ValidationError('This instructor is already assigned to the course.')
+
+            if ta in course.teacher_assistants.all():
+                raise forms.ValidationError('This TA is already assigned to the course.')
+
+    def save(self):
+        course = self.cleaned_data['course']
+        instructor = self.cleaned_data['instructor']
+        ta = self.cleaned_data['ta']
+
+        course.instructors.add(instructor)
+        course.teacher_assistants.add(ta)
+        course.save()
