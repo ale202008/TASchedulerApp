@@ -17,8 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from TASchedulerWebApp.views import *
-
-
+from django.urls import path
+import TASchedulerWebApp.views as views
 urlpatterns = [
     path('', Login.as_view(), name='login'),
     path('Directory', Directory, name="directory"),
@@ -26,13 +26,15 @@ urlpatterns = [
     path('account_creation/', account_creation, name='account_creation'),
     path('home/', Home.as_view(), name='home'),
     path('CoursePage/', CoursePage.as_view()),
+
     path('AddCoursePage/', AddCoursePage.as_view()),
     path('DeleteCoursePage/', DeleteCoursePage.as_view()),
     path('SectionPage/', Sections.as_view()),
+    path('assign_section/', AssignSection.as_view(), name='assign_section'),
+    path('assign-course/', views.assign_course, name='assign_course'),
 
-# New URL for account information page for the account info
+    # New URL for account information page for the account info
     path('account/', account_info, name='account_info'),
     path('user_list/', user_list, name='user_list'),
 
-    path('AssignSection/', AssignSection.as_view(), name = "assign_section")
 ]

@@ -3,17 +3,17 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .forms import UserCreationForm, UserEditForm
-from django.http import HttpResponse
-from .models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from TASchedulerWebApp.models import User
 from TASchedulerWebApp.models import *
 from TASchedulerWebApp.forms import *
 from .models import Course
 from django.contrib.auth import get_user_model
+from TASchedulerWebApp.models import Section
+from .forms import CourseAssignForm
+
 User = get_user_model()
+
 
 class Login(View):
     def get(self, request):
@@ -304,40 +304,79 @@ class AssignSection(View):
             course_num = request.POST.get('select_course')
             # Got rid of the try/catch block as it seems there might be too many exceptions to cover in one
             # to simplify until necessary, code will run without try block.
-            course = Course.objects.get(id = course_num)
-            course_sections = list(Section.objects.filter(Course = course))
+            course = Course.objects.get(id=course_num)
+            course_sections = list(Section.objects.filter(Course=course))
             if course_sections.__len__() == 0:
-                return render(request, "AssignSection.html", {'message': 'No sections exist for this course.', 'Sections': course_sections, 'course_list': course_list})
+                return render(request, "AssignSection.html",
+                              {'message': 'No sections exist for this course.', 'Sections': course_sections,
+                               'course_list': course_list})
             else:
                 # If course sections list is not 0, meaning that we do have a section that exists we shall send back
                 # the list of Instructor and Teacher Assistant users to be listed and chosen to assign.
-                teacher_assistant_list = list(User.objects.filter(is_superuser = False, is_staff = False))
-                instructors_list = list(User.objects.filter(is_superuser = False, is_staff = True))
+                teacher_assistant_list = list(
+                    User.objects.filter(is_superuser=False, is_staff=False))
+                instructors_list = list(User.objects.filter(is_superuser=False, is_staff=True))
                 if teacher_assistant_list.__len__() == 0:
                     return render(request, "AssignSection.html", {'message': 'There exists no Teacher Assistants'})
                 elif instructors_list.__len__() == 0:
                     return render(request, "AssignSection.html", {'message': 'There exists no Instructors'})
                 else:
-                    return render(request, 'AssignSection.html', {'course_sections': course_sections, 'teacher_assistant_list': teacher_assistant_list, 'instructor_list': instructors_list})
+                    return render(request, 'AssignSection.html',
+                                  {'course_sections': course_sections, 'teacher_assistant_list': teacher_assistant_list,
+                                   'instructor_list': instructors_list})
         elif todo == 'Assign':
             # Getting the model objects so that I can change section fields for Instructors and Teacher Assistants
             # if necessary
-            section = Section.objects.get(id = request.POST.get('select_section'))
-            instructor = User.objects.get(first_name= request.POST.get('select_instructor'))
-            teacher_assistant = User.objects.get(first_name = request.POST.get('select_teacher_assistant'))
-
+            section = Section.objects.get(id=request.POST.get('select_section'))
+            instructor = User.objects.get(first_name=request.POST.get('select_instructor'))
+            teacher_assistant = User.objects.get(first_name=request.POST.get('select_teacher_assistant'))
 
             # Checks to see if that section's Instructor field contains the instructor selected, will probably
             # change it so that only this course's instructor shows up
             if section.Course.Instructor != instructor:
-                return render(request, "AssignSection.html", {'message2': 'Instructor does not teach this sections course', 'course_list': course_list})
+                return render(request, "AssignSection.html",
+                              {'message2': 'Instructor does not teach this sections course', 'course_list': course_list})
             # Checks to see if the selected TA existed for a section already
-            elif Section.objects.filter(TeacherAssistant = teacher_assistant).exists():
-                return render(request, "AssignSection.html",{'message2': 'Teacher Assistant is already assigned to a section','course_list': course_list})
+            elif Section.objects.filter(TeacherAssistant=teacher_assistant).exists():
+                return render(request, "AssignSection.html",
+                              {'message2': 'Teacher Assistant is already assigned to a section',
+                               'course_list': course_list})
             else:
                 section.Instructor = instructor
                 section.TeacherAssistant = teacher_assistant
                 section.save()
-                return render(request, "AssignSection.html",{'message2': 'Assign successful for section: ' + section.id, 'course_list': course_list})
+                return render(request, 'AssignSection.html', {'message3': 'Section assigned successfully',
+                                                              'course_list': course_list})
+@login_required
+@user_passes_test(lambda user: user.is_superuser)
+def add_instructor_ta(request):
+    if request.method == 'POST':
+        form = InstructorTAModelForm(request.POST)
+        if form.is_valid():
+            form.save()  # Save the form data to the database
+            return redirect('course')  # Redirect back to the course page
+    else:
+        form = InstructorTAModelForm()
 
-        return render(request, "AssignSection.html")
+    return render(request, 'CoursePage.html.html', {'form': form})
+
+
+
+
+def assign_course(request):
+    if request.method == 'POST':
+        course_id = request.POST.get('course')
+        instructor_id = request.POST.get('instructor')
+        ta_id = request.POST.get('ta')
+
+        course = Course.objects.get(id=course_id)
+        instructor = User.objects.get(id=instructor_id)
+        ta = User.objects.get(id=ta_id)
+
+        course.instructors.add(instructor)
+        course.teacher_assistants.add(ta)
+        course.save()
+
+        return redirect('CoursePage')  # Replace 'course_page' with the name of your course page URL pattern
+
+    return redirect('CoursePage')  # Redirect to course page if form submission method is not POST

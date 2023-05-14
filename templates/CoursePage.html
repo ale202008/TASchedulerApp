@@ -7,49 +7,54 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
 </head>
 <body>
-    <h1>Course Page: </h1>
+    <h1>Course Page:</h1>
+
     <form action="/CoursePage/" method="post">
         {% csrf_token %}
-    <span>
-        <input type="submit" name="chosen" value="Add Course">
-        <input type="submit" name="chosen" value="Delete Course">
-    </span>
+        <span>
+            <input type="submit" name="chosen" value="Add Course">
+            <input type="submit" name="chosen" value="Delete Course">
+        </span>
     </form>
+
     <label>Courses</label>
-    {%  for i in Courses %}
-        <br>{{ i.id }}
-        {{ i.name }}
+    {% for course in Courses %}
+        <div class="course">
+            <h3>{{ course.name }}</h3>
+            <p>Instructor: {{ course.instructors }}</p>
+            <p>TA: {{ course.teacher_assistants }}</p>
+        </div>
     {% endfor %}
+
     <br>{{ message }}
+
     <form action="/CoursePage/" method="post">
         {% csrf_token %}
         <br><input type="submit" name="chosen" value="Home">
     </form>
 
     <h2>Add Instructor and TA to Course</h2>
-    <form method="post">
+    <form action="/CoursePage/" method="post">
         {% csrf_token %}
         <label for="course">Course:</label>
         <select id="course" name="course">
             {% for course in Courses %}
-            <option value="{{ course.name }}">{{ course.name }}</option>
+                <option value="{{ course.id }}">{{ course.name }}</option>
             {% endfor %}
         </select><br><br>
         <label for="instructor">Instructor:</label>
-<select id="instructor" name="select_instructor">
-    {% for instructor in Instructors  %}
-        <option value="{{ instructor.id }}">{{ instructor.email }}</option>
-    {% endfor %}
-</select><br><br>
-
-<label for="ta">TA:</label>
-<select id="ta" name="select_teacher_assistant">
-    {% for ta in TAs %}
-        <option value="{{ ta.id }}">{{ ta.email }}</option>
-    {% endfor %}
-</select><br><br>
-        <input type="submit" value="Submit">
+        <select id="instructor" name="instructor">
+            {% for instructor in Instructors %}
+                <option value="{{ instructor.id }}">{{ instructor.email }}</option>
+            {% endfor %}
+        </select><br><br>
+        <label for="ta">TA:</label>
+        <select id="ta" name="ta">
+            {% for ta in TAs %}
+                <option value="{{ ta.id }}">{{ ta.email }}</option>
+            {% endfor %}
+        </select><br><br>
+        <input type="submit" value="Assign">
     </form>
-
 </body>
 </html>

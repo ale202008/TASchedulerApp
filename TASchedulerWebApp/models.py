@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group, Permission
+
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -43,12 +44,18 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Course(models.Model):
     id = models.CharField(max_length=12, primary_key=True)
     name = models.CharField(max_length=200)
-    instructor = models.ForeignKey(User, blank=True, null=True, on_delete=models.DO_NOTHING, related_name='course_instructor', unique=False)
-    teacher_assistant = models.ForeignKey(User, blank=True, null=True, on_delete=models.DO_NOTHING, related_name='course_teacher_assistant', unique=False)
+    instructors = models.ManyToManyField(User, blank=True, related_name='courses_as_instructor')
+    teacher_assistants = models.ManyToManyField(User, blank=True, related_name='courses_as_teacher_assistant')
 
 
 class Section(models.Model):
     id = models.CharField(max_length=150, unique=True, primary_key=True)
-    TeacherAssistant = models.ForeignKey('User', blank = True, null = True, on_delete = models.DO_NOTHING, related_name = 'section_set', unique = False)
-    instructor = models.ForeignKey(User, blank=True, null=True, on_delete=models.DO_NOTHING,related_name='section_instructor', unique=False)
     course = models.ForeignKey(Course, blank=True, null=True, on_delete=models.CASCADE)
+
+
+class InstructorTA(models.Model):
+    email = models.EmailField()
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.email
