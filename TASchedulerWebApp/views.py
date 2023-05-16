@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .forms import UserCreationForm, UserEditForm, NonAdminEditForm
+from .forms import *
 from django.http import HttpResponse
 from .models import *
 from django.contrib.auth.decorators import login_required
@@ -34,7 +34,8 @@ def is_admin(user):
 @login_required
 def account_info(request):
     user = request.user
-    context = {'user': user}
+    skills = Skill.objects.filter(TeacherAssistant=user)
+    context = {'user': user, 'skills' : skills}
     return render(request, 'account_info.html', context)
 
 
@@ -122,44 +123,39 @@ def account_editor(request):
 
 @login_required
 def Directory(request):
-    user = request.user
-    buttons = []
-    # Admin if statement
-    if user.is_superuser:
-        buttons = [
-        ('Courses', 'CoursePage/'),
-        ('Account Info', '/account'),
-        ('Notifications', '/notifications'),
-        ('Sections', 'SectionPage/'),
-        ('TAs', '/tas'),
-        ('Instructors', '/instructors'),
-        ('Create Course', 'AddCoursePage/'),
-        ('Create Section', '/create_section'),
-        ('Create/Edit Account', 'account_creation/'),
-        ]
-        #Instructor view
-    elif user.is_staff:
-        buttons = [
-        ('Courses', 'CoursePage/'),
-        ('Account Info', '/account'),
-        ('Notifications', '/notifications'),
-        ('Sections', 'SectionPage/'),
-        ('TAs', '/tas'),
-        ('Edit Account', 'account_edit/'),
-        ]
-    else:
-        buttons = [
-        ('Courses', 'CoursePage/'),
-        ('Account Info', '/account'),
-        ('Notifications', '/notifications'),
-        ('Sections', 'SectionPage/'),
-        ('TAs', '/tas'),
-        ('Edit Account', 'account_edit/'),
-        ]
+  user = request.user
+  buttons = []
+  #Admin if statement
+  if user.is_superuser:
+    buttons = [
+      ('Courses', 'CoursePage/'),
+      ('Account Info', '/account'),
+      ('Notifications', 'Notification/'),
+      ('Sections', 'SectionPage/'),
+      ('TAs', '/tas'),
+      ('Instructors', '/instructors'),
+      ('Create/Edit Account', 'account_creation/'),
+    ]
+    #Instructor view
+  elif user.is_staff:
+    buttons = [
+      ('Courses', 'CoursePage/'),
+      ('Account Info', '/account'),
+      ('Notifications', 'Notification/'),
+      ('Sections', 'SectionPage/'),
+      ('TAs', '/tas'),
+    ]
+  else:
+    buttons = [
+      ('Courses', 'CoursePage/'),
+      ('Account Info', '/account'),
+      ('Notifications', 'Notification/'),
+      ('Sections', 'SectionPage/'),
+      ('TAs', '/tas'),
+    ]
     
-    options = {'buttons': buttons}
-    return render(request, 'directory.html', options)
-
+  options = {'buttons': buttons}
+  return render(request, 'directory.html', options)
 
 class Home(View):
     def get(self, request):
@@ -234,6 +230,8 @@ class Sections(View):
         if todo == "Delete Section":
             sections = list(Section.objects.all())
             return render(request, "DeleteSectionPage.html", {"Sectionoptions":sections})
+        if todo == "Assign Section":
+            return redirect('assign_section')
         #displays sections for a course
         number = request.POST.get('show section')
         if number == "":
@@ -357,3 +355,73 @@ class AssignSection(View):
                 return render(request, "AssignSection.html",{'message2': 'Assign successful for section: ' + section.id, 'course_list': course_list, 'section_saved': section})
 
         return render(request, "AssignSection.html")
+
+class Notifications(View):
+    def get(self, request):
+        self.User = request.user
+        if self.permitted_user(User):
+            return render(request, 'notifications.html',
+                          {'notifications': self.getNotifications(self.User), 'permission': self.permitted_user(self.User),
+                           'instructors': self.getInstructors(), 'teacherassistants': self.getTeacherAssistants()})
+        return render(request, 'notifications.html', {'notifications': self.getNotifications(self.User), 'permission': self.permitted_user(self.User)})
+    def post(self, request):
+        self.User = request.user
+        todo = request.POST.get('chosen')
+        if todo == "Back":
+            return redirect('directory')
+        else:
+            Users = request.POST.getlist('select_user')
+            notification = request.POST.get('new_notification')
+            self.makeNotification(Users, notification)
+
+        if self.permitted_user(self.User):
+            return render(request, 'notifications.html',
+                          {'notifications': self.getNotifications(self.User), 'permission': self.permitted_user(self.User),
+                           'instructors': self.getInstructors(), 'teacherassistants': self.getTeacherAssistants()})
+        return render(request, 'notifications.html',
+                      {'notifications': self.getNotifications(self.User), 'permission': self.permitted_user(self.User)})
+
+    def permitted_user(self, User):
+        if User.is_superuser or User.is_staff:
+            return True
+        else:
+            return False
+
+    def getInstructors(self):
+        instructor_list = list(User.objects.filter(is_staff=True))
+        return instructor_list
+
+    def getTeacherAssistants(self):
+        teacher_assistant_list = list(User.objects.filter(is_staff=False, is_superuser=False))
+        return teacher_assistant_list
+
+    def getNotifications(self, User):
+        notification_list  = list(Notification.objects.filter(UserAllowed = User))
+        return notification_list
+
+    def makeNotification(self, list, notification):
+        for i in list:
+            if i == 'All Instructors':
+                Recipients = self.getInstructors()
+                for i in Recipients:
+                    self.notification = Notification.objects.create(notification=notification, UserAllowed=i, Sender = self.User)
+            elif i == 'All Teacher Assistants':
+                Recipients = self.getTeacherAssistants()
+                for i in Recipients:
+                    self.notification = Notification.objects.create(notification=notification, UserAllowed=i, Sender = self.User)
+            else:
+                Recipients = User.objects.get(email = i)
+                self.notification = Notification.objects.create(notification=notification, UserAllowed=Recipients, Sender = self.User)
+            self.notification.save()
+    
+def add_skill(request):
+    if request.method == 'POST':
+        skill_name = request.POST['skill_name']
+        user = request.user
+        new_skill = Skill(name=skill_name, TeacherAssistant=user)
+        new_skill.save()
+        return redirect('account_info')
+    else:
+        return redirect('account_info')
+        return redirect('account_info')
+
