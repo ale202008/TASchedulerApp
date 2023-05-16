@@ -170,13 +170,11 @@ class CoursePage(View):
     def post(self, request):
         user = request.user
         courses = list(Course.objects.all())
-        if (user.is_superuser):
-            if (request.POST.get('chosen') == "Add Course"):
+        if user.is_superuser:
+            if request.POST.get('chosen') == "Add Course":
                 return render(request, "AddCoursePage.html", {"message":""})
-            elif (request.POST.get('chosen') == "Delete Course"):
+            elif request.POST.get('chosen') == "Delete Course":
                 return render(request, "DeleteCoursePage.html", {'Courseoptions':courses,"Courses": courses})
-        if (request.POST.get('chosen') == "Home"):
-            return redirect('directory')
         return render(request, 'CoursePage.html', {"Courses": courses, "message": "You are not a supervisor"})
 
 
@@ -207,7 +205,7 @@ class DeleteCoursePage(View):
 
     def post(self, request):
         number = request.POST.get('chosen', '')
-        if(number != ''):
+        if number != '':
                 course = Course.objects.get(id=number)
                 course.delete()
                 courses = list(Course.objects.all())
@@ -227,9 +225,6 @@ class Sections(View):
         todo = request.POST.get('chosen')
         courses = list(Course.objects.all())
 
-        #goes back directory page
-        if todo == "Back":
-            return redirect('directory')
         if todo == "Add Section":
             return render(request, "AddSectionPage.html", {"Courseoptions":courses})
         if todo == "Delete Section":
@@ -239,6 +234,9 @@ class Sections(View):
             return redirect('assign_section')
         #displays sections for a course
         number = request.POST.get('show section')
+        if number == "":
+            courses = list(Course.objects.all())
+            return render(request, "SectionPage.html", {"Courseoptions": courses, "message":"Please choose a course"})
         course = Course.objects.get(id=number)
         sections = list(Section.objects.filter(Course=course))
 
@@ -258,10 +256,9 @@ class AddSectionPage(View):
         number = request.POST.get('create section', '')
         sectionnumber = request.POST.get('SectionNumber', '')
         courses = list(Course.objects.all())
-
-        if (request.POST.get('chosen') == "Back"):
-            return render(request, "SectionPage.html", {'Courseoptions':courses})
-
+        if number == "":
+            return render(request, "AddSectionPage.html",
+                          {"message1": "Please choose a course", "Courseoptions": courses})
         if sectionnumber == "": return render(request, "AddSectionPage.html",
                                               {"message1": "Section Number blank", "Courseoptions": courses})
 
@@ -290,8 +287,6 @@ class DeleteSectionPage(View):
     def post(self, request):
         courses = list(Course.objects.all())
         todo = request.POST.get('chosen')
-        if(todo == "Back"):
-            return render(request, "SectionPage.html", {'Courseoptions':courses})
 
         section = Section.objects.get(id=todo)
         course = section.Course

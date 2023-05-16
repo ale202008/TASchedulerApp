@@ -4,13 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Courses</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/CoursePage.css' %}"/>
 </head>
 <body>
-    <h1>Course Page: </h1>
+    <h1>Courses</h1>
     <form action="/CoursePage/" method="post">
         {% csrf_token %}
     <span>
+
         <input type="submit" name="chosen" value="Add Course">
         <input type="submit" name="chosen" value="Delete Course">
     </span>
@@ -20,12 +21,12 @@
     {%  for i in Courses %}
         <tr>
             <td>{{ i.id }}</td>
-        <td>{{ i.name }}</td>
+            <td>{{ i.name }}</td>
         </tr>
     {% endfor %}
     </table>
     <br>{{ message }}
-    <form action="/CoursePage/" method="post">
+    <form action="{% url 'directory' %}" method="get">
         {% csrf_token %}
         <br><input type="submit" name="chosen" value="Home">
     </form>

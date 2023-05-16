@@ -5,15 +5,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Directory</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/directory.css' %}"/>
 </head>
 
 <body>
 <h1>Directory Page</h1>
 
-<div class="row">
+<div class="row" style="text-align:center">
     {% for button in buttons %}
-      <div class="column">
+      <div class="column" style="text-align:center">
         <a href="{{ button.1 }}">{{ button.0 }}</a>
       </div>
     {% endfor %}
