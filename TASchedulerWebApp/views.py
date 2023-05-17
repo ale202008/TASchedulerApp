@@ -399,7 +399,7 @@ class Notifications(View):
         return teacher_assistant_list
 
     def getNotifications(self, User):
-        notification_list  = list(Notification.objects.filter(UserAllowed = User))
+        notification_list  = list(Notification.objects.filter(UserAllowed=User))
         return notification_list
 
     def makeNotification(self, list, notification):

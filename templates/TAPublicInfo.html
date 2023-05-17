@@ -8,6 +8,7 @@
 </head>
 <body>
     <h2>TA Public Contact Information</h2>
+        {% if tas %}
         <table class="center">
         <tr>
             <th>First Name</th>
@@ -21,6 +22,9 @@
                 <td>{{ person.email}}</td>
             </tr>
         {% endfor %}
+            {% else %}
+            <p style="text-align: center">There are no TAs in the database.</p>
+        {% endif %}
     </table>
     <br>
     <form action="{% url 'directory' %}" method="get">

@@ -8,6 +8,7 @@
 </head>
 <body>
     <h2>Instructor Public Contact Information</h2>
+    {% if instructor %}
     <table class="center">
         <tr>
             <th>First Name</th>
@@ -22,6 +23,9 @@
             </tr>
         {% endfor %}
     </table>
+    {% else %}
+        <p style="text-align: center">There are no Instructors in the database.</p>
+    {% endif %}
     <br>
     <form action="{% url 'directory' %}" method="get">
     <button type="submit">Directory</button>
