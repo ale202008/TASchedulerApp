@@ -29,7 +29,9 @@ urlpatterns = [
     path('AddCoursePage/', AddCoursePage.as_view()),
     path('DeleteCoursePage/', DeleteCoursePage.as_view()),
     path('SectionPage/', Sections.as_view()),
-    # path('account_edit/', account_editor, name='account_edit'),
+    path('TAPublicInfo/', TAPublicContact.as_view()),
+    path('InPublicInfo/', InPublicContact.as_view()),
+    path('account_edit/', account_editor, name='account_edit'),
     # path('AddSectionPage/', AddSectionPage.as_view()),
     # path('DeleteSectionPage/', DeleteSectionPage.as_view()),
 
