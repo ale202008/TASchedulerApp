@@ -40,14 +40,14 @@
         <select name = select_instructor>
             <option value = "">None</option>
             {% for user in instructor_list %}
-                <option value = "{{ user.first_name }}">{{ user.first_name }}</option>
+                <option value = "{{ user.email }}">{{ user.email }}</option>
             {% endfor %}
         </select>
 
          <select name = select_teacher_assistant>
             <option value = "">None</option>
             {% for user in teacher_assistant_list %}
-                <option value = "{{ user.first_name }}">{{ user.first_name }}</option>
+                <option value = "{{ user.email }}">{{ user.email }}</option>
             {% endfor %}
         </select>
 
