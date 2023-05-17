@@ -4,7 +4,7 @@
   <h1>Account Information</h1>
   <p>Email: {{ user.email }}</p>
 
-  {% if not user.is_staff and not user.is_active and skills %}
+  {% if not user.is_staff and skills %}
     <h2>Skills:</h2>
     <ul>
       {% for skill in skills %}
@@ -12,7 +12,7 @@
         {% endfor %}
     </ul>
     {% endif %}
-  {% if not user.is_staff and user.is_active %}  
+  {% if not user.is_staff %}  
     <h2>Add a Skill</h2>
   <form action="{% url 'add_skill' %}" method="post">
     {% csrf_token %}

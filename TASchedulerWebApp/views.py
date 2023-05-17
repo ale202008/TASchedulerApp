@@ -471,18 +471,17 @@ def add_skill(request):
     if request.method == 'POST':
         skill_name = request.POST['skill_name']
         user = request.user
-        new_skill = Skill(name=skill_name, TeacherAssistant=user)
+        new_skill = Skill.objects.create(name=skill_name)
+        new_skill.TeacherAssistant.add(user)
         new_skill.save()
         return redirect('account_info')
     else:
         return redirect('account_info')
-        return redirect('account_info')
-
 
 class TAPublicContact(View):
 
     def get(self, request):
-        ta = User.objects.filter(is_staff='False')
+        ta = User.objects.filter(is_staff='False').prefetch_related('skills')
         print(ta)
         return render(request, 'TAPublicInfo.html', {"tas": ta})
 

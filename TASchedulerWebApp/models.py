@@ -25,7 +25,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(auto_now_add=True)
     groups = models.ManyToManyField(Group, related_name='myapp_user_groups', blank=True)
     user_permissions = models.ManyToManyField(Permission, related_name='myapp_user_permissions', blank=True)
-
+    
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
@@ -55,7 +55,7 @@ class Section(models.Model):
 
 class Skill(models.Model):
     name = models.CharField(max_length = 69, blank = True)
-    TeacherAssistant = models.ForeignKey('User', blank=True, null=True, on_delete=models.CASCADE, related_name='Skill_TeacherAssistant', unique=False)
+    TeacherAssistant = models.ManyToManyField('User', blank=True, related_name='skills')
 
 class Notification(models.Model):
     notification = models.CharField(max_length = 1000)
