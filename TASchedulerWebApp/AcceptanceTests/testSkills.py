@@ -11,16 +11,16 @@ class AddSkillTest(TestCase):
             email='testuser@test.com',
             password='testpass123',
         )
-        self.user.is_active = False
+        self.user.is_active = True
         self.user.is_staff = False
         self.user.save()
 
     def test_add_skill(self):
-        self.client.login(email='testuser@test.com', password='testpass123')
+        login = self.client.login(email='testuser@test.com', password='testpass123')
         self.assertTrue(login)
         response = self.client.post(self.add_skill_url, {
             'skill_name': 'test skill',
         })
 
-        self.assertEqual(response.status_code, 200)  
+        self.assertEqual(response.status_code, 302)  
         self.assertTrue(Skill.objects.filter(name='test skill', TeacherAssistant=self.user).exists())
