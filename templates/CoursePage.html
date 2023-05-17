@@ -21,8 +21,6 @@
     {% for course in Courses %}
         <div class="course">
             <h3>{{ course.name }}</h3>
-            <p>Instructor: {% if course.instructor %}{{ course.instructor.email }}{% else %}None{% endif %}</p>
-            <p>TA: {% if course.teacher_assistant %}{{ course.teacher_assistant.email }}{% else %}None{% endif %}</p>
         </div>
     {% endfor %}
 
@@ -33,6 +31,7 @@
         <br><input type="submit" name="chosen" value="Home">
     </form>
 
+    <!-- ... -->
     <h2>Add Instructor and TA to Course</h2>
     <form action="/CoursePage/" method="post">
         {% csrf_token %}
@@ -44,17 +43,21 @@
         </select><br><br>
         <label for="instructor">Instructor:</label>
         <select id="instructor" name="instructor">
+            <option value="">None</option>
             {% for instructor in Instructors %}
                 <option value="{{ instructor.id }}">{{ instructor.email }}</option>
             {% endfor %}
         </select><br><br>
         <label for="ta">TA:</label>
         <select id="ta" name="ta">
+            <option value="">None</option>
             {% for ta in TAs %}
                 <option value="{{ ta.id }}">{{ ta.email }}</option>
             {% endfor %}
         </select><br><br>
         <input type="submit" value="Assign">
     </form>
+    <!-- ... -->
+
 </body>
 </html>

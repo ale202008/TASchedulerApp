@@ -147,58 +147,77 @@ class Home(View):
 
 class CoursePage(View):
     def get(self, request):
+        # Get all courses, instructors, and TAs from the database
         courses = list(Course.objects.all())
         instructors = User.objects.filter(is_staff=True, is_superuser=False)
         tas = User.objects.filter(is_staff=False, is_superuser=False)
-        print("Courses:", courses)
-        print("Instructors:", instructors)
-        print("TAs:", tas)
-        return render(request, "CoursePage.html", {"Courses": courses, "message": "", "Instructors": instructors, "TAs": tas})
+        return render(request, "CoursePage.html",
+                      {"Courses": courses, "message": "", "Instructors": instructors, "TAs": tas})
 
     def post(self, request):
         user = request.user
         courses = list(Course.objects.all())
-        if (user.is_superuser):
-            if (request.POST.get('chosen') == "Add Course"):
-                return render(request, "AddCoursePage.html", {"message":""})
 
-            elif (request.POST.get('chosen') == "Delete Course"):
-                return render(request, "DeleteCoursePage.html", {'Courseoptions':courses,"Courses": courses})
+        if user.is_superuser:
+            if request.POST.get('chosen') == "Add Course":
+                return render(request, "AddCoursePage.html", {"message": ""})
+            elif request.POST.get('chosen') == "Delete Course":
+                return render(request, "DeleteCoursePage.html", {'Courseoptions': courses, "Courses": courses})
 
-        if (request.POST.get('chosen') == "Home"):
+        if request.POST.get('chosen') == "Home":
             return redirect('directory')
+
         form = CourseAssignForm(request.POST)
         if form.is_valid():
-            course = Course.objects.get(id=request.POST.get('course'))
-            instructor = form.cleaned_data.get('instructor') if form.cleaned_data.get('assign_instructor') else None
-            ta = form.cleaned_data.get('ta') if form.cleaned_data.get('assign_ta') else None
+            # Retrieve the submitted form data
+            course_id = request.POST.get('course')
+            instructor_id = request.POST.get('instructor')
+            ta_id = request.POST.get('ta')
 
+            # Retrieve the corresponding course object
+            course = Course.objects.get(id=course_id)
+
+            # Retrieve the instructor and TA objects based on their IDs
+            instructor = User.objects.get(id=instructor_id) if instructor_id != "empty" else None
+            ta = User.objects.get(id=ta_id) if ta_id != "empty" else None
+
+            # Assign the instructor and TA to the course
             course.instructor = instructor
             course.teacher_assistant = ta
             course.save()
-            return redirect('coursepage')
 
-        instructors = User.objects.filter(is_staff=True, is_superuser=False)
-        tas = User.objects.filter(is_staff=False, is_superuser=False)
+            # Update the course list with the assigned instructor and TA
+            courses = Course.objects.all()
+
+            return render(request, 'CoursePage.html',
+                          {"Courses": courses, "message": "Assignment successful"})
+
         return render(request, 'CoursePage.html',
-                      {"Courses": courses, "message": "You are not a supervisor", "instructors": instructors,
-                       "tas": tas})
+                      {"Courses": courses, "message": "Assignment failed"})
 
-    def assign_course_staff(request):
-        if request.method == "POST":
-            course_id = request.POST.get('course_id')
-            course = Course.objects.get(id=course_id)
 
-            instructor_id = request.POST.get('instructor_id')
-            instructor = User.objects.get(id=instructor_id)
+def assign_course_staff(request):
+    if request.method == "POST":
+        # Retrieve the course ID, instructor ID, and TA ID from the POST data
+        course_id = request.POST.get('course_id')
+        instructor_id = request.POST.get('instructor_id')
+        ta_id = request.POST.get('ta_id')
 
-            ta_id = request.POST.get('ta_id')
-            ta = User.objects.get(id=ta_id)
+        # Retrieve the corresponding course, instructor, and TA objects from the database
+        course = Course.objects.get(id=course_id)
+        instructor = User.objects.get(id=instructor_id)
+        ta = User.objects.get(id=ta_id)
 
-            course.Instructor = instructor
-            course.TeacherAssistant = ta
-            course.save()
-            return render(request, "CoursePage.html", {"Courses": courses, "message": "Staff assigned successfully."})
+        # Assign the instructor and TA to the course
+        course.instructors.add(instructor)
+        course.teacher_assistants.add(ta)
+        course.save()
+
+        print(f"Assignment - Course: {course.name}, Instructor: {instructor}, TA: {ta}")
+
+        return render(request, "CoursePage.html",
+                      {"Courses": Course.objects.all(), "message": "Staff assigned successfully."})
+
 
 class AddCoursePage(View):
     def get(self, request):
@@ -362,28 +381,29 @@ def add_instructor_ta(request):
     else:
         form = InstructorTAModelForm()
 
-    return render(request, 'CoursePage.html.html', {'form': form})
-
-
+    return render(request, 'CoursePage.html', {'form': form})
 
 
 def assign_course(request):
     if request.method == 'POST':
+        # Get the submitted form data
         course_id = request.POST.get('course')
         instructor_id = request.POST.get('instructor')
         ta_id = request.POST.get('ta')
 
+        # Retrieve the corresponding objects from the database
         course = Course.objects.get(id=course_id)
         instructor = User.objects.get(id=instructor_id)
         ta = User.objects.get(id=ta_id)
 
+        # Assign the instructor and TA to the course
         course.instructors.add(instructor)
         course.teacher_assistants.add(ta)
         course.save()
 
-        return redirect('CoursePage')  # Replace 'course_page' with the name of your course page URL pattern
+        return redirect('CoursePage')  # Redirect to the course page after successful assignment
 
-    return redirect('CoursePage')  # Redirect to course page if form submission method is not POST
+    return redirect('CoursePage')  # Redirect to the course page if the form submission method is not POST
 
 
 
