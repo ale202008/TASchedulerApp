@@ -132,8 +132,8 @@ def Directory(request):
       ('Account Info', '/account'),
       ('Notifications', 'Notification/'),
       ('Sections', 'SectionPage/'),
-      ('TAs', '/tas'),
-      ('Instructors', '/instructors'),
+      ('TAs', 'TAPublicInfo/'),
+      ('Instructors', 'InPublicInfo/'),
       ('Create/Edit Account', 'account_creation/'),
     ]
     #Instructor view
@@ -143,7 +143,9 @@ def Directory(request):
       ('Account Info', '/account'),
       ('Notifications', 'Notification/'),
       ('Sections', 'SectionPage/'),
-      ('TAs', '/tas'),
+      ('TAs', 'TAPublicInfo/'),
+      ('Instructors', 'InPublicInfo/'),
+      ('Edit Account', 'account_edit/'),
     ]
   else:
     buttons = [
@@ -151,7 +153,8 @@ def Directory(request):
       ('Account Info', '/account'),
       ('Notifications', 'Notification/'),
       ('Sections', 'SectionPage/'),
-      ('TAs', '/tas'),
+      ('TAs', 'TAPublicInfo/'),
+      ('Edit Account', 'account_edit/'),
     ]
     
   options = {'buttons': buttons}
@@ -396,7 +399,7 @@ class Notifications(View):
         return teacher_assistant_list
 
     def getNotifications(self, User):
-        notification_list  = list(Notification.objects.filter(UserAllowed = User))
+        notification_list  = list(Notification.objects.filter(UserAllowed=User))
         return notification_list
 
     def makeNotification(self, list, notification):
@@ -424,4 +427,21 @@ def add_skill(request):
     else:
         return redirect('account_info')
         return redirect('account_info')
+
+
+class TAPublicContact(View):
+
+    def get(self, request):
+        ta = User.objects.filter(is_staff='False')
+        print(ta)
+        return render(request, 'TAPublicInfo.html', {"tas": ta})
+
+
+class InPublicContact(View):
+
+    def get(self, request):
+        instructors = User.objects.filter(is_staff='True', is_superuser='False')
+        print(instructors)
+        return render(request, 'InPublicContact.html', {"instructor": instructors})
+
 
