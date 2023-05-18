@@ -6,3 +6,4 @@ from TASchedulerWebApp.tests.test_Directory import *
 from TASchedulerWebApp.tests.test_AccountDelete import *
 from TASchedulerWebApp.tests.test_Courses import *
 from TASchedulerWebApp.tests.test_Login import *
+from TASchedulerWebApp.tests.test_Assign import *
