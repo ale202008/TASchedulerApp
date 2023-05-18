@@ -32,3 +32,15 @@ class AssignSectionTestCase(TestCase):
     def test_getCourses(self):
         test = AssignSection.get_courses(self)
         self.assertEqual(list(Course.objects.all()), test, msg = 'Not Equal')
+
+    def test_getCourseSection(self):
+        test = AssignSection.get_course_sections(self, self.Course)
+        self.assertEqual(list(Section.objects.filter(Course = self.Course)), test, msg = 'Not Equal')
+
+    def test_getCourseInstructors(self):
+        test = AssignSection.get_teacher_assistants(self)
+        self.assertEqual(list(User.objects.filter(is_superuser=False, is_staff=False)), test, msg = 'Not Equal')
+
+    def test_getTAs(self):
+        test = AssignSection.get_courses(self)
+        self.assertEqual(list(Course.objects.all()), test, msg = 'Not Equal')
