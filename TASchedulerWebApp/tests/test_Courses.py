@@ -4,7 +4,7 @@ from TASchedulerWebApp.models import *
 class AddCourseTestCases(TestCase):
     def setUp(self):
         self.UserClient = Client()
-        self.User = User.objects.create(username='Taylor@gmail.com', password='Swift')
+        self.User = User.objects.create(email='Taylor@gmail.com', password='Swift')
         self.Course1_name = "one"
         self.Course1_id = 1
         self.User.save()
@@ -13,8 +13,7 @@ class AddCourseTestCases(TestCase):
         # Will check if user has the courses added to themselves
         # Also inherently checks if everything is same, fields, elements, all that stuff
         resp = self.UserClient.post('/AddCoursePage/', {'CourseName': self.Course1_name, 'CourseNumber': self.Course1_id})
-        list_Courses = list(Course.objects.all())
-        self.assertEqual(resp.context['Courses'], list_Courses, msg = "Course doesn't exist within the database despite being added.")
+        self.assertTrue(Course.objects.filter(name = self.Course1_name, id = self.Course1_id).exists(), msg = "Course doesn't exist within the database despite being added.")
 
     def test_NoNameCourse(self):
         resp = self.UserClient.post('/AddCoursePage/', {'CourseName': "", 'CourseNumber': 12})
