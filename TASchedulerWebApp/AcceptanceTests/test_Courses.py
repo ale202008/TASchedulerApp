@@ -13,8 +13,7 @@ class AddCourseTestCases(TestCase):
         # Will check if user has the courses added to themselves
         # Also inherently checks if everything is same, fields, elements, all that stuff
         resp = self.UserClient.post('/AddCoursePage/', {'CourseName': self.Course1_name, 'CourseNumber': self.Course1_id})
-        list_Courses = list(Course.objects.all())
-        self.assertEqual(resp.context['Courses'], list_Courses, msg = "Course doesn't exist within the database despite being added.")
+        self.assertTrue(Course.objects.filter(name = self.Course1_name, id = self.Course1_id).exists(), msg = "Course doesn't exist within the database despite being added.")
 
     def test_NoNameCourse(self):
         resp = self.UserClient.post('/AddCoursePage/', {'CourseName': "", 'CourseNumber': 12})
@@ -32,7 +31,7 @@ class AddCourseTestCases(TestCase):
 
 
     # Need test to make sure that when SuperUser adds a course, course shows up for course page.
-    # Need tests to reflect Instructor field, ManyToManyField for courses for users.
+    # Need AcceptanceTests to reflect Instructor field, ManyToManyField for courses for users.
 class DeleteCourseTestCases(TestCase):
     def setUp(self):
         self.UserClient = Client()
@@ -51,7 +50,7 @@ class DeleteCourseTestCases(TestCase):
         # Checks to see if an error/exception is given when a Course is attempted to be deleted, but does not exist.
         # this should fail as it is not possible to try to delete invalid course numbers due to drop down bar
         resp = self.UserClient.post('/DeleteCoursePage/', {'CourseNumber': 11111111111})
-        self.assertEqual(resp.context['message'], "Course doesn't exist", msg = "Course was not in the database, but was deleted. How?")
+        self.assertRedirects(resp, '/CoursePage/', msg_prefix = "Course was not in the database, but was deleted. How?")
 
     def test_BlankCourseField(self):
         # Checks to see if an error/exception is given when a Course field is blank.

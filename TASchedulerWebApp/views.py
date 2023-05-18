@@ -352,7 +352,7 @@ class AssignSection(View):
         todo = request.POST.get('chosen')
         # Will go through different if conditionals to decide which operation to do.
         # Copied from SectionPage code in presenting the information to the user.
-        if todo == "Back":
+        if todo == "Directory":
             return redirect('directory')
         elif todo == "Show Sections":
             course_num = request.POST.get('select_course')

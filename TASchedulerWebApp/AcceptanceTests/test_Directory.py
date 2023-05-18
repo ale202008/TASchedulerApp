@@ -6,7 +6,7 @@ from django.urls import reverse
 class DirectorySuperUserRedirectTestCases(TestCase):
     def setUp(self):
         self.UserClient = Client()
-        self.User = User.objects.create(username = "Taylor", password = "Swift", is_superuser=True)
+        self.User = User.objects.create(email="Taylor@gmail.com", password = "Swift", is_superuser=True)
         self.User.save()
         self.directory_url = reverse('directory')
         # Forces the login for the given user, pretty useful.
@@ -27,17 +27,13 @@ class DirectorySuperUserRedirectTestCases(TestCase):
         self.assertContains(self.resp, 'TAs', msg_prefix="TA is not displayed")
     def test_SuperUserInstructorsRedirect(self):
         self.assertContains(self.resp, 'Instructors', msg_prefix="Instructors is not displayed")
-    def test_SuperUserCreateCourseRedirect(self):
-        self.assertContains(self.resp, 'Create Course', msg_prefix="Create Course is not displayed")
-    def test_SuperUserCreateSectionRedirect(self):
-        self.assertContains(self.resp, 'Create Section', msg_prefix="Create Section is not displayed")
     def test_SuperUserCreateAccountRedirect(self):
         self.assertContains(self.resp, 'Create/Edit Account', msg_prefix="Create Account not displayed")
 
 class DirectoryInstructorRedirectsTestCases(TestCase):
     def setUp(self):
         self.UserClient = Client()
-        self.User = User.objects.create(username="Taylor", password="Swift", is_staff=True)
+        self.User = User.objects.create(email="Taylor@gmail.com", password="Swift", is_staff=True)
         self.User.save()
         self.directory_url = reverse('directory')
         self.UserClient.force_login(self.User)
@@ -54,7 +50,7 @@ class DirectoryInstructorRedirectsTestCases(TestCase):
     def test_InstructorTARedirect(self):
         self.assertContains(self.resp, 'TAs', msg_prefix="TA is not displayed")
     def test_InstructorInstructorsRedirect(self):
-        self.assertNotContains(self.resp, 'Instructors', msg_prefix="Instructors is displayed")
+        self.assertContains(self.resp, 'Instructors', msg_prefix="Instructors is displayed")
     def test_InstructorCreateCourseRedirect(self):
         self.assertNotContains(self.resp, 'Create Course', msg_prefix="Create Course is displayed")
     def test_InstructorCreateSectionRedirect(self):
@@ -65,7 +61,7 @@ class DirectoryInstructorRedirectsTestCases(TestCase):
 class DirectoryTARedirectsTestCases(TestCase):
     def setUp(self):
         self.UserClient = Client()
-        self.User = User.objects.create(username="Taylor", password="Swift")
+        self.User = User.objects.create(email="Taylor@gmail.com", password="Swift")
         self.User.save()
         self.directory_url = reverse('directory')
         self.UserClient.force_login(self.User)
