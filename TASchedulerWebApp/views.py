@@ -188,13 +188,13 @@ class CoursePage(View):
                 instructor = User.objects.get(id=instructor_id)
                 ta = User.objects.get(id=ta_id)
 
-                if instructor in course.instructors.all():
+                if course.Instructor != None and instructor in course.Instructor.all():
                     message = 'This instructor is already assigned to the course.'
-                elif ta in course.teacher_assistants.all():
+                elif course.TeacherAssistant != None and ta in course.teacher_assistants.all():
                     message = 'This TA is already assigned to the course.'
                 else:
-                    course.instructor = instructor
-                    course.teacher_assistant = ta
+                    course.Instructor = instructor
+                    course.TeacherAssistant = ta
 
                     course.save()
                     message = 'Assignment successful'
