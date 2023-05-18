@@ -10,14 +10,22 @@
     <h1>Courses</h1>
     <form action="/CoursePage/" method="post">
         {% csrf_token %}
-    <span>
+        <span>
+            <input type="submit" name="chosen" value="Add Course">
+            <input type="submit" name="chosen" value="Delete Course">
+        </span>
+    </form>
 
-        <input type="submit" name="chosen" value="Add Course" class = 'center'>
-        <input type="submit" name="chosen" value="Delete Course" class = 'center'>
-    </span>
+    <!-- Add the new form here -->
+    <h2>Assign Instructor and TA</h2>
+    <form method="post" action="{% url 'CoursePage' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Assign</button>
     </form>
     <br>
     <br>
+
     <table class = 'center'>
         <tr>
             <th>Course ID</th>
@@ -29,16 +37,12 @@
         <tr>
             <td>{{ i.id }}</td>
             <td>{{ i.name }}</td>
-            <td>{{ i.Instructor.email }}</td>
-            <td>{{ i.TeacherAssistant.email }}</td>
+            <td>{{ i.Instructor.email }}</td> <!-- Display the assigned Instructor -->
+            <td>{{ i.TeacherAssistant.email }}</td> <!-- Display the assigned TA -->
         </tr>
     {% endfor %}
     </table>
     <br>{{ message }}
-    <form action="{% url 'directory' %}" method="get" class = 'center'>
-        {% csrf_token %}
-        <br><input type="submit" name="chosen" value="Home">
+    <form action="{% url 'directory' %}" method = 'get'>
+        <button type="submit">Directory</button>
     </form>
-
-</body>
-</html>

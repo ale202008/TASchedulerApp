@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group, Permission
+from django import forms
+
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -62,3 +64,11 @@ class Notification(models.Model):
     UserAllowed = models.ForeignKey('User', blank=True, null=True, on_delete=models.CASCADE, related_name='Notification_UserAllowed', unique=False)
     Sender = models.ForeignKey('User', blank=True, null=True, on_delete=models.CASCADE, related_name='Notification_Sender', unique=False)
 
+class CourseAssignmentForm(forms.ModelForm):
+    Course = forms.CharField(max_length=12, required=False)
+    Instructor = forms.ModelChoiceField(queryset=User.objects.all(), required=False)
+    TeacherAssistant = forms.ModelChoiceField(queryset=User.objects.all(), required=False)
+
+    class Meta:
+        model = Course
+        fields = ('Course', 'Instructor', 'TeacherAssistant')

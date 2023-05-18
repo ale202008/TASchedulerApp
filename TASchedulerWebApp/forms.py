@@ -1,5 +1,6 @@
 from django import forms
 from .models import User
+from .models import User, Course
 
 
 class UserCreationForm(forms.ModelForm):
@@ -85,3 +86,13 @@ class NonAdminEditForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+
+
+class CourseAssignForm(forms.Form):
+    course = forms.ModelChoiceField(queryset=Course.objects.all())
+    instructor = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True, is_superuser=False), to_field_name="email")
+    ta = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=False, is_superuser=False), to_field_name="email")
+
+
+
