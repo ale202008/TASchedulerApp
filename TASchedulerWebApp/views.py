@@ -65,7 +65,7 @@ def account_creation(request):
             title = "Edit a user account"
             email = dict(request.POST.items()).get("emailSelect")
             count = 1
-            limit = int(email)
+            limit = int(email) if email else 0
             # Iterate to get to selected email to edit
             for user in User.objects.all():
                 email = user.email
