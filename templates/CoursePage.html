@@ -12,21 +12,30 @@
         {% csrf_token %}
     <span>
 
-        <input type="submit" name="chosen" value="Add Course">
-        <input type="submit" name="chosen" value="Delete Course">
+        <input type="submit" name="chosen" value="Add Course" class = 'center'>
+        <input type="submit" name="chosen" value="Delete Course" class = 'center'>
     </span>
     </form>
-    <label>Courses</label>
-    <table>
+    <br>
+    <br>
+    <table class = 'center'>
+        <tr>
+            <th>Course ID</th>
+            <th>Course Name</th>
+            <th>Instructor</th>
+            <th>Teacher Assistant</th>
+        </tr>
     {%  for i in Courses %}
         <tr>
             <td>{{ i.id }}</td>
             <td>{{ i.name }}</td>
+            <td>{{ i.Instructor.email }}</td>
+            <td>{{ i.TeacherAssistant.email }}</td>
         </tr>
     {% endfor %}
     </table>
     <br>{{ message }}
-    <form action="{% url 'directory' %}" method="get">
+    <form action="{% url 'directory' %}" method="get" class = 'center'>
         {% csrf_token %}
         <br><input type="submit" name="chosen" value="Home">
     </form>

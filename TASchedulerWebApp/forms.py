@@ -12,7 +12,7 @@ class UserCreationForm(forms.ModelForm):
         labels = {
             'email': 'Email', 'first_name': "First Name", 'last_name' : "Last Name", 'is_staff': "Instructor"
         }
-
+        
     def clean(self):
         cleaned_data = super().clean()
         password = cleaned_data.get("password")
@@ -37,7 +37,7 @@ class UserEditForm(forms.ModelForm):
         model = User
         fields = ['email', 'first_name', 'last_name', 'is_staff', 'is_active']
         labels = {
-            'email': 'Email', 'first_name': "First Name", 'last_name' : "Last Name", 'is_staff': "Instructor", 'is_active' : "Administrator"
+            'email': 'Email', 'first_name': "First Name", 'last_name' : "Last Name", 'is_staff': "Instructor"
         }
 
     def clean(self):
@@ -53,7 +53,7 @@ class UserEditForm(forms.ModelForm):
             return None
         updatefields = []
         for field in self.cleaned_data.keys():
-            if self.cleaned_data.get(field) != "" and field != "emailSelect":
+            if self.cleaned_data.get(field) != "" and field != "emailSelect" and field != 'delete_account':
                 updatefields.append(field)
         if commit:
             user.save(update_fields=updatefields)

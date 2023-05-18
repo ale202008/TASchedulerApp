@@ -1,12 +1,3 @@
-h1 {
-    text-align: center;
-    border: 3px solid black;
-    background-color: darkgrey;
-}
-
-input{
-    background-color: #ffbd00;
-}
 table, td {
     text-align: center;
     border: 1px solid black;
@@ -36,3 +27,8 @@ body{
     text-align: center;
 }
 
+h1 {
+    text-align: center;
+    border: 3px solid black;
+    background-color: darkgrey;
+}

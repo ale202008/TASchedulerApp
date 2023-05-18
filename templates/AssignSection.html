@@ -23,8 +23,13 @@
 
         <span><input type="submit" name="chosen" value="Show Sections"></span>
 
-        <br><input type="submit" name="chosen" value="Back">
+        <br><input type="submit" name="chosen" value="Directory">
     </form>
+
+    <form action="{% url 'Section_Page' %}" method="get">
+    <button type="submit">Back</button>
+     </form>
+
     <br> {{ message }}
     <br>
     <br> <label>Sections || Instructor || Teacher Assistant</label>
@@ -40,14 +45,14 @@
         <select name = select_instructor>
             <option value = "">None</option>
             {% for user in instructor_list %}
-                <option value = "{{ user.first_name }}">{{ user.first_name }}</option>
+                <option value = "{{ user.email }}">{{ user.email }}</option>
             {% endfor %}
         </select>
 
          <select name = select_teacher_assistant>
             <option value = "">None</option>
             {% for user in teacher_assistant_list %}
-                <option value = "{{ user.first_name }}">{{ user.first_name }}</option>
+                <option value = "{{ user.email }}">{{ user.email }}</option>
             {% endfor %}
         </select>
 

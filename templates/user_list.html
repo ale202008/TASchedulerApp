@@ -8,6 +8,11 @@
     {% endfor %}
   </ul>
 
+
+    <form action="{% url 'account_info' %}" method="get">
+    <button type="submit">Back</button>
+     </form>
+
   <form action="{% url 'directory' %}" method="get">
     <button type="submit">Directory</button>
   </form>
