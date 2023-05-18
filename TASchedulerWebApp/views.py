@@ -239,7 +239,8 @@ class AddCoursePage(View):
             if (name != '' and number != ''):
                 newcourse = Course.objects.create(id=number, name=name)
                 newcourse.save()
-                return redirect("CoursePage")
+                courses = list(Course.objects.all())
+                return render(request, "CoursePage.html", {"Courses":courses, "message":"Course created"})
             return render(request, "AddCoursePage.html", {"message": "course not created."})
 
 
@@ -332,7 +333,9 @@ class DeleteSectionPage(View):
     def post(self, request):
         courses = list(Course.objects.all())
         todo = request.POST.get('chosen')
-
+        if(todo == ""):
+            sections = list(Section.objects.all())
+            return render(request, "DeleteSectionPage.html", {"Sectionoptions":sections, "message":"Please choose a section."})
         section = Section.objects.get(id=todo)
         course = section.Course
         sections = Section.objects.filter(Course=course)
