@@ -356,6 +356,8 @@ class AssignSection(View):
             # Got rid of the try/catch block as it seems there might be too many exceptions to cover in one
             # to simplify until necessary, code will run without try block.
             course = Course.objects.get(id = course_num)
+            if Section.objects.filter(Course = course).exists() == False:
+                return render(request, "AssignSection.html", {'course_list': self.get_courses(), 'message': 'no sections'})
             course_sections = self.get_course_sections(course)
             teacher_assistant_list = self.get_teacher_assistants()
             instructors_list = self.get_course_instructors(course)
@@ -525,15 +527,14 @@ class TAPublicContact(View):
 
     def get(self, request):
         ta = User.objects.filter(is_staff='False')
-        print(ta)
-        return render(request, 'TAPublicInfo.html', {"tas": ta})
+        skills = Skill.objects.all()
+        return render(request, 'TAPublicInfo.html', {"tas": ta, "skills": skills})
 
 
 class InPublicContact(View):
 
     def get(self, request):
         instructors = User.objects.filter(is_staff='True', is_superuser='False')
-        print(instructors)
         return render(request, 'InPublicContact.html', {"instructor": instructors})
 
 
