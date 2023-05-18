@@ -8,7 +8,7 @@
 </head>
 <body>
     <h1>Sections</h1>
-    <form action="/SectionPage/" method="post">
+    <form action="/SectionPage/" method="post" class = 'center'>
         {% csrf_token %}
         <label>Courses:</label>
         <select name="show section">
@@ -20,16 +20,26 @@
         <span><button type="submit" name="chosen" value="Show Sections">Show Sections</button></span>
     </form>
     <br>{{ message }}
-    <br><label>Sections</label>
-    <table>
-    {%  for section in Sections %}
+    {% if table_bool == True %}
+    <table class = 'center'>
         <tr>
-        <td>
-            {{ section.Course.id }}-{{ section.id }}
-        </td>
+            <th>Section Course ID</th>
+            <th>Section ID</th>
+            <th>Instructor</th>
+            <th>Teacher Assistant</th>
         </tr>
-    {% endfor %}
+        {%  for section in Sections %}
+            <tr>
+                <td>{{ section.Course.id }}</td>
+                <td>{{ section.id }}</td>
+                <td>{{ section.Instructor.email }}</td>
+                <td>{{ section.TeacherAssistant.email }}</td>
+            </tr>
+        {% endfor %}
     </table>
+    {% endif %}
+
+
     <form action="/SectionPage/" method="post">
         {% csrf_token %}
         <br>
