@@ -261,34 +261,35 @@ class DeleteCoursePage(View):
 
 
 class Sections(View):
-    def get(self,request):
+    def get(self, request):
         courses = list(Course.objects.all())
-        return render(request, "SectionPage.html", {"Courseoptions":courses})
+        table = False
+        return render(request, "SectionPage.html", {"Courseoptions":courses, 'table_bool': table})
 
-    def post(self,request):
+
+    def post(self, request):
         todo = request.POST.get('chosen')
         courses = list(Course.objects.all())
-
+        table = True
         if todo == "Add Section":
-            return render(request, "AddSectionPage.html", {"Courseoptions":courses})
+            return render(request, "AddSectionPage.html", {"Courseoptions": courses})
         if todo == "Delete Section":
             sections = list(Section.objects.all())
-            return render(request, "DeleteSectionPage.html", {"Sectionoptions":sections})
+            return render(request, "DeleteSectionPage.html", {"Sectionoptions": sections})
         if todo == "Assign Section":
             return redirect('assign_section')
-        #displays sections for a course
+        # displays sections for a course
         number = request.POST.get('show section')
         if number == "":
             courses = list(Course.objects.all())
-            return render(request, "SectionPage.html", {"Courseoptions": courses, "message":"Please choose a course"})
+            return render(request, "SectionPage.html", {"Courseoptions": courses, "message": "Please choose a course"})
         course = Course.objects.get(id=number)
         sections = list(Section.objects.filter(Course=course))
 
-        #checks if course has any sections
+        # checks if course has any sections
         if sections.__len__() == 0:
             return render(request, "SectionPage.html", {"message":"No section for this course", "Sections": sections, "Courseoptions": courses})
-        return render(request, "SectionPage.html", {"Sections":sections, "Courseoptions": courses})
-
+        return render(request, "SectionPage.html", {"Sections":sections, "Courseoptions": courses, 'table_bool': table})
 
 
 class AddSectionPage(View):
