@@ -28,12 +28,12 @@ urlpatterns = [
     path('CoursePage/', CoursePage.as_view()),
     path('AddCoursePage/', AddCoursePage.as_view()),
     path('DeleteCoursePage/', DeleteCoursePage.as_view()),
-    path('SectionPage/', Sections.as_view()),
+    path('SectionPage/', Sections.as_view(), name = 'Section_Page'),
     path('TAPublicInfo/', TAPublicContact.as_view()),
     path('InPublicInfo/', InPublicContact.as_view()),
     path('account_edit/', account_editor, name='account_edit'),
-    # path('AddSectionPage/', AddSectionPage.as_view()),
-    # path('DeleteSectionPage/', DeleteSectionPage.as_view()),
+    path('AddSectionPage/', AddSectionPage.as_view()),
+    path('DeleteSectionPage/', DeleteSectionPage.as_view()),
 
 # New URL for account information page for the account info
     path('account/', account_info, name='account_info'),

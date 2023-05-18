@@ -24,11 +24,12 @@
   <form action="{% url 'home' %}" method="get">
   </form>
 
+    {% if user.is_superuser %}
+    <button type="button" onclick="window.location.href='{% url 'user_list' %}'">View All Users</button>
+    {% endif %}
+
   <form action="{% url 'directory' %}" method="get">
     <button type="submit">Directory</button>
   </form>
 
-  {% if user.is_superuser %}
-    <button type="button" onclick="window.location.href='{% url 'user_list' %}'">View All Users</button>
-  {% endif %}
 {% endblock %}

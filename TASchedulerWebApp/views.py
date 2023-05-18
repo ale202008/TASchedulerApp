@@ -222,12 +222,13 @@ class DeleteCoursePage(View):
 class Sections(View):
     def get(self,request):
         courses = list(Course.objects.all())
-        return render(request, "SectionPage.html", {"Courseoptions":courses})
+        table = False
+        return render(request, "SectionPage.html", {"Courseoptions":courses, 'table_bool': table})
 
     def post(self,request):
         todo = request.POST.get('chosen')
         courses = list(Course.objects.all())
-
+        table = True
         if todo == "Add Section":
             return render(request, "AddSectionPage.html", {"Courseoptions":courses})
         if todo == "Delete Section":
@@ -246,7 +247,7 @@ class Sections(View):
         #checks if course has any sections
         if sections.__len__() == 0:
             return render(request, "SectionPage.html", {"message":"No section for this course", "Sections": sections, "Courseoptions": courses})
-        return render(request, "SectionPage.html", {"Sections":sections, "Courseoptions": courses})
+        return render(request, "SectionPage.html", {"Sections":sections, "Courseoptions": courses, 'table_bool': table})
 
 
 
@@ -307,7 +308,7 @@ class AssignSection(View):
         todo = request.POST.get('chosen')
         # Will go through different if conditionals to decide which operation to do.
         # Copied from SectionPage code in presenting the information to the user.
-        if todo == "Back":
+        if todo == "Directory":
             return redirect('directory')
         elif todo == "Show Sections":
             course_num = request.POST.get('select_course')
@@ -365,6 +366,8 @@ class AssignSection(View):
         return course_section_list
 
     def get_course_instructors(self, course):
+        if course.Instructor == None:
+            return None
         instructors_list = list(User.objects.filter(email = course.Instructor.email))
         return instructors_list
 
@@ -424,7 +427,7 @@ class Notifications(View):
             notification = request.POST.get('new_notification')
             self.makeNotification(Users, notification)
             context = 'Notification sent!'
-        return self.display_render(self.User, request, context)
+        return redirect('notification')
 
     def display_render(self, User, request, context):
         if User.is_superuser == True:
