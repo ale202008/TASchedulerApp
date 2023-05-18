@@ -12,7 +12,7 @@ class UserCreationForm(forms.ModelForm):
         labels = {
             'email': 'Email', 'first_name': "First Name", 'last_name' : "Last Name", 'is_staff': "Instructor"
         }
-
+        
     def clean(self):
         cleaned_data = super().clean()
         password = cleaned_data.get("password")
