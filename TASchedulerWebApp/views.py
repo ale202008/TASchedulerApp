@@ -178,28 +178,35 @@ class CoursePage(View):
 
     def post(self, request):
         form = CourseAssignForm(request.POST)
-        if form.is_valid():
-            course_id = form.cleaned_data['course'].id
-            instructor_id = form.cleaned_data['instructor'].id
-            ta_id = form.cleaned_data['ta'].id
+        user = request.user
+        courses = list(Course.objects.all())
+        if user.is_superuser:
+            if request.POST.get('chosen') == "Add Course":
+                return render(request, "AddCoursePage.html", {"message":""})
+            elif request.POST.get('chosen') == "Delete Course":
+                return render(request, "DeleteCoursePage.html", {'Courseoptions':courses,"Courses": courses})
+            if form.is_valid():
+                course_id = form.cleaned_data['course'].id
+                instructor_id = form.cleaned_data['instructor'].id
+                ta_id = form.cleaned_data['ta'].id
 
-            try:
-                course = Course.objects.get(id=course_id)
-                instructor = User.objects.get(id=instructor_id)
-                ta = User.objects.get(id=ta_id)
+                try:
+                    course = Course.objects.get(id=course_id)
+                    instructor = User.objects.get(id=instructor_id)
+                    ta = User.objects.get(id=ta_id)
 
-                if Course.objects.filter(Instructor=instructor).exists():
-                    message = 'This instructor is already assigned to the course.'
-                elif Course.objects.filter(TeacherAssistant=ta).exists():
-                    message = 'This TA is already assigned to the course.'
-                else:
-                    course.Instructor = instructor
-                    course.TeacherAssistant = ta
+                    if Course.objects.filter(Instructor=instructor).exists():
+                        message = 'This instructor is already assigned to the course.'
+                    elif Course.objects.filter(TeacherAssistant=ta).exists():
+                        message = 'This TA is already assigned to the course.'
+                    else:
+                        course.Instructor = instructor
+                        course.TeacherAssistant = ta
 
-                    course.save()
-                    message = 'Assignment successful'
-            except (Course.DoesNotExist, User.DoesNotExist):
-                message = 'Course not found or user not found'
+                        course.save()
+                        message = 'Assignment successful'
+                except (Course.DoesNotExist, User.DoesNotExist):
+                    message = 'Course not found or user not found'
 
             courses = Course.objects.all()
             instructors = User.objects.filter(is_staff=True, is_superuser=False)
@@ -232,9 +239,7 @@ class AddCoursePage(View):
             if (name != '' and number != ''):
                 newcourse = Course.objects.create(id=number, name=name)
                 newcourse.save()
-                courselist = list(Course.objects.all())
-                return render(request, "CoursePage.html", {"Courses": courselist, "message": "course created."})
-            courselist = list(Course.objects.all())
+                return redirect("CoursePage")
             return render(request, "AddCoursePage.html", {"message": "course not created."})
 
 
@@ -248,8 +253,7 @@ class DeleteCoursePage(View):
         if number != '':
                 course = Course.objects.get(id=number)
                 course.delete()
-                courses = list(Course.objects.all())
-                return render(request, "CoursePage.html", {'message': 'Course deleted', 'Courses': courses})
+                return redirect("CoursePage")
         else:
             courses = list(Course.objects.all())
             return render(request, "DeleteCoursePage.html",
