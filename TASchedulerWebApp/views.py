@@ -426,7 +426,6 @@ class AssignSection(View):
         # Checks to see if that section's Instructor field contains the instructor selected, will probably
         # change it so that only this course's instructor shows up
         message = ''
-
         # context = {'message2': message, 'course_sections': self.get_course_sections(course),
         #            'teacher_assistant_list': self.get_teacher_assistants(),
         #            'instructor_list': self.get_course_instructors(course),

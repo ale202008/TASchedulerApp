@@ -68,3 +68,25 @@ class SectionTestCase(TestCase):
     def test_NoCourseSelected(self):
         resp = self.client.post('/SectionPage/', {"show section": ""})
         self.assertEqual(resp.context['message'], "Please choose a course", msg="course doesn't exist to be displayed")
+
+class AssignSessionTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.Instructor = User.objects.create(email = 'instructor@gmail.com', password = 'instructor', is_staff = True)
+        self.Instructor.save()
+        self.TA = User.objects.create(email = 'ta@gmail.com', password = 'ta', is_staff = False)
+        self.TA.save()
+        self.Course = Course.objects.create(name="COMPSCI", id="361", Instructor = self.Instructor, TeacherAssistant = self.TA)
+        self.Course.save()
+        self.Section = Section.objects.create(id=100, Course=self.Course)
+        self.Section.save()
+
+    def test_AssignInstructor(self):
+        context = {'chosen': 'Assign', 'select_section': self.Section.id, 'select_instructor': self.Instructor.email, 'select_teacher_assistant': ''}
+        resp = self.client.post('/AssignSection/', context)
+        self.assertEqual(resp.context['message2'], 'Assign successful for section: ' + str(self.Section.id), msg = 'Instructor was not assigned.')
+
+    def test_AssignTA(self):
+        context = {'chosen': 'Assign', 'select_section': '100', 'select_instructor': '', 'select_teacher_assistant': self.TA.email}
+        resp = self.client.post('/AssignSection/', context)
+        self.assertEqual(resp.context['message2'], 'Assign successful for section: ' + str(self.Section.id), msg = 'TA was not assigned.')
