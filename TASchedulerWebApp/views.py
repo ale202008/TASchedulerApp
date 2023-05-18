@@ -486,15 +486,14 @@ class TAPublicContact(View):
 
     def get(self, request):
         ta = User.objects.filter(is_staff='False')
-        print(ta)
-        return render(request, 'TAPublicInfo.html', {"tas": ta})
+        skills = Skill.objects.all()
+        return render(request, 'TAPublicInfo.html', {"tas": ta, "skills": skills})
 
 
 class InPublicContact(View):
 
     def get(self, request):
         instructors = User.objects.filter(is_staff='True', is_superuser='False')
-        print(instructors)
         return render(request, 'InPublicContact.html', {"instructor": instructors})
 
 

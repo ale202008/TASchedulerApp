@@ -14,12 +14,25 @@
             <th>First Name</th>
             <th>Last Name</th>
             <th>Email</th>
+            <th>Skills</th>
         </tr>
         {% for person in tas %}
             <tr>
                 <td>{{ person.first_name }}</td>
                 <td>{{ person.last_name }}</td>
                 <td>{{ person.email}}</td>
+                {% if skills %}
+                    <td>
+                    {% for skill in skills %}
+                        {% if skill.TeacherAssistant == person %}
+                            {{ skill.name }}{% if not forloop.last %}, {% endif %}
+                        {% endif %}
+
+                    {% endfor %}
+                    </td>
+                {% else %}
+                    <td>N/A</td>
+                {% endif %}
             </tr>
         {% endfor %}
             {% else %}
