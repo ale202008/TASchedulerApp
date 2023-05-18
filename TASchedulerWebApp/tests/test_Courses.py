@@ -35,7 +35,7 @@ class AddCourseTestCases(TestCase):
 class DeleteCourseTestCases(TestCase):
     def setUp(self):
         self.UserClient = Client()
-        self.User = User.objects.create(username='Taylor@gmail.com', password='Swift')
+        self.User = User.objects.create(email='Taylor@gmail.com', password='Swift')
         self.User.save()
         self.Course = Course.objects.create(id = 361, name = "Course")
         self.Course.save()
@@ -49,7 +49,7 @@ class DeleteCourseTestCases(TestCase):
     def test_InvalidCourseField(self):
         # Checks to see if an error/exception is given when a Course is attempted to be deleted, but does not exist.
         resp = self.UserClient.post('/DeleteCoursePage/', {'CourseNumber': 11111111111})
-        self.assertEqual(resp.context['message'], "Course doesn't exist", msg = "Course was not in the database, but was deleted. How?")
+        self.assertRedirects(resp, '/CoursePage/', msg_prefix = "Course was not in the database, but was deleted. How?")
 
     def test_BlankCourseField(self):
         # Checks to see if an error/exception is given when a Course field is blank.
