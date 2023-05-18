@@ -9,6 +9,8 @@ from .models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from TASchedulerWebApp.models import User
+from .forms import CourseAssignForm
+from django.shortcuts import render, redirect
 
 class Login(View):
     def get(self, request):
@@ -164,21 +166,56 @@ class Home(View):
     def get(self, request):
         return render(request, 'home.html')
 
-
 class CoursePage(View):
     def get(self, request):
-        courses = list(Course.objects.all())
-        return render(request, "CoursePage.html", {"Courses": courses, "message": ""})
+        # Get all courses, instructors, and TAs from the database
+        courses = Course.objects.all()
+        Instructor = User.objects.filter(is_staff=True, is_superuser=False)
+        TeacherAssistant = User.objects.filter(is_staff=False, is_superuser=False)
+        form = CourseAssignForm()
+        return render(request, "CoursePage.html",
+                      {"Courses": courses, "Instructors": Instructor, "TAs": TeacherAssistant, "form": form})
 
     def post(self, request):
-        user = request.user
-        courses = list(Course.objects.all())
-        if user.is_superuser:
-            if request.POST.get('chosen') == "Add Course":
-                return render(request, "AddCoursePage.html", {"message":""})
-            elif request.POST.get('chosen') == "Delete Course":
-                return render(request, "DeleteCoursePage.html", {'Courseoptions':courses,"Courses": courses})
-        return render(request, 'CoursePage.html', {"Courses": courses, "message": "You are not a supervisor"})
+        form = CourseAssignForm(request.POST)
+        if form.is_valid():
+            course_id = form.cleaned_data['course'].id
+            instructor_id = form.cleaned_data['instructor'].id
+            ta_id = form.cleaned_data['ta'].id
+
+            try:
+                course = Course.objects.get(id=course_id)
+                instructor = User.objects.get(id=instructor_id)
+                ta = User.objects.get(id=ta_id)
+
+                if instructor in course.instructors.all():
+                    message = 'This instructor is already assigned to the course.'
+                elif ta in course.teacher_assistants.all():
+                    message = 'This TA is already assigned to the course.'
+                else:
+                    course.instructor = instructor
+                    course.teacher_assistant = ta
+
+                    course.save()
+                    message = 'Assignment successful'
+            except (Course.DoesNotExist, User.DoesNotExist):
+                message = 'Course not found or user not found'
+
+            courses = Course.objects.all()
+            instructors = User.objects.filter(is_staff=True, is_superuser=False)
+            tas = User.objects.filter(is_staff=False, is_superuser=False)
+
+            return render(request, 'CoursePage.html',
+                          {"Courses": courses, "Instructors": instructors, "TAs": tas, "form": form,
+                           "message": message})
+
+        Courses = Course.objects.all()
+        Instructor = User.objects.filter(is_staff=True, is_superuser=False)
+        TeacherAssistant = User.objects.filter(is_staff=False, is_superuser=False)
+
+        return render(request, 'CoursePage.html',
+                      {"Courses": Courses, "Instructors": Instructor, "TAs": TeacherAssistant, "form": form,
+                       "message": "Failed to assign, please try again"})
 
 
 class AddCoursePage(View):
@@ -444,4 +481,27 @@ class InPublicContact(View):
         print(instructors)
         return render(request, 'InPublicContact.html', {"instructor": instructors})
 
+
+
+def assign_course(request):
+    if request.method == 'POST':
+        form = CourseAssignForm(request.POST)
+        if form.is_valid():
+            course = form.cleaned_data.get('course')
+            instructor = form.cleaned_data.get('instructor')
+            teacher_assistant = form.cleaned_data.get('teacher_assistant')
+
+            if instructor:
+                course.Instructor = instructor
+
+            if teacher_assistant:
+                course.TeacherAssistant = teacher_assistant
+
+            course.save()
+            return redirect('course_page')  # replace 'course_page' with the name of your course page view
+    else:
+        form = CourseAssignForm()
+
+    return render(request, 'assign_course.html',
+                  {'form': form})  # replace 'assign_course.html' with the name of your HTML file
 

@@ -10,26 +10,30 @@
     <h1>Courses</h1>
     <form action="/CoursePage/" method="post">
         {% csrf_token %}
-    <span>
-
-        <input type="submit" name="chosen" value="Add Course">
-        <input type="submit" name="chosen" value="Delete Course">
-    </span>
+        <span>
+            <input type="submit" name="chosen" value="Add Course">
+            <input type="submit" name="chosen" value="Delete Course">
+        </span>
     </form>
+
+    <!-- Add the new form here -->
+    <h2>Assign Instructor and TA</h2>
+    <form method="post" action="{% url 'CoursePage' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Assign</button>
+    </form>
+
     <label>Courses</label>
     <table>
     {%  for i in Courses %}
         <tr>
             <td>{{ i.id }}</td>
             <td>{{ i.name }}</td>
+            <td>Instructor: {{ i.Instructor.email }}</td> <!-- Display the assigned Instructor -->
+            <td>TA: {{ i.TeacherAssistant.email }}</td> <!-- Display the assigned TA -->
         </tr>
     {% endfor %}
     </table>
     <br>{{ message }}
-    <form action="{% url 'directory' %}" method="get">
-        {% csrf_token %}
-        <br><input type="submit" name="chosen" value="Home">
-    </form>
-
-</body>
-</html>
+    <form action="{% url 'directory' %}"
