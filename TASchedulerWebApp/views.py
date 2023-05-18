@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from TASchedulerWebApp.models import User
 
+
 class Login(View):
     def get(self, request):
         return render(request, 'login.html')
@@ -31,11 +32,12 @@ class Login(View):
 def is_admin(user):
     return user.is_staff
 
+
 @login_required
 def account_info(request):
     user = request.user
     skills = Skill.objects.filter(TeacherAssistant=user)
-    context = {'user': user, 'skills' : skills}
+    context = {'user': user, 'skills': skills}
     return render(request, 'account_info.html', context)
 
 
@@ -94,6 +96,7 @@ def account_creation(request):
             form = UserCreationForm()
     return render(request, 'accountCreation.html', {'form': form, 'title': title})
 
+
 @login_required
 def account_editor(request):
     if request.method == 'POST':
@@ -121,44 +124,46 @@ def account_editor(request):
         form = NonAdminEditForm(instance=request.user)
         return render(request, 'accountEdit.html', {'form': form})
 
+
 @login_required
 def Directory(request):
-  user = request.user
-  buttons = []
-  #Admin if statement
-  if user.is_superuser:
-    buttons = [
-      ('Courses', 'CoursePage/'),
-      ('Account Info', '/account'),
-      ('Notifications', 'Notification/'),
-      ('Sections', 'SectionPage/'),
-      ('TAs', 'TAPublicInfo/'),
-      ('Instructors', 'InPublicInfo/'),
-      ('Create/Edit Account', 'account_creation/'),
-    ]
-    #Instructor view
-  elif user.is_staff:
-    buttons = [
-      ('Courses', 'CoursePage/'),
-      ('Account Info', '/account'),
-      ('Notifications', 'Notification/'),
-      ('Sections', 'SectionPage/'),
-      ('TAs', 'TAPublicInfo/'),
-      ('Instructors', 'InPublicInfo/'),
-      ('Edit Account', 'account_edit/'),
-    ]
-  else:
-    buttons = [
-      ('Courses', 'CoursePage/'),
-      ('Account Info', '/account'),
-      ('Notifications', 'Notification/'),
-      ('Sections', 'SectionPage/'),
-      ('TAs', 'TAPublicInfo/'),
-      ('Edit Account', 'account_edit/'),
-    ]
-    
-  options = {'buttons': buttons}
-  return render(request, 'directory.html', options)
+    user = request.user
+    buttons = []
+    # Admin if statement
+    if user.is_superuser:
+        buttons = [
+            ('Courses', 'CoursePage/'),
+            ('Account Info', '/account'),
+            ('Notifications', 'Notification/'),
+            ('Sections', 'SectionPage/'),
+            ('TAs', 'TAPublicInfo/'),
+            ('Instructors', 'InPublicInfo/'),
+            ('Create/Edit Account', 'account_creation/'),
+        ]
+        # Instructor view
+    elif user.is_staff:
+        buttons = [
+            ('Courses', 'CoursePage/'),
+            ('Account Info', '/account'),
+            ('Notifications', 'Notification/'),
+            ('Sections', 'SectionPage/'),
+            ('TAs', 'TAPublicInfo/'),
+            ('Instructors', 'InPublicInfo/'),
+            ('Edit Account', 'account_edit/'),
+        ]
+    else:
+        buttons = [
+            ('Courses', 'CoursePage/'),
+            ('Account Info', '/account'),
+            ('Notifications', 'Notification/'),
+            ('Sections', 'SectionPage/'),
+            ('TAs', 'TAPublicInfo/'),
+            ('Edit Account', 'account_edit/'),
+        ]
+
+    options = {'buttons': buttons}
+    return render(request, 'directory.html', options)
+
 
 class Home(View):
     def get(self, request):
@@ -175,9 +180,9 @@ class CoursePage(View):
         courses = list(Course.objects.all())
         if user.is_superuser:
             if request.POST.get('chosen') == "Add Course":
-                return render(request, "AddCoursePage.html", {"message":""})
+                return render(request, "AddCoursePage.html", {"message": ""})
             elif request.POST.get('chosen') == "Delete Course":
-                return render(request, "DeleteCoursePage.html", {'Courseoptions':courses,"Courses": courses})
+                return render(request, "DeleteCoursePage.html", {'Courseoptions': courses, "Courses": courses})
         return render(request, 'CoursePage.html', {"Courses": courses, "message": "You are not a supervisor"})
 
 
@@ -186,8 +191,8 @@ class AddCoursePage(View):
         return render(request, "AddCoursePage.html", {"message": ""})
 
     def post(self, request):
-        name = request.POST.get('CourseName','')
-        number = request.POST.get('CourseNumber','')
+        name = request.POST.get('CourseName', '')
+        number = request.POST.get('CourseNumber', '')
         try:
             Course.objects.get(id=number)
             return render(request, "AddCoursePage.html", {"message": "course already exists."})
@@ -204,56 +209,56 @@ class AddCoursePage(View):
 class DeleteCoursePage(View):
     def get(self, request):
         courses = list(Course.objects.all())
-        return render(request, "DeleteCoursePage.html", {'Courseoptions':courses,'Course':courses})
+        return render(request, "DeleteCoursePage.html", {'Courseoptions': courses, 'Course': courses})
 
     def post(self, request):
         number = request.POST.get('chosen', '')
         if number != '':
-                course = Course.objects.get(id=number)
-                course.delete()
-                courses = list(Course.objects.all())
-                return render(request, "CoursePage.html", {'message': 'Course deleted', 'Courses': courses})
+            course = Course.objects.get(id=number)
+            course.delete()
+            courses = list(Course.objects.all())
+            return render(request, "CoursePage.html", {'message': 'Course deleted', 'Courses': courses})
         else:
             courses = list(Course.objects.all())
             return render(request, "DeleteCoursePage.html",
-                        {'message': "Please choose a course", 'Courseoptions':courses, 'Courses': courses})
+                          {'message': "Please choose a course", 'Courseoptions': courses, 'Courses': courses})
 
 
 class Sections(View):
-    def get(self,request):
+    def get(self, request):
         courses = list(Course.objects.all())
-        return render(request, "SectionPage.html", {"Courseoptions":courses})
+        return render(request, "SectionPage.html", {"Courseoptions": courses})
 
-    def post(self,request):
+    def post(self, request):
         todo = request.POST.get('chosen')
         courses = list(Course.objects.all())
 
         if todo == "Add Section":
-            return render(request, "AddSectionPage.html", {"Courseoptions":courses})
+            return render(request, "AddSectionPage.html", {"Courseoptions": courses})
         if todo == "Delete Section":
             sections = list(Section.objects.all())
-            return render(request, "DeleteSectionPage.html", {"Sectionoptions":sections})
+            return render(request, "DeleteSectionPage.html", {"Sectionoptions": sections})
         if todo == "Assign Section":
             return redirect('assign_section')
-        #displays sections for a course
+        # displays sections for a course
         number = request.POST.get('show section')
         if number == "":
             courses = list(Course.objects.all())
-            return render(request, "SectionPage.html", {"Courseoptions": courses, "message":"Please choose a course"})
+            return render(request, "SectionPage.html", {"Courseoptions": courses, "message": "Please choose a course"})
         course = Course.objects.get(id=number)
         sections = list(Section.objects.filter(Course=course))
 
-        #checks if course has any sections
+        # checks if course has any sections
         if sections.__len__() == 0:
-            return render(request, "SectionPage.html", {"message":"No section for this course", "Sections": sections, "Courseoptions": courses})
-        return render(request, "SectionPage.html", {"Sections":sections, "Courseoptions": courses})
-
+            return render(request, "SectionPage.html",
+                          {"message": "No section for this course", "Sections": sections, "Courseoptions": courses})
+        return render(request, "SectionPage.html", {"Sections": sections, "Courseoptions": courses})
 
 
 class AddSectionPage(View):
     def get(self, request):
         courses = list(Course.objects.all())
-        return render(request, "AddSectionPage.html", {"Courseoptions":courses})
+        return render(request, "AddSectionPage.html", {"Courseoptions": courses})
 
     def post(self, request):
         number = request.POST.get('create section', '')
@@ -282,20 +287,22 @@ class AddSectionPage(View):
                           {"message1": "Section Added", "Sections": sections, "Courseoptions": courses})
 
 
-
 class DeleteSectionPage(View):
     def get(self, request):
         sections = list(Section.objects.all())
-        return render(request, "DeleteSectionPage.html", {"Sectionoptions":sections})
+        return render(request, "DeleteSectionPage.html", {"Sectionoptions": sections})
+
     def post(self, request):
         courses = list(Course.objects.all())
         todo = request.POST.get('chosen')
-
+        if (todo == ""):
+            sections = list(Section.objects.all())
+            return render(request, "DeleteSectionPage.html", {"Courseoptions": courses, 'Sections': sections, "message":"Please choose a section"})
         section = Section.objects.get(id=todo)
         course = section.Course
         sections = Section.objects.filter(Course=course)
         section.delete()
-        return render(request, "SectionPage.html", {"Courseoptions":courses, 'Sections':sections, })
+        return render(request, "SectionPage.html", {"Courseoptions": courses, 'Sections': sections, })
 
 
 class AssignSection(View):
@@ -315,25 +322,29 @@ class AssignSection(View):
             course_num = request.POST.get('select_course')
             # Got rid of the try/catch block as it seems there might be too many exceptions to cover in one
             # to simplify until necessary, code will run without try block.
-            course = Course.objects.get(id = course_num)
-            course_sections = list(Section.objects.filter(Course = course))
+            course = Course.objects.get(id=course_num)
+            course_sections = list(Section.objects.filter(Course=course))
             if course_sections.__len__() == 0:
-                return render(request, "AssignSection.html", {'message': 'No sections exist for this course.', 'Sections': course_sections, 'course_list': course_list})
+                return render(request, "AssignSection.html",
+                              {'message': 'No sections exist for this course.', 'Sections': course_sections,
+                               'course_list': course_list})
             else:
                 # If course sections list is not 0, meaning that we do have a section that exists we shall send back
                 # the list of Instructor and Teacher Assistant users to be listed and chosen to assign.
-                teacher_assistant_list = list(User.objects.filter(is_superuser = False, is_staff = False))
-                instructors_list = list(User.objects.filter(is_superuser = False, is_staff = True))
+                teacher_assistant_list = list(User.objects.filter(is_superuser=False, is_staff=False))
+                instructors_list = list(User.objects.filter(is_superuser=False, is_staff=True))
                 if teacher_assistant_list.__len__() == 0:
                     return render(request, "AssignSection.html", {'message': 'There exists no Teacher Assistants'})
                 elif instructors_list.__len__() == 0:
                     return render(request, "AssignSection.html", {'message': 'There exists no Instructors'})
                 else:
-                    return render(request, 'AssignSection.html', {'course_sections': course_sections, 'teacher_assistant_list': teacher_assistant_list, 'instructor_list': instructors_list})
+                    return render(request, 'AssignSection.html',
+                                  {'course_sections': course_sections, 'teacher_assistant_list': teacher_assistant_list,
+                                   'instructor_list': instructors_list})
         if todo == 'Assign':
             # Getting the model objects so that I can change section fields for Instructors and Teacher Assistants
             # if necessary
-            section = Section.objects.get(id = request.POST.get('select_section'))
+            section = Section.objects.get(id=request.POST.get('select_section'))
             if request.POST.get('select_instructor') == "":
                 instructor = None
             else:
@@ -347,26 +358,36 @@ class AssignSection(View):
             # Checks to see if that section's Instructor field contains the instructor selected, will probably
             # change it so that only this course's instructor shows up
             if instructor != None and section.Course.Instructor != instructor:
-                return render(request, "AssignSection.html", {'message2': 'Instructor does not teach this sections course', 'course_list': course_list})
+                return render(request, "AssignSection.html",
+                              {'message2': 'Instructor does not teach this sections course',
+                               'course_list': course_list})
             # Checks to see if the selected TA existed for a section already
-            elif teacher_assistant != None and Section.objects.filter(TeacherAssistant = teacher_assistant).exists():
-                return render(request, "AssignSection.html",{'message2': 'Teacher Assistant is already assigned to a section','course_list': course_list})
+            elif teacher_assistant != None and Section.objects.filter(TeacherAssistant=teacher_assistant).exists():
+                return render(request, "AssignSection.html",
+                              {'message2': 'Teacher Assistant is already assigned to a section',
+                               'course_list': course_list})
             else:
                 section.Instructor = instructor
                 section.TeacherAssistant = teacher_assistant
                 section.save()
-                return render(request, "AssignSection.html",{'message2': 'Assign successful for section: ' + section.id, 'course_list': course_list, 'section_saved': section})
+                return render(request, "AssignSection.html",
+                              {'message2': 'Assign successful for section: ' + section.id, 'course_list': course_list,
+                               'section_saved': section})
 
         return render(request, "AssignSection.html")
+
 
 class Notifications(View):
     def get(self, request):
         self.User = request.user
         if self.permitted_user(User):
             return render(request, 'notifications.html',
-                          {'notifications': self.getNotifications(self.User), 'permission': self.permitted_user(self.User),
+                          {'notifications': self.getNotifications(self.User),
+                           'permission': self.permitted_user(self.User),
                            'instructors': self.getInstructors(), 'teacherassistants': self.getTeacherAssistants()})
-        return render(request, 'notifications.html', {'notifications': self.getNotifications(self.User), 'permission': self.permitted_user(self.User)})
+        return render(request, 'notifications.html',
+                      {'notifications': self.getNotifications(self.User), 'permission': self.permitted_user(self.User)})
+
     def post(self, request):
         self.User = request.user
         todo = request.POST.get('chosen')
@@ -379,7 +400,8 @@ class Notifications(View):
 
         if self.permitted_user(self.User):
             return render(request, 'notifications.html',
-                          {'notifications': self.getNotifications(self.User), 'permission': self.permitted_user(self.User),
+                          {'notifications': self.getNotifications(self.User),
+                           'permission': self.permitted_user(self.User),
                            'instructors': self.getInstructors(), 'teacherassistants': self.getTeacherAssistants()})
         return render(request, 'notifications.html',
                       {'notifications': self.getNotifications(self.User), 'permission': self.permitted_user(self.User)})
@@ -399,7 +421,7 @@ class Notifications(View):
         return teacher_assistant_list
 
     def getNotifications(self, User):
-        notification_list  = list(Notification.objects.filter(UserAllowed=User))
+        notification_list = list(Notification.objects.filter(UserAllowed=User))
         return notification_list
 
     def makeNotification(self, list, notification):
@@ -407,16 +429,20 @@ class Notifications(View):
             if i == 'All Instructors':
                 Recipients = self.getInstructors()
                 for i in Recipients:
-                    self.notification = Notification.objects.create(notification=notification, UserAllowed=i, Sender = self.User)
+                    self.notification = Notification.objects.create(notification=notification, UserAllowed=i,
+                                                                    Sender=self.User)
             elif i == 'All Teacher Assistants':
                 Recipients = self.getTeacherAssistants()
                 for i in Recipients:
-                    self.notification = Notification.objects.create(notification=notification, UserAllowed=i, Sender = self.User)
+                    self.notification = Notification.objects.create(notification=notification, UserAllowed=i,
+                                                                    Sender=self.User)
             else:
-                Recipients = User.objects.get(email = i)
-                self.notification = Notification.objects.create(notification=notification, UserAllowed=Recipients, Sender = self.User)
+                Recipients = User.objects.get(email=i)
+                self.notification = Notification.objects.create(notification=notification, UserAllowed=Recipients,
+                                                                Sender=self.User)
             self.notification.save()
-    
+
+
 def add_skill(request):
     if request.method == 'POST':
         skill_name = request.POST['skill_name']
@@ -443,5 +469,3 @@ class InPublicContact(View):
         instructors = User.objects.filter(is_staff='True', is_superuser='False')
         print(instructors)
         return render(request, 'InPublicContact.html', {"instructor": instructors})
-
-
