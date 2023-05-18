@@ -16,3 +16,7 @@ tr{
     padding: 2px;
     text-align: left;
 }
+
+button {
+    background-color: #ffbd00;
+}

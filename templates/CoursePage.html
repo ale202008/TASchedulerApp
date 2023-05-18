@@ -36,4 +36,6 @@
     {% endfor %}
     </table>
     <br>{{ message }}
-    <form action="{% url 'directory' %}"
+    <form action="{% url 'directory' %}" method = 'get'>
+        <button type="submit">Directory</button>
+    </form>
