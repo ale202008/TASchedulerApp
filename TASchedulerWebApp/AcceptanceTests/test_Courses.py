@@ -31,7 +31,7 @@ class AddCourseTestCases(TestCase):
 
 
     # Need test to make sure that when SuperUser adds a course, course shows up for course page.
-    # Need tests to reflect Instructor field, ManyToManyField for courses for users.
+    # Need AcceptanceTests to reflect Instructor field, ManyToManyField for courses for users.
 class DeleteCourseTestCases(TestCase):
     def setUp(self):
         self.UserClient = Client()

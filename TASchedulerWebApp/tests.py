@@ -2,4 +2,4 @@ from django.test import TestCase
 from .models import *
 import unittest
 
-# Create your tests here.
+# Create your AcceptanceTests here.
