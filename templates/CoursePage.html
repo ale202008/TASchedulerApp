@@ -23,15 +23,22 @@
         {{ form.as_p }}
         <button type="submit">Assign</button>
     </form>
+    <br>
+    <br>
 
-    <label>Courses</label>
-    <table>
+    <table class = 'center'>
+        <tr>
+            <th>Course ID</th>
+            <th>Course Name</th>
+            <th>Instructor</th>
+            <th>Teacher Assistant</th>
+        </tr>
     {%  for i in Courses %}
         <tr>
             <td>{{ i.id }}</td>
             <td>{{ i.name }}</td>
-            <td>Instructor: {{ i.Instructor.email }}</td> <!-- Display the assigned Instructor -->
-            <td>TA: {{ i.TeacherAssistant.email }}</td> <!-- Display the assigned TA -->
+            <td>{{ i.Instructor.email }}</td> <!-- Display the assigned Instructor -->
+            <td>{{ i.TeacherAssistant.email }}</td> <!-- Display the assigned TA -->
         </tr>
     {% endfor %}
     </table>
