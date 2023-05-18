@@ -4,7 +4,7 @@ from TASchedulerWebApp.models import *
 class AddCourseTestCases(TestCase):
     def setUp(self):
         self.UserClient = Client()
-        self.User = User.objects.create(username='Taylor@gmail.com', password='Swift')
+        self.User = User.objects.create(email='Taylor@gmail.com', password='Swift')
         self.Course1_name = "one"
         self.Course1_id = 1
         self.User.save()
@@ -36,7 +36,7 @@ class AddCourseTestCases(TestCase):
 class DeleteCourseTestCases(TestCase):
     def setUp(self):
         self.UserClient = Client()
-        self.User = User.objects.create(username='Taylor@gmail.com', password='Swift')
+        self.User = User.objects.create(email='Taylor@gmail.com', password='Swift')
         self.User.save()
         self.Course = Course.objects.create(id = 361, name = "Course")
         self.Course.save()
@@ -49,10 +49,11 @@ class DeleteCourseTestCases(TestCase):
 
     def test_InvalidCourseField(self):
         # Checks to see if an error/exception is given when a Course is attempted to be deleted, but does not exist.
+        # this should fail as it is not possible to try to delete invalid course numbers due to drop down bar
         resp = self.UserClient.post('/DeleteCoursePage/', {'CourseNumber': 11111111111})
         self.assertEqual(resp.context['message'], "Course doesn't exist", msg = "Course was not in the database, but was deleted. How?")
 
     def test_BlankCourseField(self):
         # Checks to see if an error/exception is given when a Course field is blank.
         resp = self.UserClient.post('/DeleteCoursePage/', {'CourseNumber': ""})
-        self.assertEqual(resp.context['message'], "Course doesn't exist", msg = "Course was not in the database, but was deleted. How?")
+        self.assertEqual(resp.context['message'], "Please choose a course", msg = "Course was not in the database, but was deleted. How?")

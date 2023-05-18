@@ -5,6 +5,7 @@ from django.urls import reverse
 
 class CreateAccountTestCases(TestCase):
     def setUp(self):
+
         self.admin_user = User.objects.create_superuser(
             email='admin@example.com', password='adminpassword'
         )
@@ -184,4 +185,3 @@ class CreateAccountTestCases(TestCase):
             self.assertEqual(len(list_users), 0, msg='Email not changed found in the Data Base')
         else:
             self.assertRaises(FileNotFoundError, msg='HTTP Did Not Respond with 200')
-
